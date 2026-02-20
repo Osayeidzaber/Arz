@@ -161,5 +161,5 @@ shopify theme check
 ---
 
 <p align="center">
-  <sub>Private repository · ARZ © 2026 · All rights reserved</sub>
+  <sub>Made By Osayeed Zaber <3</sub>
 </p>

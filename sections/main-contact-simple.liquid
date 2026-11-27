@@ -1,0 +1,417 @@
+<div class="contact-wrapper">
+  <div class="contact-container">
+    <div class="contact-header">
+      <h1 class="contact-title">Get in Touch</h1>
+      <p class="contact-subtitle">Our luxury concierge team is here to assist you</p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Contact Information -->
+      <div class="contact-info">
+        <div class="info-card">
+          <h3>Customer Care</h3>
+          <p>Personalized assistance for all your luxury needs</p>
+          <div class="contact-details">
+            <a href="tel:{{ section.settings.phone | default: '+1-234-567-8900' }}">{{ section.settings.phone | default: '+1-234-567-8900' }}</a>
+            <a href="mailto:{{ section.settings.email | default: 'care@arz.life' }}">{{ section.settings.email | default: 'care@arz.life' }}</a>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>Business Hours</h3>
+          <div class="hours-grid">
+            <div class="hours-item">
+              <span>Monday - Friday</span>
+              <span>9:00 AM - 8:00 PM</span>
+            </div>
+            <div class="hours-item">
+              <span>Saturday</span>
+              <span>10:00 AM - 6:00 PM</span>
+            </div>
+            <div class="hours-item">
+              <span>Sunday</span>
+              <span>12:00 PM - 5:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>Social Media</h3>
+          <p>Follow our journey and join the conversation</p>
+          <div class="social-links">
+            <a href="{{ section.settings.instagram | default: '#' }}">Instagram</a>
+            <a href="{{ section.settings.tiktok | default: '#' }}">TikTok</a>
+            <a href="{{ section.settings.facebook | default: '#' }}">Facebook</a>
+            <a href="{{ section.settings.twitter | default: '#' }}">Twitter</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form-wrapper">
+        <div class="form-header">
+          <h2>Send us a Message</h2>
+          <p>We'll respond within 24 hours</p>
+        </div>
+        
+        {% form 'contact', id: 'ContactForm' %}
+          {% if form.posted_successfully? %}
+            <div class="form-success">
+              <h3>Thank You!</h3>
+              <p>Your message has been received. We'll respond within 24 hours.</p>
+            </div>
+          {% elsif form.errors %}
+            <div class="form-errors">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          <div class="form-grid">
+            <div class="field">
+              <input type="text" name="contact[name]" id="ContactFormName" placeholder="Name" required>
+            </div>
+            <div class="field">
+              <input type="email" name="contact[email]" id="ContactFormEmail" placeholder="Email" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <textarea name="contact[body]" id="ContactFormMessage" placeholder="How can we help you?" rows="6" required></textarea>
+          </div>
+
+          <button type="submit" class="contact-submit">Send Message</button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.contact-wrapper {
+  padding: 120px 0 140px;
+  background: linear-gradient(135deg, #efebe0 0%, #f5f1e8 100%);
+  min-height: calc(100vh - var(--header-total-height) - var(--footer-height));
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.contact-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.contact-title {
+  font-size: clamp(48px, 6vw, 96px);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
+  color: var(--color-text);
+}
+
+.contact-subtitle {
+  font-size: 18px;
+  color: #666;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 32px;
+  transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+}
+
+.info-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.info-card p {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-details a {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-details a:hover {
+  color: var(--color-accent);
+}
+
+.hours-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hours-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.hours-item span:first-child {
+  font-size: 14px;
+  color: #666;
+}
+
+.hours-item span:last-child {
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.social-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.social-links a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.contact-form-wrapper {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  padding: 48px;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.form-header h2 {
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+
+.form-header p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.field {
+  margin-bottom: 24px;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--color-text);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--color-accent);
+  background: white;
+}
+
+.contact-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--color-primary), #000);
+  color: var(--color-bg);
+  border: none;
+  padding: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.form-success {
+  background: linear-gradient(135deg, #000, #1a1a1a);
+  color: var(--color-bg);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.form-success h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.form-success p {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.form-errors {
+  background: rgba(255, 0, 0, 0.05);
+  border: 1px solid rgba(255, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 32px;
+  color: #d32f2f;
+}
+
+@media (max-width: 1024px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-wrapper {
+    padding: 80px 0 100px;
+  }
+  
+  .contact-container {
+    padding: 0 20px;
+  }
+  
+  .contact-form-wrapper {
+    padding: 32px 24px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .info-card {
+    padding: 24px;
+  }
+  
+  .social-links {
+    flex-direction: column;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Premium Contact Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contact Information"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone Number",
+      "default": "+1-234-567-8900"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Customer Care Email",
+      "default": "care@arz.life"
+    },
+    {
+      "type": "header",
+      "content": "Social Media Links"
+    },
+    {
+      "type": "url",
+      "id": "instagram",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "tiktok",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "url",
+      "id": "facebook",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "twitter",
+      "label": "Twitter URL"
+    }
+  ]
+}
+{% endschema %}

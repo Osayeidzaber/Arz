@@ -1,0 +1,38 @@
+.scroll-video__container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--media-radius, 0);
+}
+.scroll-video__media {
+  width: 100%;
+  max-height: 80vh; /* Prevents vertical videos from taking up the entire mobile screen */
+  display: block;
+  object-fit: cover;
+}
+
+.scroll-video__media.mobile-video {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .scroll-video__media.desktop-video {
+    display: none;
+  }
+  .scroll-video__media.mobile-video {
+    display: block;
+  }
+}
+.scroll-video__placeholder {
+  width: 100%;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10rem 0;
+}
+.scroll-video__placeholder svg {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}

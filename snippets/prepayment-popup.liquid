@@ -1,0 +1,560 @@
+{% comment %}
+  Prepayment Popup (bKash) - Only renders for products tagged 'prepay'
+  Usage: {% render 'prepayment-popup', product: product %}
+{% endcomment %}
+
+{%- if product.tags contains 'prepay' -%}
+  {%- assign prepay_bkash = settings.prepay_bkash_number | default: '01341630198' -%}
+  {%- assign prepay_amount = settings.prepay_advance_amount | default: '2000' -%}
+  {%- assign prepay_step1_title = settings.prepay_step1_title | default: 'Advance Payment to Book' -%}
+  {%- assign prepay_step1_desc = settings.prepay_step1_desc | default: 'This product is sold-out. Upon huge request, we are taking pre-orders for EID UL ADHA 2026. Delivery will be done by 15 MAY, 2026. Kindly advance 2000 BDT via Bkash (Send Money) to book this product. The rest payment can be done upon cash on delivery. Thank you for choosing Arz.' -%}
+  {%- assign prepay_bkash_label = settings.prepay_bkash_label | default: 'bKash (Send Money)' -%}
+  {%- assign prepay_amount_label = settings.prepay_amount_label | default: 'Advance Amount' -%}
+  {%- assign prepay_cod_label = settings.prepay_cod_label | default: 'Cash on Delivery' -%}
+  {%- assign prepay_copy_btn = settings.prepay_copy_btn | default: 'Copy bKash Number' -%}
+  {%- assign prepay_sent_btn = settings.prepay_sent_btn | default: 'CONFIRM PAYMENT' -%}
+  {%- assign prepay_step2_title = settings.prepay_step2_title | default: 'bKash Send Money' -%}
+  {%- assign prepay_step2_desc = settings.prepay_step2_desc | default: 'Enter the Transaction ID or the number you sent from.' -%}
+  {%- assign prepay_trx_placeholder = settings.prepay_trx_placeholder | default: 'e.g. TRX1234ABCD or 01XXXXXXXXX' -%}
+  {%- assign prepay_trx_hint = settings.prepay_trx_hint | default: 'Minimum 4 characters' -%}
+  {%- assign prepay_confirm_btn = settings.prepay_confirm_btn | default: 'CONFIRM & ADD TO CART' -%}
+  {%- assign prepay_back_btn = settings.prepay_back_btn | default: '← Go Back' -%}
+
+  <div class="prepay-overlay" id="PrepayOverlay" style="display:none;">
+    <div class="prepay-modal">
+      <button class="prepay-modal__close" id="PrepayClose" aria-label="Close">&times;</button>
+
+      <!-- Step 1: Payment Instructions -->
+      <div class="prepay-step" id="PrepayStep1">
+        <h3 class="prepay-modal__title">{{ prepay_step1_title }}</h3>
+        <p class="prepay-modal__desc">{{ prepay_step1_desc }}</p>
+
+        <div class="prepay-info">
+          <div class="prepay-info__row">
+            <span class="prepay-info__label">{{ prepay_bkash_label }}</span>
+            <span class="prepay-info__value" id="PrepayBkashNumber">{{ prepay_bkash }}</span>
+          </div>
+          <div class="prepay-info__row prepay-info__row--amount">
+            <span class="prepay-info__label">{{ prepay_amount_label }}</span>
+            <span class="prepay-info__value prepay-info__value--amount">৳{{ prepay_amount }}</span>
+          </div>
+          <div class="prepay-info__row prepay-info__row--cod">
+            <span class="prepay-info__label">{{ prepay_cod_label }}</span>
+            <span class="prepay-info__value prepay-info__value--cod" id="PrepayCodAmount">৳<span data-prepay-cod></span></span>
+          </div>
+        </div>
+
+        <button type="button" class="prepay-btn prepay-btn--copy" id="PrepayBtnCopy">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          {{ prepay_copy_btn }}
+        </button>
+
+        <button type="button" class="prepay-btn prepay-btn--primary" id="PrepayBtnSent">
+          {{ prepay_sent_btn }}
+        </button>
+      </div>
+
+      <!-- Step 2: Transaction ID -->
+      <div class="prepay-step" id="PrepayStep2" style="display:none;">
+        <h3 class="prepay-modal__title">{{ prepay_step2_title }}</h3>
+        <p class="prepay-modal__desc">{{ prepay_step2_desc }}</p>
+
+        <div class="prepay-input-wrap">
+          <input type="text" id="PrepayTrxInput" class="prepay-input" placeholder="{{ prepay_trx_placeholder }}" autocomplete="off" minlength="4">
+          <span class="prepay-input__hint">{{ prepay_trx_hint }}</span>
+        </div>
+
+        <button type="button" class="prepay-btn prepay-btn--confirm" id="PrepayBtnConfirm" disabled>
+          {{ prepay_confirm_btn }}
+        </button>
+
+        <button type="button" class="prepay-btn prepay-btn--back" id="PrepayBtnBack">
+          {{ prepay_back_btn }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .prepay-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .prepay-modal {
+      position: relative;
+      background: #fff;
+      border-radius: 12px;
+      padding: 36px 32px 28px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: prepaySlideIn 0.3s ease;
+    }
+    @keyframes prepaySlideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .prepay-modal__close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #666;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+    .prepay-modal__close:hover { color: #000; }
+    .prepay-modal__title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+    .prepay-modal__desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .prepay-info {
+      background: #f9f9f7;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .prepay-info__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+    .prepay-info__row + .prepay-info__row {
+      border-top: 1px solid #eee;
+    }
+    .prepay-info__label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      font-weight: 500;
+    }
+    .prepay-info__value {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      font-family: 'SF Mono', 'Menlo', monospace;
+    }
+    .prepay-info__value--amount {
+      color: #e2136e;
+      font-size: 18px;
+    }
+    .prepay-info__value--cod {
+      color: #28a745;
+      font-size: 16px;
+    }
+    .prepay-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .prepay-btn--copy {
+      background: #f0f0ec;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .prepay-btn--copy:hover { background: #e4e4de; }
+    .prepay-btn--copy.copied {
+      background: #d4edda;
+      color: #155724;
+    }
+    .prepay-btn--primary {
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .prepay-btn--primary:hover { background: #333; }
+    .prepay-btn--confirm {
+      background: #1a1a1a;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .prepay-btn--confirm:hover:not(:disabled) { background: #333; }
+    .prepay-btn--confirm:disabled {
+      background: #ccc;
+      color: #888;
+      cursor: not-allowed;
+    }
+    .prepay-btn--back {
+      background: transparent;
+      color: #666;
+      font-size: 12px;
+      padding: 8px;
+    }
+    .prepay-btn--back:hover { color: #1a1a1a; }
+    .prepay-input-wrap {
+      margin-bottom: 16px;
+    }
+    .prepay-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #d8d4c9;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+      letter-spacing: 1px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .prepay-input:focus { border-color: #e2136e; }
+    .prepay-input__hint {
+      display: block;
+      font-size: 11px;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+      .prepay-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+      .prepay-modal {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 20px 20px 0 0;
+        padding: 20px 16px calc(env(safe-area-inset-bottom, 16px) + 16px);
+        margin: 0;
+        max-height: 92vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        animation: prepaySlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes prepaySlideUp {
+        from { opacity: 0; transform: translateY(100%); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      /* Drag handle indicator */
+      .prepay-modal::before {
+        content: '';
+        display: block;
+        width: 36px;
+        height: 4px;
+        background: #d0d0d0;
+        border-radius: 2px;
+        margin: 0 auto 16px;
+      }
+      .prepay-modal__close {
+        top: 8px;
+        right: 10px;
+        font-size: 30px;
+        padding: 10px;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .prepay-modal__title {
+        font-size: 17px;
+        margin-bottom: 6px;
+        padding-right: 36px;
+      }
+      .prepay-modal__desc {
+        font-size: 13px;
+        margin-bottom: 16px;
+      }
+      .prepay-info {
+        padding: 14px;
+        border-radius: 10px;
+        margin-bottom: 14px;
+      }
+      .prepay-info__row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+        padding: 10px 0;
+      }
+      .prepay-info__label {
+        font-size: 11px;
+      }
+      .prepay-info__value {
+        font-size: 18px;
+        word-break: break-all;
+        letter-spacing: 1.5px;
+      }
+      .prepay-info__value--amount {
+        font-size: 22px;
+        letter-spacing: 0;
+      }
+      .prepay-info__value--cod {
+        font-size: 18px;
+      }
+      .prepay-btn {
+        padding: 16px;
+        font-size: 14px;
+        border-radius: 10px;
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .prepay-btn--copy {
+        margin-bottom: 8px;
+        gap: 8px;
+      }
+      .prepay-btn--primary {
+        margin-bottom: 0;
+      }
+      .prepay-btn--confirm {
+        margin-bottom: 8px;
+      }
+      .prepay-btn--back {
+        font-size: 13px;
+        padding: 12px;
+        min-height: 44px;
+      }
+      .prepay-input-wrap {
+        margin-bottom: 14px;
+      }
+      .prepay-input {
+        font-size: 16px; /* prevents iOS zoom */
+        padding: 16px 14px;
+        border-radius: 10px;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .prepay-input__hint {
+        font-size: 11px;
+        margin-top: 8px;
+      }
+      .prepay-step {
+        padding-bottom: 4px;
+      }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 360px) {
+      .prepay-modal {
+        padding: 16px 14px calc(env(safe-area-inset-bottom, 12px) + 12px);
+      }
+      .prepay-modal__title {
+        font-size: 15px;
+      }
+      .prepay-info__value {
+        font-size: 16px;
+      }
+      .prepay-info__value--amount {
+        font-size: 20px;
+      }
+      .prepay-btn {
+        padding: 14px;
+        font-size: 13px;
+        min-height: 48px;
+      }
+    }
+  </style>
+
+  <script>
+  (function() {
+    const overlay = document.getElementById('PrepayOverlay');
+    const step1 = document.getElementById('PrepayStep1');
+    const step2 = document.getElementById('PrepayStep2');
+    const closeBtn = document.getElementById('PrepayClose');
+    const copyBtn = document.getElementById('PrepayBtnCopy');
+    const sentBtn = document.getElementById('PrepayBtnSent');
+    const backBtn = document.getElementById('PrepayBtnBack');
+    const confirmBtn = document.getElementById('PrepayBtnConfirm');
+    const trxInput = document.getElementById('PrepayTrxInput');
+    const bkashNumber = '{{ prepay_bkash }}';
+    const advanceAmount = '{{ prepay_amount }}';
+
+    if (!overlay) return;
+
+    // Calculate COD amount: product price - advance amount
+    const productPriceCents = {{ product.price }};
+    const productPrice = Math.round(productPriceCents / 100);
+    const advance = parseInt(advanceAmount, 10) || 0;
+    const codAmount = Math.max(0, productPrice - advance);
+    const codEl = document.querySelector('[data-prepay-cod]');
+    if (codEl) codEl.textContent = codAmount.toLocaleString('en-US');
+
+    window.__prepayConfirmed = false;
+
+    window.openPrepayPopup = function() {
+      overlay.style.display = 'flex';
+      step1.style.display = 'block';
+      step2.style.display = 'none';
+      trxInput.value = '';
+      confirmBtn.disabled = true;
+      document.body.style.overflow = 'hidden';
+    };
+
+    function closePopup() {
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closePopup();
+    });
+
+    // Swipe-down to close on mobile (bottom sheet UX)
+    var modal = overlay.querySelector('.prepay-modal');
+    var swipeStartY = 0, swipeCurrentY = 0, isSwiping = false;
+    if (modal) {
+      modal.addEventListener('touchstart', function(e) {
+        if (modal.scrollTop > 5) return; // only from top
+        swipeStartY = e.touches[0].clientY;
+        isSwiping = true;
+      }, { passive: true });
+      modal.addEventListener('touchmove', function(e) {
+        if (!isSwiping) return;
+        swipeCurrentY = e.touches[0].clientY;
+        var dy = swipeCurrentY - swipeStartY;
+        if (dy > 0) {
+          modal.style.transform = 'translateY(' + dy + 'px)';
+          modal.style.transition = 'none';
+        }
+      }, { passive: true });
+      modal.addEventListener('touchend', function() {
+        if (!isSwiping) return;
+        isSwiping = false;
+        var dy = swipeCurrentY - swipeStartY;
+        modal.style.transition = '';
+        if (dy > 100) {
+          modal.style.transform = 'translateY(100%)';
+          setTimeout(function() {
+            closePopup();
+            modal.style.transform = '';
+          }, 300);
+        } else {
+          modal.style.transform = '';
+        }
+        swipeStartY = 0;
+        swipeCurrentY = 0;
+      });
+    }
+
+    copyBtn.addEventListener('click', function() {
+      function onCopySuccess() {
+        copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(function() {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> {{ prepay_copy_btn | escape }}';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(bkashNumber).then(onCopySuccess).catch(function() {
+          /* fallback for clipboard permission denied */
+          fallbackCopy();
+        });
+      } else {
+        fallbackCopy();
+      }
+      function fallbackCopy() {
+        var ta = document.createElement('textarea');
+        ta.value = bkashNumber;
+        ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); onCopySuccess(); } catch(e) {}
+        document.body.removeChild(ta);
+      }
+    });
+
+    sentBtn.addEventListener('click', function() {
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      trxInput.focus();
+    });
+
+    backBtn.addEventListener('click', function() {
+      step2.style.display = 'none';
+      step1.style.display = 'block';
+    });
+
+    trxInput.addEventListener('input', function() {
+      confirmBtn.disabled = trxInput.value.trim().length < 4;
+    });
+
+    confirmBtn.addEventListener('click', async function() {
+      const trxId = trxInput.value.trim();
+      if (trxId.length < 4) return;
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'PROCESSING...';
+
+      try {
+        // Save TrxID as cart attribute
+        await fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            attributes: {
+              'bKash-TrxID': trxId,
+              'Prepayment-Amount': '৳' + advanceAmount
+            }
+          })
+        });
+
+        // Add hidden inputs to the product form
+        const productForm = document.getElementById('ProductForm') || document.querySelector('form[action*="/cart/add"]');
+        if (productForm) {
+          // Remove old hidden inputs if re-confirming
+          productForm.querySelectorAll('.prepay-hidden-input').forEach(el => el.remove());
+
+          const trxHidden = document.createElement('input');
+          trxHidden.type = 'hidden';
+          trxHidden.name = 'properties[bKash TrxID]';
+          trxHidden.value = trxId;
+          trxHidden.className = 'prepay-hidden-input';
+          productForm.appendChild(trxHidden);
+
+          const amtHidden = document.createElement('input');
+          amtHidden.type = 'hidden';
+          amtHidden.name = 'properties[Prepaid Amount]';
+          amtHidden.value = '৳' + advanceAmount;
+          amtHidden.className = 'prepay-hidden-input';
+          productForm.appendChild(amtHidden);
+
+          // Mark confirmed and re-submit the form
+          window.__prepayConfirmed = true;
+          closePopup();
+
+          // Re-dispatch submit event so the AJAX handler picks it up
+          productForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        }
+      } catch (err) {
+        console.error('Prepayment error:', err);
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'CONFIRM & ADD TO CART';
+      }
+    });
+  })();
+  </script>
+{%- endif -%}

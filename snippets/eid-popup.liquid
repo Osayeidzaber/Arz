@@ -1,0 +1,703 @@
+{% comment %}
+  Eid Popup - Premium promotional popup with lighting effects
+  Controlled via Theme Settings > Eid Features
+{% endcomment %}
+
+{%- if settings.enable_eid_popup -%}
+<div class="eid-popup" id="EidPopup" data-frequency="{{ settings.eid_popup_frequency }}">
+  <div class="eid-popup__overlay" id="EidPopupOverlay"></div>
+
+  <!-- Sparkle particles -->
+  <div class="eid-popup__sparkles">
+    {%- for i in (1..20) -%}
+      <div class="sparkle" style="--delay: {{ i | times: 0.2 }}s; --x: {{ i | times: 5 }}%; --y: {{ i | times: 4 }}%;"></div>
+    {%- endfor -%}
+  </div>
+
+  <div class="eid-popup__container">
+    <!-- Lighting effects -->
+    <div class="eid-popup__glow"></div>
+    <div class="eid-popup__shine"></div>
+
+    <button class="eid-popup__close" id="EidPopupClose" aria-label="Close popup">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <div class="eid-popup__content">
+      {%- if settings.eid_popup_image != blank -%}
+        <div class="eid-popup__image">
+          <div class="eid-popup__image-glow"></div>
+          <img
+            src="{{ settings.eid_popup_image | image_url: width: 800 }}"
+            srcset="{{ settings.eid_popup_image | image_url: width: 400 }} 400w,
+                    {{ settings.eid_popup_image | image_url: width: 600 }} 600w,
+                    {{ settings.eid_popup_image | image_url: width: 800 }} 800w"
+            sizes="(max-width: 768px) 90vw, 600px"
+            alt="{{ settings.eid_popup_heading | escape }}"
+            loading="lazy"
+          >
+        </div>
+      {%- endif -%}
+
+      <div class="eid-popup__text">
+        {%- if settings.eid_popup_subtitle != blank -%}
+          <p class="eid-popup__subtitle">{{ settings.eid_popup_subtitle }}</p>
+        {%- endif -%}
+
+        {%- if settings.eid_popup_heading != blank -%}
+          <h2 class="eid-popup__heading">{{ settings.eid_popup_heading }}</h2>
+        {%- endif -%}
+
+        {%- if settings.eid_popup_description != blank -%}
+          <div class="eid-popup__description">{{ settings.eid_popup_description }}</div>
+        {%- endif -%}
+
+        {%- if settings.eid_popup_discount_code != blank -%}
+          <div class="eid-popup__discount">
+            <div class="eid-popup__discount-label">Use Code</div>
+            <div class="eid-popup__discount-code" id="EidDiscountCode">{{ settings.eid_popup_discount_code }}</div>
+            <button class="eid-popup__copy-btn" id="CopyDiscountCode" aria-label="Copy discount code">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+
+        {%- if settings.eid_popup_extra_text != blank -%}
+          <div class="eid-popup__extra">{{ settings.eid_popup_extra_text }}</div>
+        {%- endif -%}
+
+        {%- if settings.eid_popup_button_text != blank -%}
+          <a
+            href="{{ settings.eid_popup_button_link | default: routes.all_products_collection_url }}"
+            class="eid-popup__button"
+          >
+            <span>{{ settings.eid_popup_button_text }}</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        {%- endif -%}
+
+        {%- if settings.eid_popup_secondary_button_text != blank -%}
+          <a
+            href="{{ settings.eid_popup_secondary_button_link | default: '#' }}"
+            class="eid-popup__button eid-popup__button--secondary"
+          >
+            {{ settings.eid_popup_secondary_button_text }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Decorative corner elements -->
+    <div class="eid-popup__corner eid-popup__corner--tl"></div>
+    <div class="eid-popup__corner eid-popup__corner--tr"></div>
+    <div class="eid-popup__corner eid-popup__corner--bl"></div>
+    <div class="eid-popup__corner eid-popup__corner--br"></div>
+  </div>
+</div>
+
+<style>
+.eid-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.eid-popup.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.eid-popup__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(13, 27, 42, 0.95), rgba(27, 38, 59, 0.95));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Sparkles effect */
+.eid-popup__sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: {{ settings.eid_decoration_color | default: '#FFD700' }};
+  border-radius: 50%;
+  left: var(--x);
+  top: var(--y);
+  animation: sparkleFloat 4s ease-in-out infinite;
+  animation-delay: var(--delay);
+  opacity: 0;
+  box-shadow: 0 0 10px {{ settings.eid_decoration_color | default: '#FFD700' }};
+}
+
+@keyframes sparkleFloat {
+  0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
+  50% { opacity: 1; transform: translateY(-100px) scale(1.5); }
+}
+
+.eid-popup__container {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: linear-gradient(135deg,
+    {{ settings.eid_popup_bg_color | default: '#ffffff' }} 0%,
+    {{ settings.eid_popup_bg_color | default: '#ffffff' | color_lighten: 5 }} 100%);
+  border-radius: {{ settings.eid_popup_border_radius | default: 20 }}px;
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 215, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: scale(0.8) translateY(40px);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.eid-popup.is-visible .eid-popup__container {
+  transform: scale(1) translateY(0);
+}
+
+/* Glowing border effect */
+.eid-popup__glow {
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg,
+    {{ settings.eid_decoration_color | default: '#FFD700' }},
+    {{ settings.eid_decoration_color | default: '#FFD700' | color_lighten: 20 }},
+    {{ settings.eid_decoration_color | default: '#FFD700' }});
+  border-radius: {{ settings.eid_popup_border_radius | default: 20 }}px;
+  opacity: 0.6;
+  filter: blur(15px);
+  animation: glowPulse 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.02); }
+}
+
+/* Shine effect */
+.eid-popup__shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  animation: shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Corner decorations */
+.eid-popup__corner {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border: 2px solid {{ settings.eid_decoration_color | default: '#FFD700' }};
+  opacity: 0.4;
+}
+
+.eid-popup__corner--tl {
+  top: 20px;
+  left: 20px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: {{ settings.eid_popup_border_radius | default: 20 }}px 0 0 0;
+}
+
+.eid-popup__corner--tr {
+  top: 20px;
+  right: 20px;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 {{ settings.eid_popup_border_radius | default: 20 }}px 0 0;
+}
+
+.eid-popup__corner--bl {
+  bottom: 20px;
+  left: 20px;
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 0 {{ settings.eid_popup_border_radius | default: 20 }}px;
+}
+
+.eid-popup__corner--br {
+  bottom: 20px;
+  right: 20px;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 {{ settings.eid_popup_border_radius | default: 20 }}px 0;
+}
+
+.eid-popup__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 50%;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.eid-popup__close:hover {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.eid-popup__content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.eid-popup__image {
+  position: relative;
+  width: 100%;
+  border-radius: {{ settings.eid_popup_border_radius | default: 20 }}px {{ settings.eid_popup_border_radius | default: 20 }}px 0 0;
+  overflow: hidden;
+}
+
+.eid-popup__image-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%,
+    {{ settings.eid_decoration_color | default: '#FFD700' | color_modify: 'alpha', 0.2 }} 0%,
+    transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+  animation: imageGlow 2s ease-in-out infinite;
+}
+
+@keyframes imageGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+.eid-popup__image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.eid-popup__text {
+  padding: 45px 40px;
+  text-align: center;
+  position: relative;
+}
+
+.eid-popup__subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: {{ settings.eid_decoration_color | default: '#FFD700' }};
+  margin-bottom: 12px;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.eid-popup__heading {
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 800;
+  color: {{ settings.eid_popup_heading_color | default: '#000000' }};
+  margin-bottom: 20px;
+  line-height: 1.2;
+  background: linear-gradient(135deg,
+    {{ settings.eid_popup_heading_color | default: '#000000' }},
+    {{ settings.eid_popup_heading_color | default: '#000000' | color_lighten: 20 }});
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.eid-popup__description {
+  font-size: 17px;
+  line-height: 1.7;
+  color: {{ settings.eid_popup_text_color | default: '#666666' }};
+  margin-bottom: 30px;
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.eid-popup__discount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 28px;
+  background: linear-gradient(135deg,
+    {{ settings.eid_decoration_color | default: '#FFD700' | color_modify: 'alpha', 0.15 }},
+    {{ settings.eid_decoration_color | default: '#FFD700' | color_modify: 'alpha', 0.08 }});
+  border: 2px dashed {{ settings.eid_decoration_color | default: '#FFD700' }};
+  border-radius: 12px;
+  margin-bottom: 25px;
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+.eid-popup__discount-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: {{ settings.eid_popup_text_color | default: '#666666' }};
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.eid-popup__discount-code {
+  font-size: 22px;
+  font-weight: 800;
+  color: {{ settings.eid_popup_heading_color | default: '#000000' }};
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+}
+
+.eid-popup__copy-btn {
+  padding: 8px;
+  background: {{ settings.eid_popup_button_bg | default: '#000000' }};
+  color: {{ settings.eid_popup_button_text_color | default: '#ffffff' }};
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.eid-popup__copy-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.eid-popup__extra {
+  font-size: 15px;
+  line-height: 1.6;
+  color: {{ settings.eid_popup_text_color | default: '#666666' }};
+  margin-bottom: 25px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+.eid-popup__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 45px;
+  background: linear-gradient(135deg,
+    {{ settings.eid_popup_button_bg | default: '#000000' }},
+    {{ settings.eid_popup_button_bg | default: '#000000' | color_darken: 10 }});
+  color: {{ settings.eid_popup_button_text_color | default: '#ffffff' }};
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  border-radius: {{ settings.eid_popup_button_radius | default: 50 }}px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    0 10px 30px {{ settings.eid_popup_button_bg | default: '#000000' | color_modify: 'alpha', 0.3 }},
+    0 0 0 0 {{ settings.eid_decoration_color | default: '#FFD700' | color_modify: 'alpha', 0.4 }};
+  animation: fadeInUp 0.6s ease-out 0.7s both;
+  position: relative;
+  overflow: hidden;
+}
+
+.eid-popup__button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.eid-popup__button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.eid-popup__button:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 15px 40px {{ settings.eid_popup_button_bg | default: '#000000' | color_modify: 'alpha', 0.4 }},
+    0 0 0 8px {{ settings.eid_decoration_color | default: '#FFD700' | color_modify: 'alpha', 0.2 }};
+}
+
+.eid-popup__button span {
+  position: relative;
+  z-index: 1;
+}
+
+.eid-popup__button svg {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.eid-popup__button:hover svg {
+  transform: translateX(5px);
+}
+
+.eid-popup__button--secondary {
+  margin-top: 15px;
+  background: transparent;
+  color: {{ settings.eid_popup_heading_color | default: '#000000' }};
+  border: 2px solid {{ settings.eid_popup_heading_color | default: '#000000' | color_modify: 'alpha', 0.2 }};
+  box-shadow: none;
+  padding: 15px 35px;
+  font-size: 14px;
+}
+
+.eid-popup__button--secondary:hover {
+  background: {{ settings.eid_popup_heading_color | default: '#000000' | color_modify: 'alpha', 0.05 }};
+  border-color: {{ settings.eid_popup_heading_color | default: '#000000' }};
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .eid-popup__container {
+    width: 95%;
+    max-height: 92vh;
+  }
+
+  .eid-popup__text {
+    padding: 35px 25px;
+  }
+
+  .eid-popup__heading {
+    font-size: 28px;
+  }
+
+  .eid-popup__description {
+    font-size: 15px;
+  }
+
+  .eid-popup__button {
+    padding: 16px 35px;
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .eid-popup__discount {
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px 20px;
+  }
+
+  .eid-popup__discount-code {
+    font-size: 18px;
+  }
+
+  .eid-popup__corner {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eid-popup__glow,
+  .eid-popup__shine,
+  .sparkle {
+    animation: none !important;
+  }
+}
+</style>
+
+<script>
+(function() {
+  const popup = document.getElementById('EidPopup');
+  if (!popup) return;
+
+  const overlay = document.getElementById('EidPopupOverlay');
+  const closeBtn = document.getElementById('EidPopupClose');
+  const copyBtn = document.getElementById('CopyDiscountCode');
+  const container = popup.querySelector('.eid-popup__container');
+  const frequency = popup.dataset.frequency || 'once';
+  const delay = {{ settings.eid_popup_delay | default: 2 | times: 1000 }};
+
+  const STORAGE_KEY = 'arzThemeEidPopupShown';
+  let isVisible = false;
+
+  function shouldShowPopup() {
+    if (frequency === 'always') return true;
+    if (frequency === 'once_per_session') {
+      return !sessionStorage.getItem(STORAGE_KEY);
+    }
+    if (frequency === 'once') {
+      return !localStorage.getItem(STORAGE_KEY);
+    }
+    return false;
+  }
+
+  function trapFocus(e) {
+    if (!isVisible) return;
+
+    const focusableElements = popup.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (e.key === 'Tab') {
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }
+
+  function showPopup() {
+    setTimeout(() => {
+      isVisible = true;
+      popup.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+
+      // Focus first interactive element
+      const firstFocusable = popup.querySelector('button, [href]');
+      if (firstFocusable) {
+        setTimeout(() => firstFocusable.focus(), 300);
+      }
+
+      if (frequency === 'once_per_session') {
+        sessionStorage.setItem(STORAGE_KEY, 'true');
+      } else if (frequency === 'once') {
+        localStorage.setItem(STORAGE_KEY, 'true');
+      }
+    }, delay);
+  }
+
+  function hidePopup(e) {
+    // Prevent closing when clicking inside the container, unless it's the close button
+    if (e && e.target.closest && e.target.closest('.eid-popup__container') && !e.target.closest('.eid-popup__close')) {
+      return;
+    }
+
+    isVisible = false;
+    popup.classList.remove('is-visible');
+    document.body.style.overflow = '';
+  }
+
+  // Copy discount code with fallback
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const code = document.getElementById('EidDiscountCode').textContent;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          showCopySuccess();
+        }).catch(() => {
+          fallbackCopy(code);
+        });
+      } else {
+        fallbackCopy(code);
+      }
+
+      function showCopySuccess() {
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        copyBtn.setAttribute('aria-label', 'Copied!');
+        setTimeout(() => {
+          copyBtn.innerHTML = originalHTML;
+          copyBtn.setAttribute('aria-label', 'Copy discount code');
+        }, 2000);
+      }
+
+      function fallbackCopy(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showCopySuccess();
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+        document.body.removeChild(textArea);
+      }
+    });
+  }
+
+  closeBtn.addEventListener('click', hidePopup);
+  overlay.addEventListener('click', hidePopup);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isVisible) {
+      hidePopup();
+    }
+    trapFocus(e);
+  });
+
+  // Prevent scroll bubbling
+  if (container) {
+    container.addEventListener('wheel', (e) => {
+      e.stopPropagation();
+    }, { passive: false });
+  }
+
+  if (shouldShowPopup()) {
+    showPopup();
+  }
+})();
+</script>
+{%- endif -%}

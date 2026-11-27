@@ -1,0 +1,214 @@
+<div class="policy-wrapper">
+  <!-- Premium decorative background -->
+  <div class="policy-bg-gradient"></div>
+  <div class="policy-bg-shape shape-1"></div>
+  <div class="policy-bg-shape shape-2"></div>
+
+  <div class="policy-container">
+    <div class="policy-header reveal">
+      <div class="header-accent reveal-child"></div>
+      <h1 class="policy-title reveal-child">{{ page.title }}</h1>
+      <div class="header-divider reveal-child"></div>
+    </div>
+    
+    <div class="policy-content reveal">
+      <div class="policy-inner reveal-child">
+        {{ page.content }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+});
+</script>
+
+{% stylesheet %}
+.policy-wrapper {
+  padding: 120px 0 140px;
+  background: linear-gradient(135deg, #efebe0 0%, #f5f1e8 100%);
+  min-height: calc(100vh - var(--header-total-height) - var(--footer-height));
+  position: relative;
+  overflow: hidden;
+}
+
+.policy-bg-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at top right, rgba(191, 162, 126, 0.05) 0%, transparent 50%),
+              radial-gradient(ellipse at bottom left, rgba(0, 0, 0, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.policy-bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(100px);
+  opacity: 0.4;
+}
+
+.shape-1 {
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  right: -150px;
+  background: linear-gradient(45deg, rgba(191, 162, 126, 0.12), rgba(0, 0, 0, 0.03));
+  animation: floatPolicy 20s infinite alternate;
+}
+
+.shape-2 {
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
+  left: -100px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(191, 162, 126, 0.08));
+  animation: floatPolicy 25s infinite alternate-reverse;
+}
+
+@keyframes floatPolicy {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(60px, 60px) scale(1.1); }
+}
+
+.policy-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.policy-header {
+  text-align: center;
+  margin-bottom: 100px;
+}
+
+.header-accent {
+  width: 60px;
+  height: 2px;
+  background: var(--color-accent);
+  margin: 0 auto 30px;
+  border-radius: 2px;
+}
+
+.policy-title {
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  color: #3D2500;
+  line-height: 1.1;
+}
+
+.header-divider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  margin: 30px auto 0;
+}
+
+.policy-content {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 32px;
+  padding: 80px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.03);
+}
+
+.policy-inner {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.policy-inner h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #3D2500;
+  margin: 48px 0 24px;
+  letter-spacing: -0.01em;
+}
+
+.policy-inner h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3D2500;
+  margin: 32px 0 16px;
+}
+
+.policy-inner p {
+  margin-bottom: 24px;
+}
+
+.policy-inner ul, .policy-inner ol {
+  margin-bottom: 32px;
+  padding-left: 24px;
+}
+
+.policy-inner li {
+  margin-bottom: 12px;
+}
+
+.policy-inner strong {
+  color: #3D2500;
+  font-weight: 700;
+}
+
+.reveal-child {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1.2s var(--animation-formal);
+}
+
+.reveal.is-visible .reveal-child {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal.is-visible .reveal-child:nth-child(2) { transition-delay: 0.2s; }
+.reveal.is-visible .reveal-child:nth-child(3) { transition-delay: 0.4s; }
+
+@media (max-width: 768px) {
+  .policy-wrapper {
+    padding: 80px 0 100px;
+  }
+  .policy-container {
+    padding: 0 20px;
+  }
+  .policy-header {
+    margin-bottom: 60px;
+  }
+  .policy-content {
+    padding: 40px 24px;
+    border-radius: 24px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Policy Page",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,14 @@
+{
+    "sections": {
+        "main": {
+            "type": "special-collection",
+            "settings": {
+                "label": "Exclusive Collection",
+                "cta_text": "Explore All Collections"
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

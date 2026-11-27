@@ -1,0 +1,394 @@
+{% comment %}
+  Eid Decorations - VIBRANT & FESTIVE!
+  Controlled via Theme Settings > Eid Features
+{% endcomment %}
+
+{%- if settings.enable_eid_decorations -%}
+{%- assign decoration_style = settings.eid_decoration_style | default: 'festive' -%}
+{%- assign decoration_color = settings.eid_decoration_color | default: '#D4AF37' -%}
+{%- assign should_animate = settings.eid_decoration_animate -%}
+
+<div class="eid-decorations eid-decorations--{{ decoration_style }} {% if should_animate %}eid-decorations--animated{% endif %}">
+
+  {%- if decoration_style == 'festive' -%}
+    <!-- Simple Arch Lights -->
+    <div class="eid-string-lights">
+      {%- for i in (1..16) -%}
+        {%- assign colors = '#FFD700,#FF8C00,#FFA500,#FFCC00' | split: ',' -%}
+        {%- assign color_index = i | modulo: 4 -%}
+        {%- assign bulb_color = colors[color_index] -%}
+        <div class="string-light" style="left: {{ i | times: 6.25 }}%; --bulb-color: {{ bulb_color }}; --delay: {{ i | times: 0.15 }}s;">
+          <div class="light-wire"></div>
+          <div class="light-bulb">
+            <div class="light-glow"></div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+  {%- elsif decoration_style == 'lanterns' -%}
+    <!-- VIBRANT LANTERNS -->
+    <div class="eid-lantern-row eid-lantern-row--1">
+      {%- for i in (1..5) -%}
+        {%- assign lantern_colors = '#FFD700,#FF6B9D,#4ECDC4,#95E1D3,#F38181' | split: ',' -%}
+        {%- assign l_index = i | modulo: 5 -%}
+        {%- assign l_color = lantern_colors[l_index] -%}
+        <div class="vibrant-lantern" style="--lantern-color: {{ l_color }}; --swing-delay: {{ i | times: 0.3 }}s;">
+          <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="vLanternGrad{{ i }}" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:{{ l_color }};stop-opacity:1" />
+                <stop offset="50%" style="stop-color:{{ l_color | color_lighten: 15 }};stop-opacity:0.9" />
+                <stop offset="100%" style="stop-color:{{ l_color }};stop-opacity:1" />
+              </linearGradient>
+              <filter id="vGlow{{ i }}">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <line x1="40" y1="0" x2="40" y2="15" stroke="{{ l_color }}" stroke-width="2"/>
+            <ellipse cx="40" cy="18" rx="14" ry="5" fill="{{ l_color }}"/>
+            <path d="M24 20 Q40 26 56 20 L56 80 Q40 86 24 80 Z" fill="url(#vLanternGrad{{ i }})" filter="url(#vGlow{{ i }})"/>
+            <circle cx="40" cy="38" r="10" fill="white" opacity="0.3"/>
+            <circle cx="40" cy="55" r="8" fill="white" opacity="0.3"/>
+            <ellipse cx="33" cy="45" rx="12" ry="30" fill="white" opacity="0.2"/>
+            <ellipse cx="40" cy="83" rx="14" ry="5" fill="{{ l_color }}"/>
+            <path d="M34 85 L40 100 L46 85" fill="{{ l_color }}"/>
+            <circle cx="40" cy="100" r="4" fill="{{ l_color | color_darken: 15 }}"/>
+          </svg>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <div class="eid-lantern-row eid-lantern-row--2">
+      {%- for i in (6..10) -%}
+        {%- assign lantern_colors = '#AA96DA,#FCBAD3,#FFFFD2,#FFD700,#4ECDC4' | split: ',' -%}
+        {%- assign l_index = i | modulo: 5 -%}
+        {%- assign l_color = lantern_colors[l_index] -%}
+        <div class="vibrant-lantern" style="--lantern-color: {{ l_color }}; --swing-delay: {{ i | times: 0.3 }}s;">
+          <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="vLanternGrad{{ i }}" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:{{ l_color }};stop-opacity:1" />
+                <stop offset="50%" style="stop-color:{{ l_color | color_lighten: 15 }};stop-opacity:0.9" />
+                <stop offset="100%" style="stop-color:{{ l_color }};stop-opacity:1" />
+              </linearGradient>
+              <filter id="vGlow{{ i }}">
+                <feGaussianBlur stdDeviation="3"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <line x1="40" y1="0" x2="40" y2="15" stroke="{{ l_color }}" stroke-width="2"/>
+            <ellipse cx="40" cy="18" rx="14" ry="5" fill="{{ l_color }}"/>
+            <path d="M24 20 Q40 26 56 20 L56 80 Q40 86 24 80 Z" fill="url(#vLanternGrad{{ i }})" filter="url(#vGlow{{ i }})"/>
+            <circle cx="40" cy="38" r="10" fill="white" opacity="0.3"/>
+            <circle cx="40" cy="55" r="8" fill="white" opacity="0.3"/>
+            <ellipse cx="33" cy="45" rx="12" ry="30" fill="white" opacity="0.2"/>
+            <ellipse cx="40" cy="83" rx="14" ry="5" fill="{{ l_color }}"/>
+            <path d="M34 85 L40 100 L46 85" fill="{{ l_color }}"/>
+            <circle cx="40" cy="100" r="4" fill="{{ l_color | color_darken: 15 }}"/>
+          </svg>
+        </div>
+      {%- endfor -%}
+    </div>
+
+  {%- elsif decoration_style == 'fireworks' -%}
+    <!-- FIREWORKS BURSTS -->
+    {%- for i in (1..8) -%}
+      <div class="firework firework--{{ i }}" style="--fw-delay: {{ i | times: 1.5 }}s;">
+        <div class="firework-burst">
+          {%- for j in (1..12) -%}
+            {%- assign fw_colors = '#FFD700,#FF6B9D,#4ECDC4,#95E1D3,#F38181,#AA96DA' | split: ',' -%}
+            {%- assign fw_index = j | modulo: 6 -%}
+            {%- assign fw_color = fw_colors[fw_index] -%}
+            <div class="firework-particle" style="--particle-color: {{ fw_color }}; --angle: {{ j | times: 30 }}deg;"></div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endfor -%}
+
+    <!-- Crescent Moon with Stars -->
+    <div class="eid-moon">
+      <svg viewBox="0 0 150 150">
+        <defs>
+          <filter id="moonGlow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <path d="M60 20 A40 40 0 1 0 60 130 A32 32 0 1 1 60 20" fill="{{ decoration_color }}" filter="url(#moonGlow)"/>
+        <path d="M105 50 L108 58 L116 59 L110 65 L112 73 L105 69 L98 73 L100 65 L94 59 L102 58 Z" fill="{{ decoration_color | color_lighten: 20 }}"/>
+        <path d="M120 90 L122 96 L128 97 L123 101 L125 107 L120 104 L115 107 L117 101 L112 97 L118 96 Z" fill="{{ decoration_color | color_lighten: 20 }}" opacity="0.8"/>
+      </svg>
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+/* Main Container */
+.eid-decorations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ============================================
+   SIMPLE ARCH LIGHTS
+   ============================================ */
+
+/* String Lights - Simple Arch */
+.eid-string-lights {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 2%;
+}
+
+.string-light {
+  position: absolute;
+  top: 0;
+}
+
+/* Create gentle arch - 16 lights */
+.string-light:nth-child(1), .string-light:nth-child(16) { top: 100px; }
+.string-light:nth-child(2), .string-light:nth-child(15) { top: 70px; }
+.string-light:nth-child(3), .string-light:nth-child(14) { top: 50px; }
+.string-light:nth-child(4), .string-light:nth-child(13) { top: 35px; }
+.string-light:nth-child(5), .string-light:nth-child(12) { top: 25px; }
+.string-light:nth-child(6), .string-light:nth-child(11) { top: 18px; }
+.string-light:nth-child(7), .string-light:nth-child(10) { top: 12px; }
+.string-light:nth-child(8), .string-light:nth-child(9) { top: 10px; }
+
+.light-wire {
+  width: 2px;
+  height: 40px;
+  background: rgba(255, 140, 0, 0.4);
+  margin: 0 auto;
+}
+
+.light-bulb {
+  position: relative;
+  width: 20px;
+  height: 26px;
+  background: var(--bulb-color);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  margin: 0 auto;
+  box-shadow:
+    0 0 20px var(--bulb-color),
+    0 0 40px var(--bulb-color),
+    inset 0 -5px 8px rgba(0, 0, 0, 0.2);
+}
+
+.light-glow {
+  position: absolute;
+  inset: -12px;
+  background: var(--bulb-color);
+  border-radius: 50%;
+  opacity: 0.8;
+  filter: blur(15px);
+}
+
+.eid-decorations--animated .light-bulb {
+  animation: bulbGlow 2s ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes bulbGlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+
+/* ============================================
+   VIBRANT LANTERNS MODE
+   ============================================ */
+
+.eid-lantern-row {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 5%;
+}
+
+.eid-lantern-row--1 {
+  top: 20px;
+}
+
+.eid-lantern-row--2 {
+  top: 120px;
+}
+
+.vibrant-lantern {
+  width: clamp(55px, 6vw, 80px);
+  height: auto;
+  filter: drop-shadow(0 0 15px var(--lantern-color));
+}
+
+.eid-decorations--animated .vibrant-lantern {
+  animation: lanternSwing 3s ease-in-out infinite;
+  animation-delay: var(--swing-delay);
+  transform-origin: top center;
+}
+
+@keyframes lanternSwing {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+/* ============================================
+   FIREWORKS MODE
+   ============================================ */
+
+.firework {
+  position: absolute;
+}
+
+.firework--1 { top: 15%; left: 20%; }
+.firework--2 { top: 25%; right: 15%; }
+.firework--3 { top: 45%; left: 10%; }
+.firework--4 { top: 35%; right: 25%; }
+.firework--5 { top: 60%; left: 30%; }
+.firework--6 { top: 55%; right: 35%; }
+.firework--7 { top: 75%; left: 15%; }
+.firework--8 { top: 70%; right: 20%; }
+
+.firework-burst {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.firework-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--particle-color);
+  border-radius: 50%;
+  transform-origin: center;
+}
+
+.eid-decorations--animated .firework-particle {
+  animation: fireworkBurst 2s ease-out infinite;
+  animation-delay: var(--fw-delay);
+  transform: rotate(var(--angle)) translateY(0);
+}
+
+@keyframes fireworkBurst {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(0) scale(0);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-60px) scale(1);
+  }
+}
+
+.eid-moon {
+  position: absolute;
+  top: 8%;
+  right: 8%;
+  width: clamp(80px, 12vw, 140px);
+}
+
+.eid-decorations--animated .eid-moon svg {
+  animation: moonGlow 3s ease-in-out infinite;
+}
+
+@keyframes moonGlow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .string-light:nth-child(n+13) {
+    display: none;
+  }
+
+  .eid-string-lights {
+    padding: 20px 5%;
+  }
+
+  /* Reduce lantern glow on mobile */
+  .vibrant-lantern {
+    filter: drop-shadow(0 0 8px var(--lantern-color));
+  }
+
+  /* Hide excessive lanterns on mobile */
+  .eid-lantern-row--1 .vibrant-lantern:nth-child(n+4) {
+    display: none;
+  }
+
+  .eid-lantern-row--2 .vibrant-lantern:nth-child(n+4) {
+    display: none;
+  }
+
+  /* Reduce firework trail on mobile */
+  .firework:nth-child(n+5) {
+    display: none;
+  }
+
+  .firework-particle {
+    width: 3px;
+    height: 3px;
+  }
+
+  @keyframes fireworkBurst {
+    0% {
+      opacity: 0;
+      transform: rotate(var(--angle)) translateY(0) scale(0);
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(var(--angle)) translateY(-40px) scale(0.8);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  /* Hide ALL decorations on phones */
+  .eid-decorations {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .eid-decorations * {
+    animation: none !important;
+  }
+}
+</style>
+{%- endif -%}

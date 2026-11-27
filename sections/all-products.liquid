@@ -1,0 +1,554 @@
+{% comment %}
+  All Products Page - Master Collection with Category Tabs
+  Features: Category tabs, Model toggle, Priority collection, Product count
+{% endcomment %}
+
+{%- liquid
+  assign main_collection = section.settings.main_collection | default: collections.all
+  if main_collection == blank
+    assign main_collection = collections.all
+  endif
+  assign current_tab = request.path | split: '/' | last | default: 'all'
+  assign rendered_handles = "|"
+  assign total_count = 0
+  assign model_mode = false
+-%}
+
+<div class="all-products-page">
+  {%- comment -%} Page Header {%- endcomment -%}
+  <div class="all-products__header">
+    <h1 class="all-products__title">
+      {{ section.settings.page_title | default: 'All Collections' }}
+      <sup class="all-products__count" data-product-count>{{ main_collection.products_count }}</sup>
+    </h1>
+  </div>
+
+  {%- comment -%} Category Tabs {%- endcomment -%}
+  <div class="all-products__tabs-wrapper">
+    <div class="all-products__tabs" data-tabs>
+      <button class="all-products__tab is-active" data-tab="all">All</button>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'category_tab' and block.settings.collection != blank -%}
+          <button class="all-products__tab" data-tab="{{ block.settings.collection.handle }}">
+            {{ block.settings.tab_label | default: block.settings.collection.title }}
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Controls Bar: Model Toggle + Product Count + Filter {%- endcomment -%}
+  <div class="all-products__controls">
+    <div class="all-products__model-toggle" style="display: none;">
+      <label class="model-toggle">
+        <input type="checkbox" id="modelToggle" data-model-toggle>
+        <span class="model-toggle__slider"></span>
+      </label>
+      <span class="model-toggle__label">Couture Preview</span>
+    </div>
+    
+    <div class="all-products__product-count">
+      <span data-visible-count>{{ collections.all.products_count }}</span> products
+    </div>
+    
+    {%- if section.settings.show_filter -%}
+      <button class="all-products__filter-btn" data-filter-toggle>Filter</button>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Product Grid {%- endcomment -%}
+  <div class="all-products__grid-wrapper">
+    {%- comment -%} All Products Tab (with Priority Tag) {%- endcomment -%}
+    <div class="all-products__grid-panel is-active" data-panel="all">
+      <div class="product-grid">
+
+        {%- comment -%} FIRST PASS: AVAILABLE PRODUCTS {%- endcomment -%}
+        
+        {%- comment -%} 1A. Priority Tagged (Loop through priority blocks) {%- endcomment -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'priority_tag' -%}
+            {%- assign p_tag = block.settings.tag | downcase -%}
+            {%- if p_tag != blank -%}
+              {%- for product in main_collection.products limit: 1000 -%}
+                {%- if product.available -%}
+                  {%- assign p_tags = product.tags | join: ',' | downcase -%}
+                  {%- if p_tags contains p_tag -%}
+                    {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+                    {%- unless rendered_handles contains handle_check -%}
+                      {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+                      {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        
+        {%- comment -%} 1B. Remaining Available Products {%- endcomment -%}
+        {%- for product in main_collection.products limit: 1000 -%}
+          {%- if product.available -%}
+            {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+            {%- unless rendered_handles contains handle_check -%}
+              {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+              {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+            {%- endunless -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%} SECOND PASS: SOLD OUT PRODUCTS {%- endcomment -%}
+
+        {%- comment -%} 2A. Priority Tagged (Loop through priority blocks) {%- endcomment -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'priority_tag' -%}
+            {%- assign p_tag = block.settings.tag | downcase -%}
+            {%- if p_tag != blank -%}
+              {%- for product in main_collection.products limit: 1000 -%}
+                {%- unless product.available -%}
+                  {%- assign p_tags = product.tags | join: ',' | downcase -%}
+                  {%- if p_tags contains p_tag -%}
+                    {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+                    {%- unless rendered_handles contains handle_check -%}
+                      {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+                      {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        
+        {%- comment -%} 2B. Remaining Sold Out Products {%- endcomment -%}
+        {%- for product in main_collection.products limit: 1000 -%}
+          {%- unless product.available -%}
+            {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+            {%- unless rendered_handles contains handle_check -%}
+              {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+              {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+            {%- endunless -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </div>
+    
+    {%- comment -%} Category Tabs Panels {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'category_tab' and block.settings.collection != blank -%}
+        <div class="all-products__grid-panel" data-panel="{{ block.settings.collection.handle }}">
+          <div class="product-grid">
+            {%- paginate block.settings.collection.products by 250 -%}
+              {%- comment -%} FIRST PASS: AVAILABLE PRODUCTS {%- endcomment -%}
+              {%- for product in block.settings.collection.products -%}
+                {%- if product.available -%}
+                  {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+                  {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+                  {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- comment -%} SECOND PASS: SOLD OUT PRODUCTS {%- endcomment -%}
+              {%- for product in block.settings.collection.products -%}
+                {%- unless product.available -%}
+                  {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+                  {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+                  {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endpaginate -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% javascript %}
+document.addEventListener('DOMContentLoaded', function() {
+  // Tab switching
+  const tabs = document.querySelectorAll('[data-tab]');
+  const panels = document.querySelectorAll('[data-panel]');
+  const countDisplay = document.querySelector('[data-visible-count]');
+  
+  // Function to activate a tab by name
+  function activateTab(tabName) {
+    tabs.forEach(t => {
+      if (t.dataset.tab === tabName) {
+        t.classList.add('is-active');
+      } else {
+        t.classList.remove('is-active');
+      }
+    });
+    
+    panels.forEach(p => {
+      if (p.dataset.panel === tabName) {
+        p.classList.add('is-active');
+        const productCount = p.querySelectorAll('.product-card').length;
+        if (countDisplay) countDisplay.textContent = productCount;
+      } else {
+        p.classList.remove('is-active');
+      }
+    });
+  }
+  
+  // Check URL hash on page load
+  const hash = window.location.hash.substring(1);
+  if (hash) {
+    activateTab(hash);
+  }
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetPanel = tab.dataset.tab;
+      
+      // Update URL hash
+      window.history.pushState(null, null, '#' + targetPanel);
+      
+      // Activate the tab
+      activateTab(targetPanel);
+
+      // Re-initialize hover video for the newly visible panel
+      if (typeof initHoverVideo === 'function') {
+        initHoverVideo();
+      }
+    });
+  });
+});
+{% endjavascript %}
+
+{% stylesheet %}
+.all-products-page {
+  background: #efebe0;
+  min-height: 100vh;
+  padding-top: 0;
+}
+
+/* Header */
+.all-products__header {
+  padding: 0 40px 30px;
+}
+
+.all-products__title {
+  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.all-products__count {
+  font-size: 0.4em;
+  font-weight: 400;
+  color: #666;
+  vertical-align: super;
+}
+
+/* Category Tabs */
+.all-products__tabs-wrapper {
+  padding: 0 40px 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.all-products__tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  padding-bottom: 15px;
+  min-width: max-content;
+}
+
+.all-products__tab {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.all-products__tab:hover {
+  color: #1a1a1a;
+}
+
+.all-products__tab.is-active {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.all-products__tab.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #1a1a1a;
+}
+
+/* Controls Bar */
+.all-products__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.all-products__model-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Model Toggle Switch */
+.model-toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.model-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.model-toggle__slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.model-toggle__slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.model-toggle input:checked + .model-toggle__slider {
+  background-color: #1a1a1a;
+}
+
+.model-toggle input:checked + .model-toggle__slider::before {
+  transform: translateX(20px);
+}
+
+.model-toggle__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.all-products__product-count {
+  font-size: 13px;
+  color: #666;
+}
+
+.all-products__filter-btn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: color 0.2s ease;
+}
+
+.all-products__filter-btn:hover {
+  color: #1a1a1a;
+}
+
+/* Grid Panels */
+.all-products__grid-wrapper {
+  padding: 20px 40px 80px;
+}
+
+.all-products__grid-panel {
+  display: none;
+}
+
+.all-products__grid-panel.is-active {
+  display: block;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Model view state - can be styled differently if needed */
+.product-card.model-view {
+  /* Custom styling when model toggle is on */
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .all-products__header,
+  .all-products__tabs-wrapper,
+  .all-products__controls,
+  .all-products__grid-wrapper {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .all-products__tabs {
+    gap: 16px;
+  }
+  
+  .all-products__tab {
+    font-size: 12px;
+  }
+  
+  .all-products__controls {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .all-products__product-count {
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .product-grid {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .all-products-page {
+    padding-top: 0;
+  }
+  
+  .all-products__header {
+    padding: 0 20px 5px;
+  }
+  
+  .all-products__title {
+    font-size: 24px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "All Products Page",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "main_collection",
+      "label": "Main Collection",
+      "info": "Select your 'All Products' collection. Falls back to collections.all if not set."
+    },
+    {
+      "type": "text",
+      "id": "page_title",
+      "label": "Page Title",
+      "default": "All Collections"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter",
+      "label": "Show Filter Button",
+      "default": false,
+      "info": "Placeholder for future filter functionality."
+    },
+    {
+      "type": "header",
+      "content": "Product Card Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_slider",
+      "label": "Enable Image Slider",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hover",
+      "label": "Enable Hover Flip",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_zoom",
+      "label": "Enable Hover Zoom",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "priority_tag",
+      "name": "Priority Tag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag",
+          "info": "Products bearing this tag will appear first. Add multiple blocks for multiple tiers."
+        }
+      ]
+    },
+    {
+      "type": "category_tab",
+      "name": "Category Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab Label",
+          "info": "Leave blank to use collection title."
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "All Products Page"
+    }
+  ]
+}
+{% endschema %}

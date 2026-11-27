@@ -1,0 +1,11 @@
+{
+    "sections": {
+        "main": {
+            "type": "custom-tracking-portal",
+            "settings": {}
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

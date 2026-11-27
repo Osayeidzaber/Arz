@@ -1,0 +1,265 @@
+{{ 'new-arrivals-scroll.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="new-arrivals-scroll color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    {% if section.settings.title != blank %}
+      <div class="na-header-wrap">
+        <h2 class="product-grid__title {{ section.settings.heading_size }}">{{ section.settings.title }}</h2>
+        <p class="na-drag-hint">⟷ Drag to explore</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="na-scroll-wrapper" id="na-scroll-wrapper-{{ section.id }}">
+    <div class="na-scroll-track" id="na-scroll-track-{{ section.id }}">
+      {%- assign max_items = section.settings.products_to_show -%}
+      {%- assign rendered_count = 0 -%}
+      {%- for product in collections.all.products limit: 1000 -%}
+        {%- if product.tags contains 'new-arrivals' -%}
+          {%- if rendered_count < max_items -%}
+            <div class="na-product-card">
+              {% render 'product-card', product: product %}
+            </div>
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+          {%- else -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrapper = document.getElementById('na-scroll-wrapper-{{ section.id }}');
+    const track = document.getElementById('na-scroll-track-{{ section.id }}');
+    if (!wrapper || !track) return;
+
+    // Clone items to create seamless infinite scroll
+    const items = Array.from(track.children);
+    if (items.length === 0) return;
+    
+    // Clone items a few times to ensure we have enough overflow
+    [...items, ...items, ...items].forEach(item => {
+      let clone = item.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    });
+
+    let isHovered = false;
+    let scrollPos = 0;
+    const speed = {{ section.settings.auto_scroll_speed | divided_by: 10.0 }}; 
+
+    // We cloned the items 3 times, so total length is 4x. Loop point is exactly the width of the original items.
+    // However, track.scrollWidth changes, so we just calculate width of original items:
+    const updateLoopPoint = () => track.scrollWidth / 4;
+
+    function autoScrollLoop() {
+      // Only auto-scroll on desktop when not hovered
+      if (window.innerWidth >= 750 && !isHovered) {
+        scrollPos += speed;
+        const limit = updateLoopPoint();
+        
+        if (scrollPos >= limit) {
+          scrollPos -= limit; // Seamless snap back
+        } else if (scrollPos <= 0) {
+          scrollPos += limit;
+        }
+        
+        wrapper.scrollLeft = scrollPos;
+      }
+      requestAnimationFrame(autoScrollLoop);
+    }
+    requestAnimationFrame(autoScrollLoop);
+
+    // Handle hover and drag states
+    let isDown = false;
+    let startX;
+    let scrollLeftStart;
+
+    wrapper.addEventListener('mouseenter', () => {
+       isHovered = true;
+    });
+
+    wrapper.addEventListener('mousedown', (e) => {
+      isDown = true;
+      isHovered = true;
+      wrapper.classList.add('na-grabbing');
+      startX = e.pageX - wrapper.offsetLeft;
+      scrollLeftStart = wrapper.scrollLeft;
+    });
+
+    wrapper.addEventListener('mouseleave', () => {
+       isHovered = false;
+       isDown = false;
+       wrapper.classList.remove('na-grabbing');
+       // sync position to prevent jolts
+       scrollPos = wrapper.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDown) {
+        isDown = false;
+        wrapper.classList.remove('na-grabbing');
+        scrollPos = wrapper.scrollLeft;
+      }
+    });
+
+    wrapper.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - wrapper.offsetLeft;
+      const walk = (x - startX) * 1.5; // Drag speed multiplier
+      wrapper.scrollLeft = scrollLeftStart - walk;
+      scrollPos = wrapper.scrollLeft;
+    });
+
+    // Prevent default image drag that interrupts our custom drag
+    wrapper.addEventListener('dragstart', (e) => {
+      e.preventDefault();
+    });
+
+    // Handle manual drag or mobile touch scroll (sync position)
+    wrapper.addEventListener('scroll', () => {
+      if (window.innerWidth < 750 || isHovered) {
+        scrollPos = wrapper.scrollLeft;
+        
+        // If mobile scrolled too far, snap back for infinite illusion
+        const limit = updateLoopPoint();
+        if (wrapper.scrollLeft >= limit * 2) {
+          wrapper.scrollLeft -= limit;
+          scrollPos = wrapper.scrollLeft;
+        } else if (wrapper.scrollLeft <= 0) {
+          wrapper.scrollLeft += limit;
+          scrollPos = wrapper.scrollLeft;
+        }
+      }
+    }, { passive: true });
+    
+    // Initialize start position so we can scroll left immediately on mobile
+    if (window.innerWidth < 750) {
+       wrapper.scrollLeft = updateLoopPoint(); 
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "New Arrivals Scroll",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "New Arrivals",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Medium"
+        },
+        {
+          "value": "h1",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading Size"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "default": 10,
+      "label": "Maximum products to fetch"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ],
+      "default": "background-1",
+      "label": "Color Scheme"
+    },
+    {
+      "type": "range",
+      "id": "auto_scroll_speed",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 10,
+      "label": "Auto Scroll Speed (PC)"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Arrivals Scroll"
+    }
+  ]
+}
+{% endschema %}

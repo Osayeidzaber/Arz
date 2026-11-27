@@ -1,0 +1,1810 @@
+{% style %}
+  :root {
+    --header-height: {{ section.settings.header_height_desktop | default: 80 }}px;
+    --header-bg: {{ section.settings.header_bg_color | default: '#efebe0' }};
+    --header-text: {{ section.settings.header_text_color | default: '#3D2500' }};
+    --transparent-text: {{ section.settings.transparent_text_color | default: '#3D2500' }};
+    --cart-badge-bg: {{ section.settings.cart_badge_bg | default: '#3D2500' }};
+    --cart-badge-text: {{ section.settings.cart_badge_text | default: '#efebe0' }};
+    --header-padding: {{ section.settings.header_padding_desktop | default: 40 }}px;
+    --menu-gap: {{ section.settings.menu_item_spacing | default: 20 }}px;
+    --icon-gap: {{ section.settings.icon_spacing | default: 15 }}px;
+    --menu-font-size: {{ section.settings.menu_font_size | default: 14 }}px;
+    --logo-width: {{ section.settings.logo_width | default: 180 }}px;
+    --logo-height: {{ section.settings.logo_height | default: 50 }}px;
+    --search-width: {{ section.settings.search_width | default: 280 }}px;
+    {%- if template.name == 'product' -%}
+      --header-top-gap: {{ section.settings.header_announcement_gap_product | default: 12 }}px;
+    {%- else -%}
+      --header-top-gap: {{ section.settings.header_announcement_gap_general | default: 12 }}px;
+    {%- endif -%}
+  }
+  @media (max-width: 768px) {
+    :root {
+      --header-height: {{ section.settings.header_height_mobile | default: 60 }}px;
+      --header-padding: {{ section.settings.header_padding_mobile | default: 20 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="header-wrapper {% if section.settings.enable_transparent_header %}header-wrapper--transparent{% endif %}">
+  <header class="header">
+    <button class="header__mobile-trigger" id="MobileMenuTrigger" aria-label="Open mobile menu" aria-expanded="false" aria-controls="MobileDrawer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12h18M3 6h18M3 18h18"></path>
+      </svg>
+    </button>
+
+    <nav class="header__nav header__nav--left">
+      <ul class="header__menu">
+        <li class="header__menu-item-wrapper">
+          <a href="{{ routes.root_url }}" class="header__menu-item">Home</a>
+        </li>
+
+        {%- for link in section.settings.menu.links -%}
+          {%- assign link_title = link.title | downcase | strip -%}
+          {%- if link_title contains 'contact' or link_title == 'home' -%}{%- continue -%}{%- endif -%}
+          
+          {%- comment -%} Check if this menu item should have a mega menu from settings {%- endcomment -%}
+          {%- assign has_shop_mega = false -%}
+          {%- assign mega_trigger_names = section.settings.mega_menu_trigger | default: 'shop,catalog' | downcase | split: ',' -%}
+          {%- for trigger_name in mega_trigger_names -%}
+            {%- assign trigger_clean = trigger_name | strip | downcase -%}
+            {%- if link_title == trigger_clean -%}
+              {%- if section.settings.shop_mega_menu_left != blank or section.settings.mega_section_1 != blank or section.settings.mega_section_2 != blank or section.settings.mega_section_3 != blank -%}
+                {%- assign has_shop_mega = true -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          
+          <li class="header__menu-item-wrapper {% if has_shop_mega %}has-mega-menu{% endif %}">
+            <a href="{% if link_title == 'shop' or link_title == 'catalog' %}{{ section.settings.shop_menu_url | default: '/collections/all' }}{% else %}{{ link.url }}{% endif %}" class="header__menu-item">
+              {% if link_title == 'shop' or link_title == 'catalog' %}Shop{% else %}{{ link.title }}{% endif %}
+              {%- if has_shop_mega -%}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              {%- endif -%}
+            </a>
+
+            {%- if has_shop_mega -%}
+              <div class="mega-menu">
+                <div class="mega-menu__inner">
+                  {%- comment -%} LEFT SECTION: Shop All, New Arrivals, Collections {%- endcomment -%}
+                  {%- if section.settings.shop_mega_menu_left != blank -%}
+                    <div class="mega-menu__section mega-menu__section--left">
+                      {%- for childlink in linklists[section.settings.shop_mega_menu_left].links -%}
+                        <a href="{{ childlink.url }}" class="mega-menu__link">{{ childlink.title }}</a>
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+
+                  {%- comment -%} SECTION 1 {%- endcomment -%}
+                  {%- if section.settings.mega_section_1 != blank -%}
+                    <div class="mega-menu__divider"></div>
+                    <div class="mega-menu__section">
+                      {%- if section.settings.mega_section_1_title != blank -%}
+                        <span class="mega-menu__section-title">{{ section.settings.mega_section_1_title }}</span>
+                      {%- endif -%}
+                      {%- for childlink in linklists[section.settings.mega_section_1].links -%}
+                        <a href="{{ childlink.url }}" class="mega-menu__link">{{ childlink.title }}</a>
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+
+                  {%- comment -%} SECTION 2 {%- endcomment -%}
+                  {%- if section.settings.mega_section_2 != blank -%}
+                    <div class="mega-menu__divider"></div>
+                    <div class="mega-menu__section">
+                      {%- if section.settings.mega_section_2_title != blank -%}
+                        <span class="mega-menu__section-title">{{ section.settings.mega_section_2_title }}</span>
+                      {%- endif -%}
+                      {%- for childlink in linklists[section.settings.mega_section_2].links -%}
+                        <a href="{{ childlink.url }}" class="mega-menu__link">{{ childlink.title }}</a>
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+
+                  {%- comment -%} SECTION 3 {%- endcomment -%}
+                  {%- if section.settings.mega_section_3 != blank -%}
+                    <div class="mega-menu__divider"></div>
+                    <div class="mega-menu__section">
+                      {%- if section.settings.mega_section_3_title != blank -%}
+                        <span class="mega-menu__section-title">{{ section.settings.mega_section_3_title }}</span>
+                      {%- endif -%}
+                      {%- for childlink in linklists[section.settings.mega_section_3].links -%}
+                        <a href="{{ childlink.url }}" class="mega-menu__link">{{ childlink.title }}</a>
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.settings.featured_collection_name != blank and settings.enable_eid_hero_button == false -%}
+        <div class="header__special-btn-wrapper">
+          <a href="{{ section.settings.featured_collection_link | default: '#' }}" class="header__special-btn">
+            {{ section.settings.featured_collection_name }}
+          </a>
+        </div>
+      {%- endif -%}
+    </nav>
+
+    <div class="header__logo">
+      <a href="{{ routes.root_url }}">
+        <svg class="header__logo-img header__logo-main" width="180" height="108" viewBox="0 0 375 225" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <g transform="matrix(1, 0, 0, 1, 0, 31)">
+            <g fill="#3D2500">
+              <path d="M 118.654878 129.555568 L 105.959565 129.555568 L 60.330659 5.364161 L 58.674409 5.364161 L 14.889253 129.555568 L 2.193941 129.555568 L 2.193941 131.762599 L 30.342378 131.762599 L 30.342378 129.555568 L 17.463472 129.555568 L 30.342378 92.758693 L 73.393159 92.758693 L 86.826753 129.555568 L 73.947847 129.555568 L 73.947847 131.762599 L 118.654878 131.762599 Z M 31.260347 90.180568 L 51.315034 33.700099 L 51.869722 33.700099 L 72.475191 90.180568 Z"/>
+              <path d="M 238.976466 129.004787 C 236.214747 131.028224 234.19131 131.946193 231.433497 131.946193 C 227.937403 131.946193 223.706934 131.211818 222.601466 123.852443 C 221.495997 116.493068 221.867091 105.270411 221.312403 94.965724 C 220.578028 83.192287 216.531153 78.774318 208.433497 73.43838 C 205.492091 71.598537 200.339747 68.840724 195.187403 67.184474 L 195.187403 66.633693 C 209.538966 64.610255 223.335841 57.25088 223.335841 41.610255 C 223.335841 20.082911 205.308497 8.12588 175.683497 8.12588 L 136.312403 8.12588 L 136.312403 10.332911 L 149.19131 10.332911 L 149.19131 129.555568 L 136.312403 129.555568 L 136.312403 131.762599 L 180.835841 131.762599 L 180.835841 129.555568 L 167.956934 129.555568 L 167.956934 67.368068 L 185.804591 67.368068 C 195.003809 68.65713 202.546778 72.153224 203.281153 83.008693 C 203.835841 92.391505 203.652247 103.059474 204.386622 113.547755 C 205.308497 126.243068 215.242091 134.153224 229.226466 134.153224 C 234.929591 134.153224 236.585841 132.680568 239.894434 130.473537 Z M 205.308497 37.746974 C 205.308497 56.329005 197.394434 65.161037 185.070216 65.161037 L 167.956934 65.161037 L 167.956934 10.332911 L 177.339747 10.332911 C 198.132716 10.332911 205.308497 21.004786 205.308497 37.746974 Z"/>
+              <path d="M 355.433234 95.149318 L 353.593391 95.149318 C 348.073859 115.204005 330.226203 129.371974 315.140266 129.371974 L 281.288703 129.371974 L 350.835578 8.12588 L 266.202766 8.12588 L 266.202766 44.555568 L 268.042609 44.555568 C 272.640266 26.15713 284.046516 10.516505 303.734016 10.516505 L 328.202766 10.516505 L 259.026984 131.762599 L 355.433234 131.762599 Z"/>
+            </g>
+          </g>
+        </svg>
+        <svg class="header__logo-img header__logo-secondary" width="180" height="108" viewBox="0 0 375 225" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <g transform="matrix(1, 0, 0, 1, 0, 31)">
+            <g fill="#efebe0">
+              <path d="M 118.654878 129.555568 L 105.959565 129.555568 L 60.330659 5.364161 L 58.674409 5.364161 L 14.889253 129.555568 L 2.193941 129.555568 L 2.193941 131.762599 L 30.342378 131.762599 L 30.342378 129.555568 L 17.463472 129.555568 L 30.342378 92.758693 L 73.393159 92.758693 L 86.826753 129.555568 L 73.947847 129.555568 L 73.947847 131.762599 L 118.654878 131.762599 Z M 31.260347 90.180568 L 51.315034 33.700099 L 51.869722 33.700099 L 72.475191 90.180568 Z"/>
+              <path d="M 238.976466 129.004787 C 236.214747 131.028224 234.19131 131.946193 231.433497 131.946193 C 227.937403 131.946193 223.706934 131.211818 222.601466 123.852443 C 221.495997 116.493068 221.867091 105.270411 221.312403 94.965724 C 220.578028 83.192287 216.531153 78.774318 208.433497 73.43838 C 205.492091 71.598537 200.339747 68.840724 195.187403 67.184474 L 195.187403 66.633693 C 209.538966 64.610255 223.335841 57.25088 223.335841 41.610255 C 223.335841 20.082911 205.308497 8.12588 175.683497 8.12588 L 136.312403 8.12588 L 136.312403 10.332911 L 149.19131 10.332911 L 149.19131 129.555568 L 136.312403 129.555568 L 136.312403 131.762599 L 180.835841 131.762599 L 180.835841 129.555568 L 167.956934 129.555568 L 167.956934 67.368068 L 185.804591 67.368068 C 195.003809 68.65713 202.546778 72.153224 203.281153 83.008693 C 203.835841 92.391505 203.652247 103.059474 204.386622 113.547755 C 205.308497 126.243068 215.242091 134.153224 229.226466 134.153224 C 234.929591 134.153224 236.585841 132.680568 239.894434 130.473537 Z M 205.308497 37.746974 C 205.308497 56.329005 197.394434 65.161037 185.070216 65.161037 L 167.956934 65.161037 L 167.956934 10.332911 L 177.339747 10.332911 C 198.132716 10.332911 205.308497 21.004786 205.308497 37.746974 Z"/>
+              <path d="M 355.433234 95.149318 L 353.593391 95.149318 C 348.073859 115.204005 330.226203 129.371974 315.140266 129.371974 L 281.288703 129.371974 L 350.835578 8.12588 L 266.202766 8.12588 L 266.202766 44.555568 L 268.042609 44.555568 C 272.640266 26.15713 284.046516 10.516505 303.734016 10.516505 L 328.202766 10.516505 L 259.026984 131.762599 L 355.433234 131.762599 Z"/>
+            </g>
+          </g>
+        </svg>
+      </a>
+    </div>
+
+    <div class="header__right">
+      <div class="header__icons">
+        {% if shop.customer_accounts_enabled %}
+          <a href="{{ routes.account_url }}" class="header__icon" aria-label="Account">
+            <svg class="header__icon-svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="6.5" r="2.75" stroke="currentColor" stroke-width="1.5" />
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m5.172 14.591-.437.786a.588.588 0 0 0 .514.873h9.502a.588.588 0 0 0 .514-.873l-.437-.786a5.523 5.523 0 0 0-9.656 0" />
+            </svg>
+          </a>
+        {% endif %}
+        <button type="button" class="header__icon header__cart-btn" aria-label="Cart" onclick="openCartDrawer()">
+          <svg class="header__icon-svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.392 6.875h13.216v8.016c0 .567-.224 1.112-.624 1.513-.4.402-.941.627-1.506.627H5.522a2.13 2.13 0 0 1-1.506-.627 2.15 2.15 0 0 1-.624-1.513zM8.818 2.969h2.333c.618 0 1.211.247 1.649.686a2.35 2.35 0 0 1 .683 1.658v1.562H6.486V5.313c0-.622.246-1.218.683-1.658a2.33 2.33 0 0 1 1.65-.686" />
+          </svg>
+          <span class="cart-count" data-cart-count>{{ cart.item_count }}</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-drawer" id="MobileDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="MobileDrawerTitle">
+    <h2 id="MobileDrawerTitle" class="visually-hidden">Mobile Navigation Menu</h2>
+    <div class="mobile-drawer__header">
+      {%- if section.settings.logo_main != blank -%}
+        <img src="{{ section.settings.logo_main | image_url: width: 300 }}" alt="{{ shop.name }}" class="mobile-drawer__logo-img" style="width: 80px; height: auto;" width="80" height="80">
+      {%- elsif section.settings.logo_text != blank -%}
+        <span class="header__logo-text" style="font-size: 24px;">{{ section.settings.logo_text }}</span>
+      {%- else -%}
+        <img src="{{ 'arz logo brown.svg' | asset_url }}" alt="{{ shop.name }}" class="mobile-drawer__logo-img" style="width: 80px; height: auto;" width="80" height="80">
+      {%- endif -%}
+      <button class="mobile-drawer__close" id="MobileDrawerClose" aria-label="Close mobile menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    
+    <nav class="mobile-drawer__nav">
+      {%- assign mobile_nav = section.settings.mobile_menu | default: section.settings.menu -%}
+      {%- for link in mobile_nav.links -%}
+        <div class="mobile-drawer__item {% if link.links != blank %}mobile-drawer__item--has-submenu{% endif %}">
+          <a href="{{ link.url }}" class="mobile-drawer__link">{{ link.title }}</a>
+
+          {%- if link.links != blank -%}
+            <button type="button" class="mobile-drawer__toggle" aria-expanded="false" aria-label="Toggle {{ link.title }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="mobile-drawer__submenu">
+              <a href="{{ link.url }}" class="mobile-drawer__sublink" style="font-weight: 700;">All {{ link.title }}</a>
+              {%- for childlink in link.links -%}
+                <div class="mobile-drawer__item {% if childlink.links != blank %}mobile-drawer__item--has-submenu{% endif %}" style="padding-left: 10px;">
+                  <a href="{{ childlink.url }}" class="mobile-drawer__sublink">{{ childlink.title }}</a>
+                  {%- if childlink.links != blank -%}
+                    <button type="button" class="mobile-drawer__toggle" aria-expanded="false" aria-label="Toggle {{ childlink.title }}">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div class="mobile-drawer__submenu">
+                      {%- for grandchildlink in childlink.links -%}
+                        <a href="{{ grandchildlink.url }}" class="mobile-drawer__sublink" style="padding-left: 20px; opacity: 0.8; font-size: 13px;">{{ grandchildlink.title }}</a>
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+
+      {%- comment -%} Add Contact link at the end {%- endcomment -%}
+      {%- for link in section.settings.menu.links -%}
+        {%- assign link_title = link.title | downcase -%}
+        {%- if link_title contains 'contact' -%}
+          <div class="mobile-drawer__item">
+            <a href="{{ link.url }}" class="mobile-drawer__link">{{ link.title }}</a>
+          </div>
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </nav>
+
+    <div class="mobile-drawer__footer">
+      {%- if section.settings.contact_email != blank -%}
+        <a href="mailto:{{ section.settings.contact_email }}" class="mobile-drawer__footer-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-10 11M22 2l-7 20-4-9-9-4Z"/></svg>
+          Email
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.contact_whatsapp != blank -%}
+        <a href="https://wa.me/{{ section.settings.contact_whatsapp | replace: ' ', '' | replace: '+', '' }}" target="_blank" class="mobile-drawer__footer-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-11.7 1 1 0 0 1 .5 0 8.38 8.38 0 0 1 8 7.9Z"/><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+          WhatsApp
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.contact_location != blank -%}
+        <div class="mobile-drawer__footer-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          {{ section.settings.contact_location }}
+        </div>
+      {%- endif -%}
+
+      <a href="{{ routes.account_url }}" class="mobile-drawer__footer-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        Account
+      </a>
+    </div>
+  </div>
+
+  <div class="search-overlay" id="SearchOverlay" aria-hidden="true">
+    <div class="search-overlay__inner">
+      <button type="button" class="search-overlay__close" id="SearchOverlayClose" aria-label="Close search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <div class="search-overlay__content">
+        <form action="{{ routes.search_url }}" method="get" role="search" class="search-overlay__form">
+          <input type="text" name="q" class="search-overlay__input" placeholder="Search products..." autocomplete="off">
+          <button type="submit" class="search-overlay__submit">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+/* Absolute Positioning for Overlay */
+/* Absolute Positioning for Overlay */
+/* Absolute Positioning for Overlay */
+/* Absolute Positioning for Overlay */
+.header-wrapper {
+  position: fixed;
+  top: calc(var(--announcement-height, 36px) + var(--header-top-gap));
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 10000;
+  background: transparent;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1), top 0.4s ease;
+  will-change: transform, background, top;
+}
+
+.header-wrapper.is-scrolled {
+  top: 0;
+  background: var(--header-bg);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Solid header when mega menu is open */
+.header-wrapper.mega-menu-open {
+  background: var(--header-bg) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.header-wrapper.mega-menu-open .header__menu-item,
+.header-wrapper.mega-menu-open .header__logo-text {
+  color: var(--header-text) !important;
+}
+
+/* Keep special button white text - don't override */
+.header-wrapper.mega-menu-open .header__special-btn {
+  color: #fff !important;
+}
+
+
+.header-wrapper--hidden {
+  transform: translateY(-100%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 var(--header-padding);
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+  box-sizing: border-box;
+  color: var(--header-text);
+}
+
+.header-wrapper--transparent:not(.is-scrolled) .header {
+  color: var(--transparent-text);
+}
+
+@media (max-width: 768px) {
+  .header {
+    height: var(--header-height);
+    padding: 0 var(--header-padding);
+  }
+}
+
+.header__mobile-trigger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--header-text);
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Removed color change on scroll for mobile trigger */
+
+.header__nav--left { 
+  display: flex;
+  align-items: center;
+  gap: var(--menu-gap);
+  overflow: visible;
+  height: 100%; /* Ensure nav spans full height */
+}
+
+.header__special-btn-wrapper {
+  position: relative;
+}
+
+.header__special-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  border-radius: 50px;
+  border: none;
+  color: #fff;
+  background: linear-gradient(135deg, #3D2500 0%, #6B4423 50%, #3D2500 100%);
+  background-size: 200% 100%;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(61, 37, 0, 0.3);
+}
+
+/* Shimmer effect */
+.header__special-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 3s infinite;
+}
+
+/* Subtle embroidery-style inner thread line */
+.header__special-btn::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 47px;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.header__special-btn:hover {
+  background-position: 100% 0;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(61, 37, 0, 0.4);
+}
+
+.header__special-btn:hover::after {
+  border-color: rgba(255,255,255,0.4);
+}
+
+/* Mega menu adjustment for special button */
+.mega-menu--special {
+  top: calc(100% + 15px);
+  left: auto;
+  right: -50px;
+  transform: translateX(0) scale(0.98);
+}
+
+.header__special-btn-wrapper:hover .mega-menu--special {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0) scale(1);
+}
+
+
+.header__menu {
+  display: flex;
+  gap: var(--menu-gap);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: stretch; /* Key Fix: Make items span full header height */
+  height: 100%;
+  flex-wrap: nowrap;
+}
+
+.header__menu-item-wrapper { 
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 100%; 
+}
+
+.header__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--menu-font-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  color: inherit;
+}
+
+.header__menu-item::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header__menu-item:hover {
+  opacity: 0.7;
+}
+
+.header__menu-item-wrapper:hover .header__menu-item::after {
+  width: 100%;
+}
+
+.header__menu-item svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 10px;
+  height: 10px;
+}
+
+.header__menu-item-wrapper:hover .header__menu-item svg {
+  transform: rotate(180deg);
+}
+
+.header__logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 40%;
+  height: 100%; /* Ensure container fills height for vertical centering if needed */
+}
+
+.header__logo-img { 
+  max-height: 100%;
+  width: auto;
+  transition: opacity 0.3s ease;
+  display: block;
+}
+
+.header__logo-text {
+  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-size: 160px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--header-text);
+  transition: color 0.3s ease, font-size 0.3s ease;
+  line-height: 1;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header__logo-main {
+  display: block;
+  max-width: var(--logo-width);
+  max-height: var(--logo-height);
+  width: auto;
+  height: auto;
+}
+
+.header__logo-secondary {
+  display: none;
+  max-width: var(--logo-width);
+  max-height: var(--logo-height);
+  width: auto;
+  height: auto;
+}
+
+/* Switch logos in transparent state */
+.header-wrapper--transparent:not(.is-scrolled) .header__logo-main {
+  display: none;
+}
+.header-wrapper--transparent:not(.is-scrolled) .header__logo-secondary {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .header__logo-main,
+  .header__logo-secondary {
+    max-width: 70px; /* Tiny for mobile */
+    max-height: 35px; /* STRICT height limit for mobile (60px header) */
+  }
+}
+
+/* Removed scroll-based logo switching */
+
+.header__right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: clamp(10px, 2vw, 20px);
+}
+
+.header__search-wrapper {
+  position: relative;
+  width: var(--search-width);
+  max-width: 100%;
+  flex-shrink: 1;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  background: rgba(239, 235, 224, 0.1);
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-wrapper.is-scrolled .search-form {
+  background: #efebe0;
+  border-color: #d8d4c9;
+}
+
+.search-form:hover {
+  border-color: var(--header-text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.search-form:focus-within {
+  border-color: var(--header-text);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 20px 10px 24px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1a1a1a;
+  background: transparent;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.header-wrapper--transparent:not(.is-scrolled) .search-input {
+  color: var(--transparent-text);
+}
+
+.search-input::placeholder {
+  color: #999;
+  background: linear-gradient(90deg, #999 0%, #bbb 50%, #999 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.search-submit {
+  background: var(--header-text);
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 0 50px 50px 0;
+}
+
+.search-submit:hover {
+  background: #333333;
+  transform: scale(1.05);
+}
+
+.search-submit:active {
+  transform: scale(0.98);
+}
+
+.search-submit svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.search-form:focus-within .search-submit svg {
+  transform: rotate(15deg);
+}
+
+.header__icons {
+  display: flex;
+  gap: var(--icon-gap);
+}
+
+.header__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  transition: opacity 0.3s ease;
+}
+
+.header__icon-svg {
+  color: inherit;
+  filter: none;
+  transition: all 0.3s ease;
+}
+
+.header-wrapper--transparent:not(.is-scrolled) .header__icon-svg {
+  color: inherit !important;
+  filter: none !important;
+}
+
+.header__icon:hover { opacity: 0.7; }
+
+
+.header-wrapper.is-scrolled .header__icon-svg {
+  color: var(--header-text) !important;
+  filter: none !important;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--cart-badge-bg);
+  color: var(--cart-badge-text);
+  font-size: 9px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-count:empty, .cart-count[data-cart-count="0"] { display: none; }
+
+/* ========================================
+   MEGA MENU - Premium Vertical Layout
+   ======================================== */
+
+/* Make header solid when mega menu is open */
+.has-mega-menu:hover ~ .header,
+.header-wrapper:has(.has-mega-menu:hover) {
+  background: var(--header-bg) !important;
+}
+
+.mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100vw;
+  background: #EFEBE0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              visibility 0.3s, 
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Position mega menu relative to the header, not the link */
+.has-mega-menu {
+  position: static;
+}
+
+/* Hover logic - smooth and reliable */
+.has-mega-menu:hover .mega-menu,
+.mega-menu:hover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Arrow rotation on hover */
+.has-mega-menu .header__menu-item svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.has-mega-menu:hover .header__menu-item svg {
+  transform: rotate(180deg);
+}
+
+/* Inner container - premium spacing */
+.mega-menu__inner {
+  display: flex;
+  gap: 80px;
+  max-width: var(--page-width, 1400px);
+  margin: 0 auto;
+  padding: 40px var(--header-padding, 50px) 50px;
+}
+
+/* Each column in the mega menu - VERTICAL stacking */
+.mega-menu__column {
+  min-width: 140px;
+}
+
+/* Column title (the clickable category name) */
+.mega-menu__title {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #1a1a1a;
+  text-decoration: none;
+  margin-bottom: 16px;
+  position: relative;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.mega-menu__title:hover {
+  color: #666;
+  transform: translateX(3px);
+}
+
+/* List of links under each column - VERTICAL */
+.mega-menu__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mega-menu__list li {
+  margin-bottom: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: megaMenuFadeIn 0.4s ease forwards;
+}
+
+/* Staggered animation for list items */
+.mega-menu__list li:nth-child(1) { animation-delay: 0.05s; }
+.mega-menu__list li:nth-child(2) { animation-delay: 0.1s; }
+.mega-menu__list li:nth-child(3) { animation-delay: 0.15s; }
+.mega-menu__list li:nth-child(4) { animation-delay: 0.2s; }
+.mega-menu__list li:nth-child(5) { animation-delay: 0.25s; }
+.mega-menu__list li:nth-child(6) { animation-delay: 0.3s; }
+.mega-menu__list li:nth-child(7) { animation-delay: 0.35s; }
+.mega-menu__list li:nth-child(8) { animation-delay: 0.4s; }
+
+@keyframes megaMenuFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mega-menu__list a {
+  display: block;
+  font-size: 13px;
+  color: #555555;
+  text-decoration: none;
+  padding: 6px 0;
+  transition: color 0.2s ease, transform 0.2s ease;
+  position: relative;
+}
+
+.mega-menu__list a::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 0;
+  height: 1px;
+  background: #1a1a1a;
+  transition: width 0.2s ease;
+}
+
+.mega-menu__list a:hover {
+  color: #1a1a1a;
+  transform: translateX(6px);
+}
+
+.mega-menu__list a:hover::before {
+  width: 8px;
+}
+
+/* Divider between sections */
+.mega-menu__divider {
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1), transparent);
+  margin: 0 40px;
+  align-self: stretch;
+}
+
+/* Mega Menu Sections */
+.mega-menu__section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mega-menu__section--left {
+  min-width: 160px;
+}
+
+.mega-menu__section--right {
+  min-width: 140px;
+}
+
+/* Section title (like "Panjabi", "Shackets") */
+.mega-menu__section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #3D2500;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  display: block;
+  border-bottom: 1px solid rgba(61, 37, 0, 0.15);
+}
+
+/* Individual links in sections */
+.mega-menu__link {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  text-decoration: none;
+  padding: 8px 0;
+  position: relative;
+  transition: color 0.2s ease, transform 0.2s ease;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: megaMenuFadeIn 0.4s ease forwards;
+}
+
+/* Stagger link animations */
+.mega-menu__section .mega-menu__link:nth-child(1) { animation-delay: 0.05s; }
+.mega-menu__section .mega-menu__link:nth-child(2) { animation-delay: 0.1s; }
+.mega-menu__section .mega-menu__link:nth-child(3) { animation-delay: 0.15s; }
+.mega-menu__section .mega-menu__link:nth-child(4) { animation-delay: 0.2s; }
+.mega-menu__section .mega-menu__link:nth-child(5) { animation-delay: 0.25s; }
+.mega-menu__section .mega-menu__link:nth-child(6) { animation-delay: 0.3s; }
+.mega-menu__section .mega-menu__link:nth-child(7) { animation-delay: 0.35s; }
+.mega-menu__section .mega-menu__link:nth-child(8) { animation-delay: 0.4s; }
+.mega-menu__section-title + .mega-menu__link { animation-delay: 0.1s; }
+
+.mega-menu__link:hover {
+  color: #666;
+  transform: translateX(4px);
+}
+
+.mega-menu__link::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.2s ease;
+}
+
+.mega-menu__link:hover::after {
+  width: 100%;
+}
+
+.mega-menu__card {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mega-menu__card-media {
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.mega-menu__card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mega-menu__card:hover .mega-menu__card-media img {
+  transform: scale(1.05);
+}
+
+.mega-menu__card-info {
+  text-align: center;
+}
+
+.mega-menu__card-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--header-text);
+  position: relative;
+}
+
+.mega-menu__card-title sup {
+  font-size: 8px;
+  opacity: 0.5;
+  margin-left: 2px;
+  font-weight: 400;
+}
+
+.mega-menu__promo {
+  flex: 0 0 350px;
+}
+
+.mega-menu__promo-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+}
+
+.mega-menu__promo-media {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+}
+
+.mega-menu__promo-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mega-menu__promo-link:hover .mega-menu__promo-media img {
+  transform: scale(1.08);
+}
+
+.mega-menu__promo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px;
+  color: #fff;
+  transition: background 0.4s ease;
+}
+
+.mega-menu__promo-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.mega-menu__promo-btn {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+@media (max-width: 1200px) {
+  .mega-menu__content--visual {
+    flex-direction: column;
+  }
+  .mega-menu__promo {
+    flex: none;
+    width: 100%;
+  }
+  .mega-menu__promo-media {
+    aspect-ratio: 16/9;
+  }
+}
+
+/* Transparent header styles */
+.header-wrapper--transparent:not(.is-scrolled) {
+  background: transparent;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #efebe0; /* Force solid background */
+  z-index: 20000;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-drawer.is-open { transform: translateX(0); }
+
+.mobile-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(61, 37, 0, 0.1);
+}
+
+.mobile-drawer__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--header-text);
+}
+
+.mobile-drawer__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px 20px;
+}
+
+.mobile-drawer__search {
+  padding: 30px 24px 10px;
+}
+
+.mobile-drawer__search-form {
+  display: flex;
+  align-items: center;
+  background: #f5f2e9;
+  border-radius: 50px;
+  padding: 5px 20px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.mobile-drawer__search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  font-size: 14px;
+  padding: 10px 0;
+  color: #1a1a1a;
+  font-family: inherit;
+}
+
+.mobile-drawer__search-input:focus {
+  outline: none;
+}
+
+.mobile-drawer__search-submit {
+  background: none;
+  border: none;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+
+.mobile-drawer__item { 
+  border-bottom: 1px solid rgba(61, 37, 0, 0.1); 
+  position: relative;
+}
+
+.mobile-drawer__link {
+  display: block;
+  padding: 18px 50px 18px 0;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  color: #1a1a1a;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-drawer__item--special .mobile-drawer__link {
+  color: #3D2500;
+  font-weight: 800;
+}
+
+.mobile-drawer__toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1a1a1a;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  z-index: 2;
+}
+
+.mobile-drawer__item.is-open .mobile-drawer__toggle {
+  transform: rotate(180deg);
+}
+
+.mobile-drawer__submenu {
+  display: none;
+  padding-bottom: 20px;
+}
+
+.mobile-drawer__item.is-open .mobile-drawer__submenu { display: block; }
+
+.mobile-drawer__sublink {
+  display: block;
+  padding: 12px 0 12px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-drawer__megagroup {
+  padding: 20px 0 15px 15px;
+  border-left: 2px solid rgba(61, 37, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.mobile-drawer__megagroup:last-child {
+  border-bottom: none;
+}
+
+.mobile-drawer__megatitle {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.mobile-drawer__footer {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(61, 37, 0, 0.1);
+  display: flex;
+  gap: 20px;
+}
+
+.mobile-drawer__footer-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--header-text);
+}
+
+@media (max-width: 1024px) {
+  .header__menu { gap: 15px; }
+  .header__search-wrapper { width: 200px; }
+}
+
+@media (max-width: 768px) {
+  /* Mobile header - flows naturally below announcement bar */
+  .header-wrapper {
+    position: relative !important;
+    top: auto !important;
+    background: var(--header-bg) !important;
+    z-index: 1000;
+  }
+
+  .header {
+    padding: 0 16px !important;
+    height: 60px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--header-text) !important;
+  }
+
+  /* Ensure header text color on mobile for transparent header */
+  .header-wrapper--transparent:not(.is-scrolled) .header {
+    color: var(--header-text) !important;
+  }
+
+  /* Show hamburger menu */
+  .header__mobile-trigger {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    order: -1;
+  }
+
+  /* Hide desktop nav */
+  .header__nav--left { display: none !important; }
+  .header__special-btn-wrapper { display: none !important; }
+  .header__search-wrapper { display: none !important; }
+
+  /* Logo centered on mobile */
+  .header__logo {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 10 !important;
+  }
+
+  .header__logo a {
+    display: block !important;
+  }
+
+  /* Always show main logo on mobile (dark logo on light bg) */
+  /* Must override transparent header logo switching */
+  .header-wrapper--transparent:not(.is-scrolled) .header__logo-main,
+  .header-wrapper--transparent .header__logo-main,
+  .header-wrapper .header__logo-main,
+  .header__logo-main,
+  .header__logo-img.header__logo-main {
+    display: block !important;
+    width: 80px !important;
+    height: auto !important;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__logo-secondary,
+  .header-wrapper--transparent .header__logo-secondary,
+  .header-wrapper .header__logo-secondary,
+  .header__logo-secondary,
+  .header__logo-img.header__logo-secondary {
+    display: none !important;
+  }
+
+  /* Icons on mobile */
+  .header__right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .header__icons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .header__icon {
+    color: var(--header-text) !important;
+    padding: 8px;
+  }
+
+  .header__icon-svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobile-only-icon {
+    display: flex !important;
+  }
+
+  /* Mega menu disabled on mobile */
+  .mega-menu {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only-icon {
+    display: none !important;
+  }
+}
+
+/* Search Overlay Styling */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: #efebe0;
+  z-index: 30000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.search-overlay__inner {
+  width: 100%;
+  max-width: 600px;
+  padding: 40px;
+  position: relative;
+}
+
+.search-overlay__close {
+  position: absolute;
+  top: -20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #3D2500;
+  padding: 10px;
+}
+
+.search-overlay__form {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #3D2500;
+  padding-bottom: 10px;
+}
+
+.search-overlay__input {
+  flex: 1;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 600;
+  color: #3D2500;
+  padding: 10px 0;
+}
+
+.search-overlay__input:focus {
+  outline: none;
+}
+
+.search-overlay__submit {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #3D2500;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .mobile-drawer {
+    display: flex !important;
+  }
+  .search-overlay {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-drawer, .search-overlay {
+    display: none !important;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+  // Header-specific logic is now consolidated in theme.js (initMobileMenu, initHeaderScroll, etc.)
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_main",
+      "label": "Main Logo (Brown)",
+      "info": "Primary logo - shown by default"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_secondary",
+      "label": "Secondary Logo (White/Black)",
+      "info": "Shown when header is scrolled"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 1000,
+      "step": 10,
+      "default": 180,
+      "unit": "px",
+      "label": "Logo Width"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text",
+      "default": "Arz",
+      "info": "Used as fallback when no logo image is uploaded"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 20,
+      "max": 250,
+      "step": 5,
+      "default": 60,
+      "unit": "px",
+      "label": "Logo Height"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Desktop Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "mobile_menu",
+      "label": "Mobile Menu",
+      "info": "Optional. Select specifically for mobile menu. If left blank, it defaults to the desktop menu."
+    },
+    {
+      "type": "range",
+      "id": "menu_font_size",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px",
+      "label": "Menu Font Size"
+    },
+    {
+      "type": "header",
+      "content": "Shop Mega Menu"
+    },
+    {
+      "type": "text",
+      "id": "mega_menu_trigger",
+      "label": "Menu Item Names (comma-separated)",
+      "default": "Shop,Catalog",
+      "info": "Names of menu items that should show the mega menu on hover. Case-insensitive."
+    },
+    {
+      "type": "text",
+      "id": "shop_menu_url",
+      "label": "Shop Link URL",
+      "default": "/collections/all",
+      "info": "URL for the Shop/Catalog menu link. Use /collections/your-handle for collection pages."
+    },
+    {
+      "type": "link_list",
+      "id": "shop_mega_menu_left",
+      "label": "Main Section (Shop All, New Arrivals)",
+      "info": "Create menu: shop-main with links like Shop All, New Arrivals, Collection names."
+    },
+    {
+      "type": "header",
+      "content": "Category Section 1"
+    },
+    {
+      "type": "text",
+      "id": "mega_section_1_title",
+      "label": "Section 1 Title",
+      "default": "Panjabi",
+      "info": "Optional title above this section."
+    },
+    {
+      "type": "link_list",
+      "id": "mega_section_1",
+      "label": "Section 1 Links",
+      "info": "Create menu: shop-panjabi with links like All Panjabi, Cotton, Silk, etc."
+    },
+    {
+      "type": "header",
+      "content": "Category Section 2"
+    },
+    {
+      "type": "text",
+      "id": "mega_section_2_title",
+      "label": "Section 2 Title",
+      "default": "Shackets",
+      "info": "Optional title above this section."
+    },
+    {
+      "type": "link_list",
+      "id": "mega_section_2",
+      "label": "Section 2 Links",
+      "info": "Create menu: shop-shackets with your shacket links."
+    },
+    {
+      "type": "header",
+      "content": "Category Section 3"
+    },
+    {
+      "type": "text",
+      "id": "mega_section_3_title",
+      "label": "Section 3 Title",
+      "default": "More",
+      "info": "Optional title above this section."
+    },
+    {
+      "type": "link_list",
+      "id": "mega_section_3",
+      "label": "Section 3 Links",
+      "info": "Create menu: shop-more for Pants, Footwear, etc."
+    },
+    {
+      "type": "header",
+      "content": "Special Button (e.g., Collections)"
+    },
+    {
+      "type": "text",
+      "id": "featured_collection_name",
+      "label": "Button Text",
+      "default": "Collections",
+      "info": "This appears as a standalone button next to the main menu."
+    },
+    {
+      "type": "url",
+      "id": "featured_collection_link",
+      "label": "Button Link",
+      "info": "One-click link to your special collection or page."
+    },
+    {
+      "type": "header",
+      "content": "Search Bar"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search Placeholder Text",
+      "default": "Search products..."
+    },
+    {
+      "type": "range",
+      "id": "search_width",
+      "min": 200,
+      "max": 500,
+      "step": 10,
+      "default": 280,
+      "unit": "px",
+      "label": "Search Bar Width"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Sizing"
+    },
+    {
+      "type": "range",
+      "id": "header_height_desktop",
+      "min": 50,
+      "max": 150,
+      "step": 5,
+      "default": 90,
+      "unit": "px",
+      "label": "Header Height (Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "header_height_mobile",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 75,
+      "unit": "px",
+      "label": "Header Height (Mobile)"
+    },
+    {
+      "type": "range",
+      "id": "header_padding_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 40,
+      "unit": "px",
+      "label": "Horizontal Padding (Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "header_padding_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 20,
+      "unit": "px",
+      "label": "Horizontal Padding (Mobile)"
+    },
+    {
+      "type": "range",
+      "id": "menu_item_spacing",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 20,
+      "unit": "px",
+      "label": "Menu Item Spacing"
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "default": 16,
+      "unit": "px",
+      "label": "Icon Spacing"
+    },
+    {
+      "type": "range",
+      "id": "header_announcement_gap_general",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 12,
+      "unit": "px",
+      "label": "Gap: Announcement to Header (General)"
+    },
+    {
+      "type": "range",
+      "id": "header_announcement_gap_product",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 12,
+      "unit": "px",
+      "label": "Gap: Announcement to Header (Product Page)"
+    },
+    {
+      "type": "header",
+      "content": "Transparency"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_transparent_header",
+      "label": "Enable Transparent Header",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "transparent_text_color",
+      "label": "Transparent Header Text Color",
+      "default": "#3D2500"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "header_bg_color",
+      "label": "Header Background (Solid)",
+      "default": "#efebe0"
+    },
+    {
+      "type": "color",
+      "id": "header_text_color",
+      "label": "Header Text Color",
+      "default": "#3D2500"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Drawer - Contact Info"
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Contact Email",
+      "default": "info@arz.life"
+    },
+    {
+      "type": "text",
+      "id": "contact_whatsapp",
+      "label": "WhatsApp Number",
+      "info": "Include country code, e.g., +880123456789",
+      "default": "+880 123456789"
+    },
+    {
+      "type": "text",
+      "id": "contact_location",
+      "label": "Location",
+      "default": "Dhaka, Bangladesh"
+    },
+    {
+      "type": "color",
+      "id": "cart_badge_bg",
+      "label": "Cart Badge Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cart_badge_text",
+      "label": "Cart Badge Text",
+      "default": "#efebe0"
+    }
+  ],
+  "blocks": []
+}
+{% endschema %}

@@ -1,0 +1,62 @@
+.new-arrivals-scroll {
+  width: 100%;
+  overflow: hidden; /* Hide anything outside main wrap */
+}
+.na-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* Ensure smooth iOS momentum scrolling */
+  /* Hide scrollbar for a cleaner look */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  cursor: grab;
+}
+.na-scroll-wrapper.na-grabbing {
+  cursor: grabbing;
+}
+.na-scroll-wrapper img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+.na-header-wrap {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.na-header-wrap .product-grid__title {
+  padding-bottom: 10px; /* Override huge default padding on title */
+}
+.na-drag-hint {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  margin: 0;
+  display: block;
+}
+@media screen and (min-width: 750px) {
+  .na-drag-hint {
+    display: block;
+  }
+}
+.na-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.na-scroll-track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  padding: 0 20px;
+  /* Allow infinite width */
+  width: max-content; 
+}
+.na-product-card {
+  width: 280px;
+  flex: 0 0 auto;
+}
+@media screen and (min-width: 750px) {
+  .na-product-card {
+    width: 440px;
+  }
+}

@@ -1,0 +1,326 @@
+{% comment %}
+  Special Collection Page - Premium Featured Collection Display
+  Use for exclusive or featured collections with elegant design
+{% endcomment %}
+
+{%- assign collection = section.settings.collection -%}
+
+<div class="special-collection">
+  {%- comment -%} Hero Banner {%- endcomment -%}
+  <div class="special-collection__hero">
+    <div class="special-collection__hero-content">
+      <span class="special-collection__label">{{ section.settings.label | default: 'Exclusive Collection' }}</span>
+      <h1 class="special-collection__title">{{ section.settings.title | default: collection.title }}</h1>
+      <p class="special-collection__description">{{ section.settings.description | default: collection.description }}</p>
+      <div class="special-collection__meta">
+        <span class="special-collection__count">{{ collection.products_count }} Pieces</span>
+        <span class="special-collection__divider">•</span>
+        <span class="special-collection__tag">Limited Edition</span>
+      </div>
+    </div>
+    {%- if section.settings.hero_image != blank -%}
+      <div class="special-collection__hero-image">
+        <img src="{{ section.settings.hero_image | image_url: width: 1920 }}" alt="{{ section.settings.title }}" loading="eager">
+      </div>
+    {%- elsif collection.image -%}
+      <div class="special-collection__hero-image">
+        <img src="{{ collection.image | image_url: width: 1920 }}" alt="{{ collection.title }}" loading="eager">
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Product Grid {%- endcomment -%}
+  <div class="special-collection__grid-wrapper">
+    <div class="special-collection__grid">
+      {%- paginate collection.products by 50 -%}
+        {%- for product in collection.products -%}
+          <div class="special-collection__product-item {% if forloop.first %}is-featured{% endif %}">
+            {% render 'product-card', product: product, show_navigation: false %}
+          </div>
+        {%- endfor -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+
+  {%- comment -%} CTA Section {%- endcomment -%}
+  {%- if section.settings.cta_text != blank -%}
+    <div class="special-collection__cta">
+      <a href="{{ section.settings.cta_link | default: '/pages/all-products' }}" class="special-collection__cta-btn">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+.special-collection {
+  background: #efebe0;
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.special-collection__hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 160px 40px 80px;
+}
+
+.special-collection__hero-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.special-collection__hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+}
+
+.special-collection__hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+}
+
+.special-collection__label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: #6B4423;
+  margin-bottom: 20px;
+  padding: 8px 20px;
+  border: 1px solid #6B4423;
+  border-radius: 50px;
+}
+
+.special-collection__title {
+  font-family: 'Times New Roman', serif;
+  font-size: clamp(42px, 8vw, 80px);
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0 0 24px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.special-collection__description {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+
+.special-collection__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #888;
+}
+
+.special-collection__divider {
+  opacity: 0.5;
+}
+
+/* Product Grid */
+.special-collection__grid-wrapper {
+  padding: 60px 40px 100px;
+}
+
+.special-collection__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+/* Featured first item - larger */
+.special-collection__product-item.is-featured {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.special-collection__product-item.is-featured .product-card__media {
+  height: 100%;
+}
+
+/* Decorative Elements */
+.special-collection__grid::before {
+  content: '✦';
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #3D2500;
+  opacity: 0.4;
+}
+
+/* CTA Section */
+.special-collection__cta {
+  text-align: center;
+  padding: 0 40px 100px;
+}
+
+.special-collection__cta-btn {
+  display: inline-block;
+  padding: 18px 50px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  text-decoration: none;
+  background: #3D2500;
+  color: #fff;
+  border-radius: 50px;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.special-collection__cta-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: ctaShimmer 3s infinite;
+}
+
+@keyframes ctaShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.special-collection__cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(61, 37, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .special-collection__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .special-collection__product-item.is-featured {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .special-collection__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .special-collection__product-item.is-featured {
+    grid-column: span 2;
+  }
+  
+  .special-collection__hero {
+    min-height: 50vh;
+    padding: 140px 20px 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .special-collection__hero {
+    padding: 120px 20px 40px;
+  }
+  
+  .special-collection__grid-wrapper {
+    padding: 40px 20px 60px;
+  }
+  
+  .special-collection__label {
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+  
+  .special-collection__meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .special-collection__divider {
+    display: none;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Special Collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Background Image",
+      "info": "Optional. Uses collection image if not set."
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Exclusive Collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Leave blank to use collection title."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "info": "Leave blank to use collection description."
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button Text",
+      "default": "Explore All Collections"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Special Collection"
+    }
+  ]
+}
+{% endschema %}

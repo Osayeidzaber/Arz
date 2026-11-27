@@ -1,0 +1,246 @@
+{%- liquid
+  assign main_collection = section.settings.main_collection | default: collections.all
+  if main_collection == blank
+    assign main_collection = collections.all
+  endif
+  assign rendered_handles = "|"
+-%}
+
+<section class="product-grid-section">
+  {%- if section.settings.title != blank -%}
+    <h2 class="product-grid__title">{{ section.settings.title }}</h2>
+  {%- endif -%}
+
+  <div class="product-grid">
+    {%- comment -%} FIRST PASS: AVAILABLE PRODUCTS {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'priority_tag' -%}
+        {%- assign p_tag = block.settings.tag | downcase -%}
+        {%- if p_tag != blank -%}
+          {%- for product in main_collection.products limit: 1000 -%}
+            {%- if product.available -%}
+              {%- assign p_tags = product.tags | join: ',' | downcase -%}
+              {%- if p_tags contains p_tag -%}
+                {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+                {%- unless rendered_handles contains handle_check -%}
+                  {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+                  {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+                {%- endunless -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- for product in main_collection.products limit: 1000 -%}
+      {%- if product.available -%}
+        {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+        {%- unless rendered_handles contains handle_check -%}
+          {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+          {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%} SECOND PASS: SOLD OUT PRODUCTS {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'priority_tag' -%}
+        {%- assign p_tag = block.settings.tag | downcase -%}
+        {%- if p_tag != blank -%}
+          {%- for product in main_collection.products limit: 1000 -%}
+            {%- unless product.available -%}
+              {%- assign p_tags = product.tags | join: ',' | downcase -%}
+              {%- if p_tags contains p_tag -%}
+                {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+                {%- unless rendered_handles contains handle_check -%}
+                  {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+                  {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+                {%- endunless -%}
+              {%- endif -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- for product in main_collection.products limit: 1000 -%}
+      {%- unless product.available -%}
+        {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+        {%- unless rendered_handles contains handle_check -%}
+          {% render 'product-card', product: product, show_arrows: section.settings.show_slider, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+          {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+        {%- endunless -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} CTA Button at the end {%- endcomment -%}
+  {%- if section.settings.cta_text != blank -%}
+    <div class="product-grid__cta">
+      <a href="{{ section.settings.cta_link | default: '#' }}" 
+         class="product-grid__cta-btn"
+         style="background: {{ section.settings.cta_bg_color }}; color: {{ section.settings.cta_text_color }}; border-color: {{ section.settings.cta_border_color }};">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+.product-grid-section {
+  padding: 0;
+  background: #efebe0;
+}
+
+.product-grid__title {
+  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 0;
+  padding: 80px 40px 50px;
+  color: #1a1a1a;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+/* CTA Button Section */
+.product-grid__cta {
+  display: flex;
+  justify-content: center;
+  padding: 60px 40px 80px;
+  background: #efebe0;
+}
+
+.product-grid__cta-btn {
+  display: inline-block;
+  padding: 16px 48px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  border: 2px solid currentColor;
+  border-radius: 50px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-grid__cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.placeholder-svg {
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+}
+
+@media (max-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0; }
+  .product-grid__title { padding: 40px 20px 30px; }
+  .product-grid__cta { padding: 40px 20px 60px; }
+  .product-grid__cta-btn { padding: 14px 36px; font-size: 11px; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Grid",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "main_collection",
+      "label": "Main Collection",
+      "info": "Select your 'All Products' collection. Falls back to collections.all if not set."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "All Products"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_slider",
+      "label": "Enable Image Slider",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hover",
+      "label": "Enable Hover Flip",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_zoom",
+      "label": "Enable Hover Zoom",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button Text",
+      "default": "View All Collections"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "Button Background",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button Text Color",
+      "default": "#3D2500"
+    },
+    {
+      "type": "color",
+      "id": "cta_border_color",
+      "label": "Button Border Color",
+      "default": "#3D2500"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "priority_tag",
+      "name": "Priority Tag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag",
+          "info": "Products bearing this tag will appear first. Add multiple blocks for multiple tiers."
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Product Grid" }]
+}
+{% endschema %}

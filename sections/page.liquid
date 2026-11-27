@@ -1,0 +1,129 @@
+{% comment %}
+  Global Page Template - Clean formatting for all pages
+  Used for: About Us, Contact, Size Guide, FAQ, Privacy Policy, Terms, etc.
+{% endcomment %}
+
+<div class="page-wrapper">
+  <div class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">{{ page.title }}</h1>
+    </div>
+    
+    <div class="page-content">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+/* Global Page Styling */
+.page-wrapper {
+  padding: 60px 0 80px;
+  min-height: calc(100vh - var(--header-total-height) - var(--footer-height));
+  background: #efebe0;
+  margin-top: 0;
+}
+
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 400;
+  color: #3D2500;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.page-content {
+  background: #efebe0;
+  padding: 60px 0;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.page-content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #3D2500;
+  margin: 40px 0 20px;
+}
+
+.page-content h2:first-child {
+  margin-top: 0;
+}
+
+.page-content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3D2500;
+  margin: 30px 0 15px;
+}
+
+.page-content p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #1a1a1a;
+  margin: 0 0 20px;
+}
+
+.page-content ul,
+.page-content ol {
+  margin: 20px 0;
+  padding-left: 30px;
+}
+
+.page-content li {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.page-content a {
+  color: #3D2500;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.page-content a:hover {
+  opacity: 0.7;
+}
+
+.page-content strong {
+  color: #3D2500;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 100px 0 60px;
+  }
+  
+  .page-container {
+    padding: 0 20px;
+  }
+  
+  .page-content {
+    padding: 40px 24px;
+  }
+  
+  .page-title {
+    font-size: 28px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,784 @@
+{% comment %}
+  Cart Page - Premium Clean Design
+{% endcomment %}
+
+<div class="cart-page">
+  {% if cart.item_count > 0 %}
+    <div class="cart-page__header">
+      <h1 class="cart-page__title">Shopping Cart</h1>
+      <span class="cart-page__count">{{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}</span>
+    </div>
+
+    <div class="cart-page__content">
+      <div class="cart-page__items">
+        <form action="{{ routes.cart_url }}" method="post" id="CartForm">
+          {% for item in cart.items %}
+            {%- comment -%} Calculate sale price for cart item {%- endcomment -%}
+            {%- assign cp_has_sale = false -%}
+            {%- assign cp_sale_pct = 0 -%}
+            {%- assign cp_original = item.final_line_price -%}
+            {%- assign cp_sale_price = item.final_line_price -%}
+            {%- assign cp_unit_original = item.original_price -%}
+            {%- assign cp_unit_sale = item.original_price -%}
+            {%- assign cp_auto_discount = 0 -%}
+
+            {%- comment -%} Priority 0: Auto-discount (fixed amount off) {%- endcomment -%}
+            {%- assign cp_title_lower = item.product.title | downcase -%}
+            {%- if cp_title_lower contains 'azraq' or cp_title_lower contains 'nazr' or cp_title_lower contains 'nazar' -%}
+              {%- assign cp_auto_discount = 149900 -%}
+            {%- elsif cp_title_lower contains 'sahara' -%}
+              {%- assign cp_auto_discount = 49900 -%}
+            {%- endif -%}
+
+            {%- if cp_auto_discount > 0 -%}
+              {%- assign cp_has_sale = true -%}
+              {%- assign cp_original = item.original_line_price -%}
+              {%- assign auto_disc_line = cp_auto_discount | times: item.quantity -%}
+              {%- assign cp_sale_price = item.original_line_price | minus: auto_disc_line -%}
+              {%- if cp_sale_price < 0 -%}{%- assign cp_sale_price = 0 -%}{%- endif -%}
+              {%- assign cp_unit_original = item.original_price -%}
+              {%- assign cp_unit_sale = item.original_price | minus: cp_auto_discount -%}
+              {%- if cp_unit_sale < 0 -%}{%- assign cp_unit_sale = 0 -%}{%- endif -%}
+            {%- elsif item.variant.compare_at_price > item.variant.price -%}
+              {%- assign cp_has_sale = true -%}
+              {%- assign cp_sale_pct = item.variant.compare_at_price | minus: item.variant.price | times: 100.0 | divided_by: item.variant.compare_at_price | round -%}
+            {%- else -%}
+              {%- for tag in item.product.tags -%}
+                {%- assign tag_lower = tag | downcase -%}
+                {%- if tag_lower contains 'sale-' -%}
+                  {%- assign tag_parts = tag_lower | split: 'sale-' -%}
+                  {%- if tag_parts.size > 1 -%}
+                    {%- assign cp_sale_pct = tag_parts[1] | plus: 0 -%}
+                    {%- if cp_sale_pct > 0 and cp_sale_pct <= 100 -%}
+                      {%- assign cp_has_sale = true -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- elsif tag_lower == 'sale' and settings.global_sale_enabled -%}
+                  {%- assign cp_has_sale = true -%}
+                  {%- assign cp_sale_pct = settings.global_sale_percentage -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- if cp_has_sale == false and settings.global_sale_enabled -%}
+                {%- assign cp_has_sale = true -%}
+                {%- assign cp_sale_pct = settings.global_sale_percentage -%}
+              {%- endif -%}
+
+              {%- if cp_has_sale and cp_sale_pct > 0 -%}
+                {%- assign discount_amt = item.final_line_price | times: cp_sale_pct | divided_by: 100.0 -%}
+                {%- assign cp_sale_price = item.final_line_price | minus: discount_amt | round -%}
+                {%- assign unit_discount = item.original_price | times: cp_sale_pct | divided_by: 100.0 -%}
+                {%- assign cp_unit_sale = item.original_price | minus: unit_discount | round -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- comment -%} Show sale if auto-discount or percentage sale {%- endcomment -%}
+            {%- if cp_has_sale == false and cp_auto_discount == 0 -%}
+              {%- assign cp_sale_pct = 0 -%}
+            {%- endif -%}
+
+            <div class="cart-item" data-line="{{ forloop.index }}">
+              <a href="{{ item.url }}" class="cart-item__image">
+                {% if item.image %}
+                  <img src="{{ item.image | image_url: width: 300 }}" alt="{{ item.product.title }}" loading="lazy" width="150" height="188">
+                {% else %}
+                  <div class="cart-item__placeholder"></div>
+                {% endif %}
+              </a>
+
+              <div class="cart-item__details">
+                <div class="cart-item__info">
+                  <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title }}</a>
+                  {% if item.variant.title != 'Default Title' %}
+                    <p class="cart-item__variant">{{ item.variant.title }}</p>
+                  {% endif %}
+                  {%- if cp_has_sale -%}
+                    <p class="cart-item__price-single">
+                      <span class="cart-item__price--compare">{{ cp_unit_original | money }}</span>
+                      <span class="cart-item__price--sale">{{ cp_unit_sale | money }}</span>
+                    </p>
+                  {%- else -%}
+                    <p class="cart-item__price-single">{{ item.original_price | money }}</p>
+                  {%- endif -%}
+                </div>
+
+                <div class="cart-item__actions">
+                  <div class="cart-item__quantity">
+                    <button type="button" class="qty-btn" data-action="decrease" data-line="{{ forloop.index }}" aria-label="Decrease">−</button>
+                    <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" max="99" class="qty-input" aria-label="Quantity">
+                    <button type="button" class="qty-btn" data-action="increase" data-line="{{ forloop.index }}" aria-label="Increase">+</button>
+                  </div>
+
+                  <a href="{{ item.url_to_remove }}" class="cart-item__remove" aria-label="Remove item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    <span>Remove</span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="cart-item__price">
+                {%- if cp_has_sale -%}
+                  <span class="cart-item__price--compare">{{ cp_original | money }}</span>
+                  <span class="cart-item__price--sale">{{ cp_sale_price | money }}</span>
+                {%- else -%}
+                  {{ item.final_line_price | money }}
+                {%- endif -%}
+              </div>
+            </div>
+          {% endfor %}
+
+          <button type="submit" name="update" class="cart-update-btn">Update Cart</button>
+        </form>
+      </div>
+
+      {%- comment -%} Calculate cart sale total {%- endcomment -%}
+      {%- assign cart_page_sale_total = 0 -%}
+      {%- assign cart_page_has_sale = false -%}
+      {%- for item in cart.items -%}
+        {%- assign line_price = item.final_line_price -%}
+        {%- assign line_has_sale = false -%}
+        {%- assign line_pct = 0 -%}
+        {%- assign line_auto_disc = 0 -%}
+
+        {%- comment -%} Priority 0: Auto-discount {%- endcomment -%}
+        {%- assign lt_lower = item.product.title | downcase -%}
+        {%- if lt_lower contains 'azraq' or lt_lower contains 'nazr' or lt_lower contains 'nazar' -%}
+          {%- assign line_auto_disc = 149900 -%}
+        {%- elsif lt_lower contains 'sahara' -%}
+          {%- assign line_auto_disc = 49900 -%}
+        {%- endif -%}
+
+        {%- if line_auto_disc > 0 -%}
+          {%- assign line_has_sale = true -%}
+          {%- assign cart_page_has_sale = true -%}
+          {%- assign auto_total = line_auto_disc | times: item.quantity -%}
+          {%- assign line_price = item.original_line_price | minus: auto_total -%}
+          {%- if line_price < 0 -%}{%- assign line_price = 0 -%}{%- endif -%}
+        {%- elsif item.variant.compare_at_price > item.variant.price -%}
+          {%- assign line_has_sale = true -%}
+        {%- else -%}
+          {%- for tag in item.product.tags -%}
+            {%- assign tag_lower = tag | downcase -%}
+            {%- if tag_lower contains 'sale-' -%}
+              {%- assign tag_parts = tag_lower | split: 'sale-' -%}
+              {%- if tag_parts.size > 1 -%}
+                {%- assign line_pct = tag_parts[1] | plus: 0 -%}
+                {%- if line_pct > 0 and line_pct <= 100 -%}
+                  {%- assign line_has_sale = true -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- elsif tag_lower == 'sale' and settings.global_sale_enabled -%}
+              {%- assign line_has_sale = true -%}
+              {%- assign line_pct = settings.global_sale_percentage -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if line_has_sale == false and settings.global_sale_enabled -%}
+            {%- assign line_has_sale = true -%}
+            {%- assign line_pct = settings.global_sale_percentage -%}
+          {%- endif -%}
+
+          {%- if line_has_sale and line_pct > 0 -%}
+            {%- assign disc = item.final_line_price | times: line_pct | divided_by: 100.0 -%}
+            {%- assign line_price = item.final_line_price | minus: disc | round -%}
+            {%- assign cart_page_has_sale = true -%}
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- assign cart_page_sale_total = cart_page_sale_total | plus: line_price -%}
+      {%- endfor -%}
+
+      <div class="cart-page__summary">
+        <div class="cart-summary">
+          <h2 class="cart-summary__title">Order Summary</h2>
+
+          <div class="cart-summary__row">
+            <span>Subtotal</span>
+            {%- if cart_page_has_sale -%}
+              <span>
+                <span class="cart-summary__compare">{{ cart.original_total_price | money }}</span>
+                <span class="cart-summary__sale">{{ cart_page_sale_total | money }}</span>
+              </span>
+            {%- else -%}
+              <span>{{ cart.total_price | money }}</span>
+            {%- endif -%}
+          </div>
+
+          <div class="cart-summary__row">
+            <span>Shipping</span>
+            <span>Calculated at checkout</span>
+          </div>
+
+          {%- if settings.auto_discount_code != blank -%}
+            <div class="cart-summary__row cart-summary__discount">
+              <span>Discount Code</span>
+              <span class="cart-summary__code">{{ settings.auto_discount_code }}</span>
+            </div>
+          {%- endif -%}
+
+          <div class="cart-summary__total">
+            <span>Total</span>
+            {%- if cart_page_has_sale -%}
+              <span>
+                <span class="cart-summary__compare">{{ cart.original_total_price | money }}</span>
+                <span class="cart-summary__sale">{{ cart_page_sale_total | money }}</span>
+              </span>
+            {%- else -%}
+              <span>{{ cart.total_price | money }}</span>
+            {%- endif -%}
+          </div>
+
+          {%- assign cart_checkout_url = routes.cart_url -%}
+          {%- if settings.auto_discount_code != blank -%}
+            {%- assign cart_checkout_url = '/checkout?discount=' | append: settings.auto_discount_code -%}
+          {%- endif -%}
+          {% if settings.enable_whatsapp_ordering %}
+            <a id="CartWhatsAppBtn" href="#" class="cart-checkout-btn" style="background: #25D366;" target="_blank" rel="noopener noreferrer">
+              <span>{{ settings.whatsapp_button_text | default: 'Book now' }}</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          {% else %}
+            <form action="{{ cart_checkout_url }}" method="post" id="CartCheckoutForm">
+              <button type="submit" name="checkout" class="cart-checkout-btn">
+                <span>Proceed to Checkout</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </form>
+          {% endif %}
+          {% if settings.enable_whatsapp_ordering %}
+            <script type="application/json" id="CartWhatsAppConfig">
+              {
+                "phoneNumber": {{ settings.whatsapp_number | default: '+8801341630198' | json }},
+                "messageTemplate": {{ settings.whatsapp_message_template | default: 'Hello! I want to order these items:' | json }},
+                "cartItems": {{ cart.items | json }}
+              }
+            </script>
+          {% endif %}
+          <script>
+          (function() {
+            var discountMap = {
+              'azraq': '4SDVX4ZZVC5R',
+              'nazr': 'GN4VQXX0886V',
+              'nazar': 'GN4VQXX0886V',
+              'sahara': 'D4NMDJ6PHZD9'
+            };
+            var titles = {{ cart.items | map: 'product' | map: 'title' | json }};
+            var codes = [];
+            titles.forEach(function(t) {
+              var tl = t.toLowerCase();
+              for (var k in discountMap) {
+                if (tl.indexOf(k) !== -1 && codes.indexOf(discountMap[k]) === -1) {
+                  codes.push(discountMap[k]);
+                }
+              }
+            });
+            window.__cartDiscountCodes = codes;
+
+            var form = document.getElementById('CartCheckoutForm');
+            if (!form) return;
+            form.addEventListener('submit', function(e) {
+              if (codes.length > 0) {
+                e.preventDefault();
+                Promise.all(codes.map(function(c) {
+                  return fetch('/discount/' + c).catch(function() {});
+                })).then(function() {
+                  window.location.href = '/checkout';
+                });
+              }
+            });
+          })();
+          </script>
+
+          <a href="{{ routes.all_products_collection_url }}" class="cart-continue-btn">Continue Shopping</a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="cart-empty">
+      <div class="cart-empty__icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M6 6h15l-1.5 9h-12z"/>
+          <circle cx="9" cy="20" r="1"/>
+          <circle cx="18" cy="20" r="1"/>
+        </svg>
+      </div>
+      <h1 class="cart-empty__title">Your Cart is Empty</h1>
+      <p class="cart-empty__text">Looks like you haven't added anything to your cart yet.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="cart-empty__btn">
+        <span>Start Shopping</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+.cart-page {
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 80px 40px;
+  min-height: 80vh;
+  background: #fff;
+}
+
+.cart-page__header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 50px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-page__title {
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+.cart-page__count {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+}
+
+.cart-page__content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 60px;
+}
+
+.cart-page__items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 30px;
+  padding: 30px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item__image {
+  width: 120px;
+  height: 150px;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.cart-item__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item__placeholder {
+  width: 100%;
+  height: 100%;
+  background: #e5e5e5;
+}
+
+.cart-item__details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cart-item__title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #1a1a1a;
+  text-decoration: none;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.cart-item__title:hover {
+  opacity: 0.7;
+}
+
+.cart-item__variant {
+  font-size: 12px;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.cart-item__price-single {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+.cart-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.cart-item__quantity {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+}
+
+.cart-item__quantity .qty-btn {
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cart-item__quantity .qty-btn:hover {
+  background: #f5f5f5;
+}
+
+.cart-item__quantity .qty-input {
+  width: 40px;
+  height: 36px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.cart-item__quantity .qty-input::-webkit-inner-spin-button,
+.cart-item__quantity .qty-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.cart-item__remove {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.cart-item__remove:hover {
+  color: #1a1a1a;
+}
+
+.cart-item__price {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: right;
+}
+
+.cart-item__price--compare {
+  text-decoration: line-through;
+  text-decoration-color: #c00;
+  color: #999;
+  font-weight: 400;
+  margin-right: 8px;
+}
+
+.cart-item__price--sale {
+  color: #c00;
+  font-weight: 600;
+}
+
+.cart-summary__compare {
+  text-decoration: line-through;
+  text-decoration-color: #c00;
+  color: #999;
+  font-weight: 400;
+  margin-right: 8px;
+}
+
+.cart-summary__sale {
+  color: #c00;
+  font-weight: 600;
+}
+
+.cart-summary__discount {
+  color: #2a6;
+}
+
+.cart-summary__code {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cart-update-btn {
+  margin-top: 30px;
+  padding: 14px 30px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: none;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+}
+
+.cart-update-btn:hover {
+  background: #f5f5f5;
+  border-color: #1a1a1a;
+}
+
+/* Summary */
+.cart-summary {
+  background: #fafafa;
+  padding: 40px;
+  position: sticky;
+  top: 120px;
+}
+
+.cart-summary__title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  color: #1a1a1a;
+}
+
+.cart-summary__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.cart-summary__total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 25px 0;
+  padding-top: 20px;
+  border-top: 1px solid #e5e5e5;
+  color: #1a1a1a;
+}
+
+.cart-checkout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 18px 30px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  margin-bottom: 14px;
+}
+
+.cart-checkout-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cart-checkout-btn:hover::before {
+  transform: translateX(0);
+}
+
+.cart-checkout-btn span,
+.cart-checkout-btn svg {
+  position: relative;
+  z-index: 1;
+}
+
+.cart-checkout-btn:hover svg {
+  transform: translateX(4px);
+}
+
+.cart-checkout-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.cart-continue-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  text-decoration: none;
+  color: #1a1a1a;
+  border: 1px solid #ddd;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.cart-continue-btn:hover {
+  border-color: #1a1a1a;
+  background: #f5f5f5;
+}
+
+/* Empty Cart */
+.cart-empty {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.cart-empty__icon {
+  margin-bottom: 30px;
+  color: #ccc;
+}
+
+.cart-empty__title {
+  font-size: 28px;
+  font-weight: 500;
+  margin: 0 0 15px;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+.cart-empty__text {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 40px;
+}
+
+.cart-empty__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 40px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: #1a1a1a;
+  color: #fff;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.cart-empty__btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cart-empty__btn:hover::before {
+  transform: translateX(0);
+}
+
+.cart-empty__btn span,
+.cart-empty__btn svg {
+  position: relative;
+  z-index: 1;
+}
+
+.cart-empty__btn:hover svg {
+  transform: translateX(4px);
+}
+
+.cart-empty__btn svg {
+  transition: transform 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .cart-page {
+    padding: 60px 30px;
+  }
+  
+  .cart-page__content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .cart-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .cart-page {
+    padding: 40px 20px;
+  }
+  
+  .cart-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .cart-page__title {
+    font-size: 24px;
+  }
+  
+  .cart-item {
+    grid-template-columns: 90px 1fr;
+    gap: 20px;
+  }
+  
+  .cart-item__price {
+    grid-column: 1 / -1;
+    text-align: left;
+    padding-top: 10px;
+  }
+  
+  .cart-item__actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .cart-summary {
+    padding: 30px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

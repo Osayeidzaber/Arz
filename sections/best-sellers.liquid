@@ -1,0 +1,151 @@
+{%- liquid
+  assign rendered_handles = "|"
+-%}
+
+{%- if section.settings.enable_section -%}
+<section class="product-grid-section best-sellers-section">
+  {%- if section.settings.title != blank -%}
+    <h2 class="product-grid__title">{{ section.settings.title }}</h2>
+  {%- endif -%}
+
+  <div class="product-grid">
+    {%- comment -%} FIRST PASS: AVAILABLE PRODUCTS with 'eden' and 'best-seller' tags {%- endcomment -%}
+    {%- for product in collections.all.products limit: 1000 -%}
+      {%- if product.available and product.tags contains 'best-seller' and product.tags contains 'eden' -%}
+        {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+        {%- unless rendered_handles contains handle_check -%}
+          {% render 'product-card', product: product, show_arrows: false, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+          {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%} SECOND PASS: AVAILABLE PRODUCTS with 'best-seller' tag but NOT 'eden' {%- endcomment -%}
+    {%- for product in collections.all.products limit: 1000 -%}
+      {%- if product.available and product.tags contains 'best-seller' -%}
+        {%- unless product.tags contains 'eden' -%}
+          {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+          {%- unless rendered_handles contains handle_check -%}
+            {% render 'product-card', product: product, show_arrows: false, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+            {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+          {%- endunless -%}
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%} THIRD PASS: SOLD OUT PRODUCTS with 'eden' and 'best-seller' tags {%- endcomment -%}
+    {%- for product in collections.all.products limit: 1000 -%}
+      {%- unless product.available -%}
+        {%- if product.tags contains 'best-seller' and product.tags contains 'eden' -%}
+          {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+          {%- unless rendered_handles contains handle_check -%}
+            {% render 'product-card', product: product, show_arrows: false, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+            {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endunless -%}
+    {%- endfor -%}
+
+    {%- comment -%} FOURTH PASS: SOLD OUT PRODUCTS with 'best-seller' tag but NOT 'eden' {%- endcomment -%}
+    {%- for product in collections.all.products limit: 1000 -%}
+      {%- unless product.available -%}
+        {%- if product.tags contains 'best-seller' -%}
+          {%- unless product.tags contains 'eden' -%}
+            {%- assign handle_check = "|" | append: product.handle | append: "|" -%}
+            {%- unless rendered_handles contains handle_check -%}
+              {% render 'product-card', product: product, show_arrows: false, show_hover: section.settings.show_hover, show_zoom: section.settings.show_zoom %}
+              {%- assign rendered_handles = rendered_handles | append: product.handle | append: "|" -%}
+            {%- endunless -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+  
+  {%- if section.settings.cta_text != blank -%}
+    <div class="product-grid__cta">
+      <a href="{{ section.settings.cta_link | default: '#' }}" 
+         class="product-grid__cta-btn"
+         style="background: {{ section.settings.cta_bg_color }}; color: {{ section.settings.cta_text_color }}; border-color: {{ section.settings.cta_border_color }};">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  {%- endif -%}
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Best Sellers",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_section",
+      "label": "Enable Section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_slider",
+      "label": "Show Slider on Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hover",
+      "label": "Show Hover Image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_zoom",
+      "label": "Enable Image Zoom",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA Background Color",
+      "default": "#3d2500"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_border_color",
+      "label": "CTA Border Color",
+      "default": "#666666"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best Sellers"
+    }
+  ]
+}
+{% endschema %}

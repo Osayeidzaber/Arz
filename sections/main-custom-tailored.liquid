@@ -1,0 +1,3299 @@
+<div class="custom-tailored-page">
+  <!-- Decorative Elements -->
+  <div class="page-decoration">
+    <div class="deco-line deco-line--1"></div>
+    <div class="deco-line deco-line--2"></div>
+    <div class="deco-circle deco-circle--1"></div>
+    <div class="deco-circle deco-circle--2"></div>
+  </div>
+
+  <div class="page-layout">
+    <!-- Left Side - Info Panel -->
+    <div class="info-panel">
+      <div class="info-panel__sticky">
+        <div class="info-panel__badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          <span>Bespoke Service</span>
+        </div>
+
+        <h1 class="info-panel__title">{{ section.settings.title | default: 'Custom Tailored' }}</h1>
+        <p class="info-panel__subtitle">{{ section.settings.subtitle | default: 'Create your perfect garment, crafted exclusively for you' }}</p>
+
+        <div class="info-panel__features">
+          <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <strong>Handcrafted Quality</strong>
+              <span>Expert artisans, premium materials</span>
+            </div>
+          </div>
+
+          <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <strong>7-14 Days Delivery</strong>
+              <span>From measurement to masterpiece</span>
+            </div>
+          </div>
+
+          <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <strong>Perfect Fit Guarantee</strong>
+              <span>Free alterations if needed</span>
+            </div>
+          </div>
+        </div>
+
+        {%- if section.settings.phone != blank or section.settings.email != blank or section.settings.whatsapp != blank -%}
+        <div class="info-panel__contact">
+          <span class="contact-label">Need help deciding?</span>
+          <div class="contact-links">
+            {%- if section.settings.whatsapp != blank -%}
+              <a href="https://wa.me/{{ section.settings.whatsapp | remove: '+' | remove: ' ' | remove: '-' }}" target="_blank" class="contact-link contact-link--whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+              </a>
+            {%- endif -%}
+            {%- if section.settings.email != blank -%}
+              <a href="mailto:{{ section.settings.email }}" class="contact-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Email
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="form-container">
+      <div class="form-card">
+        <!-- Progress Steps -->
+        <div class="form-progress">
+          <div class="progress-step active" data-step="1">
+            <span class="step-number">1</span>
+            <span class="step-label">Details</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-step="2">
+            <span class="step-number">2</span>
+            <span class="step-label">Size</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-step="3">
+            <span class="step-number">3</span>
+            <span class="step-label">Design</span>
+          </div>
+        </div>
+
+        <!-- Success -->
+        <div id="FormSuccess" class="form-success" style="display: none;">
+          <div class="success-animation">
+            <svg class="success-checkmark" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" class="success-circle"/>
+              <path d="M8 12l3 3 5-6" class="success-check"/>
+            </svg>
+          </div>
+          <h3>Request Submitted!</h3>
+          <p>We'll reach out within 24-48 hours to discuss your custom piece.</p>
+          <button type="button" class="btn-reset" onclick="location.reload()">Submit Another Request</button>
+        </div>
+
+        <!-- Contact Footer in Form -->
+        {%- if section.settings.phone != blank or section.settings.email != blank or section.settings.whatsapp != blank -%}
+        <div class="form-contact-footer">
+          <span class="form-contact-label">Have questions? Reach out directly</span>
+          <div class="form-contact-links">
+            {%- if section.settings.whatsapp != blank -%}
+              <a href="https://wa.me/{{ section.settings.whatsapp | remove: '+' | remove: ' ' | remove: '-' }}" target="_blank" class="form-contact-btn form-contact-btn--whatsapp">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+              </a>
+            {%- endif -%}
+            {%- if section.settings.phone != blank -%}
+              <a href="tel:{{ section.settings.phone }}" class="form-contact-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Call
+              </a>
+            {%- endif -%}
+            {%- if section.settings.email != blank -%}
+              <a href="mailto:{{ section.settings.email }}" class="form-contact-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Email
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- endif -%}
+
+        <!-- Error -->
+        <div id="FormError" class="form-error" style="display: none;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <p id="FormErrorMessage">Something went wrong. Please try again.</p>
+        </div>
+
+        <form id="CustomTailoredForm" enctype="multipart/form-data">
+          <input type="hidden" name="access_key" value="{{ section.settings.web3forms_key }}">
+          <input type="hidden" name="subject" value="New Custom Order - ARZ">
+          <input type="hidden" name="from_name" value="ARZ Custom Orders">
+          <input type="hidden" name="design_image_url" id="DesignImageUrl" value="">
+          <input type="checkbox" name="botcheck" style="display:none;">
+
+          <!-- Step 1: Contact Fields -->
+          <div class="form-step active" data-step="1">
+            <div class="step-header">
+              <h2 class="step-title">Your Details</h2>
+              <p class="step-desc">Let us know how to reach you</p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Full Name <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <input type="text" name="name" required placeholder="Enter your name">
+                </div>
+              </div>
+              <div class="form-field">
+                <label>Email <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input type="email" name="email" required placeholder="your@email.com">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Phone <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <input type="tel" name="phone" required placeholder="+880 1XXX XXXXXX">
+                </div>
+              </div>
+              <div class="form-field">
+                <label>Location</label>
+                <div class="input-wrapper">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <input type="text" name="location" placeholder="City, Country">
+                </div>
+              </div>
+            </div>
+
+            <div class="step-nav">
+              <div></div>
+              <button type="button" class="btn-next" data-next="2">
+                Continue
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Size Selection -->
+          <div class="form-step" data-step="2">
+            <div class="step-header">
+              <h2 class="step-title">Select Your Size</h2>
+              <p class="step-desc">Choose standard or provide custom measurements</p>
+            </div>
+
+            <div class="size-type-toggle">
+              <button type="button" class="size-toggle active" data-type="standard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                Standard Sizes
+              </button>
+              <button type="button" class="size-toggle" data-type="custom">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Custom Fit
+              </button>
+            </div>
+
+            <input type="hidden" name="size_type" id="SizeTypeInput" value="standard">
+
+            <div id="StandardSizes" class="size-section">
+              <div class="size-grid">
+                {%- assign sizes = section.settings.available_sizes | default: "S,M,L,XL,XXL" | split: ',' -%}
+                {%- for size in sizes -%}
+                  <label class="size-option">
+                    <input type="radio" name="size" value="{{ size | strip }}" class="size-radio" {% if forloop.first %}checked{% endif %}>
+                    <div class="size-box">
+                      <span class="size-label">{{ size | strip }}</span>
+                    </div>
+                  </label>
+                {%- endfor -%}
+              </div>
+              <p class="size-hint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Not sure? We'll help you find the perfect fit
+              </p>
+            </div>
+
+            <div id="CustomSizes" class="size-section" style="display: none;">
+              <div class="measurements-grid">
+                <div class="measure-field">
+                  <label>Chest</label>
+                  <div class="measure-input-wrap">
+                    <input type="text" name="measurement_chest" inputmode="decimal" placeholder="0">
+                    <span class="measure-unit">in</span>
+                  </div>
+                </div>
+                <div class="measure-field">
+                  <label>Length</label>
+                  <div class="measure-input-wrap">
+                    <input type="text" name="measurement_length" inputmode="decimal" placeholder="0">
+                    <span class="measure-unit">in</span>
+                  </div>
+                </div>
+                <div class="measure-field">
+                  <label>Shoulder</label>
+                  <div class="measure-input-wrap">
+                    <input type="text" name="measurement_shoulder" inputmode="decimal" placeholder="0">
+                    <span class="measure-unit">in</span>
+                  </div>
+                </div>
+                <div class="measure-field">
+                  <label>Sleeve</label>
+                  <div class="measure-input-wrap">
+                    <input type="text" name="measurement_sleeve" inputmode="decimal" placeholder="0">
+                    <span class="measure-unit">in</span>
+                  </div>
+                </div>
+              </div>
+              <p class="size-hint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Measure over undergarments for best results
+              </p>
+            </div>
+
+            <div class="step-nav">
+              <button type="button" class="btn-back" data-back="1">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                Back
+              </button>
+              <button type="button" class="btn-next" data-next="3">
+                Continue
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Design Selection -->
+          <div class="form-step" data-step="3">
+            <div class="step-header">
+              <h2 class="step-title">Choose Your Design</h2>
+              <p class="step-desc">Select from our catalog or upload your own</p>
+            </div>
+
+            <div class="design-type-toggle">
+              <label class="design-toggle">
+                <input type="radio" name="design_path" id="PathCatalog" value="catalog" checked>
+                <div class="toggle-content">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  <span>From Catalog</span>
+                </div>
+              </label>
+              <label class="design-toggle">
+                <input type="radio" name="design_path" id="PathCustom" value="custom">
+                <div class="toggle-content">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>Upload Design</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Catalog Selection -->
+            <div id="CatalogSection" class="design-section">
+              <input type="hidden" name="catalog_selection" id="CatalogInput" value="">
+              {%- if section.blocks.size > 0 -%}
+                <div class="catalog-grid">
+                  {%- for block in section.blocks -%}
+                    {%- if block.type == 'catalog_item' -%}
+                      {%- comment -%} Count images for this design {%- endcomment -%}
+                      {%- assign image_count = 0 -%}
+                      {%- if block.settings.image != blank -%}
+                        {%- assign image_count = image_count | plus: 1 -%}
+                      {%- endif -%}
+                      {%- if block.settings.image_2 != blank -%}
+                        {%- assign image_count = image_count | plus: 1 -%}
+                      {%- endif -%}
+                      {%- if block.settings.image_3 != blank -%}
+                        {%- assign image_count = image_count | plus: 1 -%}
+                      {%- endif -%}
+                      {%- if block.settings.image_4 != blank -%}
+                        {%- assign image_count = image_count | plus: 1 -%}
+                      {%- endif -%}
+                      {%- if block.settings.image_5 != blank -%}
+                        {%- assign image_count = image_count | plus: 1 -%}
+                      {%- endif -%}
+
+                      <div class="catalog-card {% if image_count > 1 %}has-gallery{% endif %}" data-value="{{ block.settings.title | escape }}" {{ block.shopify_attributes }}>
+                        <div class="catalog-image" data-gallery-wrapper>
+                          {%- if block.settings.image != blank -%}
+                            <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}" loading="lazy" width="200" height="267" class="catalog-gallery-image is-active" data-index="0">
+                          {%- else -%}
+                            {{ 'image' | placeholder_svg_tag }}
+                          {%- endif -%}
+                          {%- if block.settings.image_2 != blank -%}
+                            <img src="{{ block.settings.image_2 | image_url: width: 400 }}" alt="{{ block.settings.title }} - 2" loading="lazy" width="200" height="267" class="catalog-gallery-image" data-index="1">
+                          {%- endif -%}
+                          {%- if block.settings.image_3 != blank -%}
+                            <img src="{{ block.settings.image_3 | image_url: width: 400 }}" alt="{{ block.settings.title }} - 3" loading="lazy" width="200" height="267" class="catalog-gallery-image" data-index="2">
+                          {%- endif -%}
+                          {%- if block.settings.image_4 != blank -%}
+                            <img src="{{ block.settings.image_4 | image_url: width: 400 }}" alt="{{ block.settings.title }} - 4" loading="lazy" width="200" height="267" class="catalog-gallery-image" data-index="3">
+                          {%- endif -%}
+                          {%- if block.settings.image_5 != blank -%}
+                            <img src="{{ block.settings.image_5 | image_url: width: 400 }}" alt="{{ block.settings.title }} - 5" loading="lazy" width="200" height="267" class="catalog-gallery-image" data-index="4">
+                          {%- endif -%}
+
+                          {%- if image_count > 1 -%}
+                            <button type="button" class="catalog-gallery-arrow prev" aria-label="Previous image">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18L9 12L15 6"/></svg>
+                            </button>
+                            <button type="button" class="catalog-gallery-arrow next" aria-label="Next image">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18L15 12L9 6"/></svg>
+                            </button>
+                            <div class="catalog-gallery-dots">
+                              {%- for i in (1..image_count) -%}
+                                <span class="catalog-gallery-dot {% if forloop.first %}is-active{% endif %}" data-dot="{{ forloop.index0 }}"></span>
+                              {%- endfor -%}
+                            </div>
+                          {%- endif -%}
+
+                          <div class="catalog-overlay">
+                            <div class="catalog-check-icon">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="catalog-info">
+                          <span class="catalog-name">{{ block.settings.title }}</span>
+                          {%- if block.settings.price != blank -%}
+                            <span class="catalog-price">{{ block.settings.price }}</span>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              {%- else -%}
+                <div class="empty-catalog">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <p>No designs available yet</p>
+                  <span>Add designs in theme customizer</span>
+                </div>
+              {%- endif -%}
+            </div>
+
+            <!-- Upload Section -->
+            <div id="UploadSection" class="design-section" style="display: none;">
+              <div class="upload-area" id="UploadBox">
+                <input type="file" name="design_file" id="FileInput" accept="image/*,.pdf">
+                <div class="upload-content" id="UploadPlaceholder">
+                  <div class="upload-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                  </div>
+                  <div class="upload-text">
+                    <strong>Drop your design here</strong>
+                    <span>or click to browse</span>
+                  </div>
+                  <span class="upload-formats">Supports: JPG, PNG, PDF (max 10MB)</span>
+                </div>
+                <div class="upload-preview" id="UploadFile" style="display: none;">
+                  <div class="preview-image" id="PreviewImage"></div>
+                  <div class="preview-info">
+                    <span class="preview-name" id="FileName"></span>
+                    <button type="button" class="preview-remove" id="RemoveFile">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <div class="upload-progress" id="UploadProgress" style="display: none;">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="ProgressFill"></div>
+                  </div>
+                  <span class="progress-text">Uploading...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Notes -->
+            <div class="notes-section">
+              <label class="notes-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Additional Details
+              </label>
+              <textarea name="message" rows="3" placeholder="Describe your preferences: colors, fabric type, timeline, special requests..."></textarea>
+            </div>
+
+            <div class="step-nav">
+              <button type="button" class="btn-back" data-back="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                Back
+              </button>
+              <button type="submit" class="btn-submit" id="SubmitBtn">
+                <span id="BtnText">
+                  Submit Request
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </span>
+                <span id="BtnLoading" style="display: none;">
+                  <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>
+                  Processing...
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Design Showcase Section -->
+  {%- if section.blocks.size > 0 -%}
+  <div class="design-showcase">
+    <div class="design-showcase__header">
+      <h2 class="design-showcase__title">{{ section.settings.showcase_title | default: 'Our Designs' }}</h2>
+      <p class="design-showcase__subtitle">{{ section.settings.showcase_subtitle | default: 'Browse our collection and find your perfect style' }}</p>
+    </div>
+
+    <div class="design-showcase__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'catalog_item' -%}
+          {%- comment -%} Count images for this design {%- endcomment -%}
+          {%- assign showcase_image_count = 0 -%}
+          {%- if block.settings.image != blank -%}
+            {%- assign showcase_image_count = showcase_image_count | plus: 1 -%}
+          {%- endif -%}
+          {%- if block.settings.image_2 != blank -%}
+            {%- assign showcase_image_count = showcase_image_count | plus: 1 -%}
+          {%- endif -%}
+          {%- if block.settings.image_3 != blank -%}
+            {%- assign showcase_image_count = showcase_image_count | plus: 1 -%}
+          {%- endif -%}
+          {%- if block.settings.image_4 != blank -%}
+            {%- assign showcase_image_count = showcase_image_count | plus: 1 -%}
+          {%- endif -%}
+          {%- if block.settings.image_5 != blank -%}
+            {%- assign showcase_image_count = showcase_image_count | plus: 1 -%}
+          {%- endif -%}
+
+          <div class="design-showcase__item {% if showcase_image_count > 1 %}has-hover{% endif %}" data-design-id="{{ block.id }}" {{ block.shopify_attributes }}>
+            <div class="design-showcase__gallery" data-showcase-gallery>
+              {%- if block.settings.image != blank -%}
+                <img src="{{ block.settings.image | image_url: width: 800 }}"
+                     srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                             {{ block.settings.image | image_url: width: 600 }} 600w,
+                             {{ block.settings.image | image_url: width: 800 }} 800w"
+                     sizes="(max-width: 768px) 100vw, 50vw"
+                     alt="{{ block.settings.title }}"
+                     loading="lazy"
+                     width="600"
+                     height="800"
+                     class="design-showcase__image is-active primary-image"
+                     data-index="0">
+              {%- endif -%}
+              {%- if block.settings.image_2 != blank -%}
+                <img src="{{ block.settings.image_2 | image_url: width: 800 }}"
+                     srcset="{{ block.settings.image_2 | image_url: width: 400 }} 400w,
+                             {{ block.settings.image_2 | image_url: width: 600 }} 600w,
+                             {{ block.settings.image_2 | image_url: width: 800 }} 800w"
+                     sizes="(max-width: 768px) 100vw, 50vw"
+                     alt="{{ block.settings.title }} - 2"
+                     loading="lazy"
+                     width="600"
+                     height="800"
+                     class="design-showcase__image hover-image"
+                     data-index="1">
+              {%- endif -%}
+              {%- if block.settings.image_3 != blank -%}
+                <img src="{{ block.settings.image_3 | image_url: width: 800 }}"
+                     srcset="{{ block.settings.image_3 | image_url: width: 400 }} 400w,
+                             {{ block.settings.image_3 | image_url: width: 600 }} 600w,
+                             {{ block.settings.image_3 | image_url: width: 800 }} 800w"
+                     sizes="(max-width: 768px) 100vw, 50vw"
+                     alt="{{ block.settings.title }} - 3"
+                     loading="lazy"
+                     width="600"
+                     height="800"
+                     class="design-showcase__image"
+                     data-index="2">
+              {%- endif -%}
+              {%- if block.settings.image_4 != blank -%}
+                <img src="{{ block.settings.image_4 | image_url: width: 800 }}"
+                     srcset="{{ block.settings.image_4 | image_url: width: 400 }} 400w,
+                             {{ block.settings.image_4 | image_url: width: 600 }} 600w,
+                             {{ block.settings.image_4 | image_url: width: 800 }} 800w"
+                     sizes="(max-width: 768px) 100vw, 50vw"
+                     alt="{{ block.settings.title }} - 4"
+                     loading="lazy"
+                     width="600"
+                     height="800"
+                     class="design-showcase__image"
+                     data-index="3">
+              {%- endif -%}
+              {%- if block.settings.image_5 != blank -%}
+                <img src="{{ block.settings.image_5 | image_url: width: 800 }}"
+                     srcset="{{ block.settings.image_5 | image_url: width: 400 }} 400w,
+                             {{ block.settings.image_5 | image_url: width: 600 }} 600w,
+                             {{ block.settings.image_5 | image_url: width: 800 }} 800w"
+                     sizes="(max-width: 768px) 100vw, 50vw"
+                     alt="{{ block.settings.title }} - 5"
+                     loading="lazy"
+                     width="600"
+                     height="800"
+                     class="design-showcase__image"
+                     data-index="4">
+              {%- endif -%}
+
+              {%- if showcase_image_count > 1 -%}
+                <button type="button" class="design-showcase__arrow design-showcase__arrow--prev" aria-label="Previous image">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18L9 12L15 6"/>
+                  </svg>
+                </button>
+                <button type="button" class="design-showcase__arrow design-showcase__arrow--next" aria-label="Next image">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18L15 12L9 6"/>
+                  </svg>
+                </button>
+              {%- endif -%}
+            </div>
+            <div class="design-showcase__info">
+              <span class="design-showcase__name">{{ block.settings.title }}</span>
+              {%- if block.settings.price != blank -%}
+                <span class="design-showcase__price">{{ block.settings.price }}</span>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  {%- endif -%}
+</div>
+
+<style>
+/* ================================
+   CUSTOM TAILORED PAGE - PREMIUM REDESIGN
+   ================================ */
+
+.custom-tailored-page {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #faf9f7 0%, #f5f3f0 100%);
+  overflow: hidden;
+}
+
+/* Decorative Elements */
+.page-decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.deco-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(191, 162, 126, 0.1), transparent);
+  height: 1px;
+}
+
+.deco-line--1 { top: 20%; left: 0; right: 0; }
+.deco-line--2 { top: 60%; left: 0; right: 0; }
+
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(191, 162, 126, 0.08);
+}
+
+.deco-circle--1 {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  right: -100px;
+}
+
+.deco-circle--2 {
+  width: 300px;
+  height: 300px;
+  bottom: -50px;
+  left: -100px;
+}
+
+/* Page Layout - Two Column */
+.page-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 480px) minmax(400px, 560px);
+  justify-content: center;
+  min-height: 100vh;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 40px;
+  gap: 60px;
+}
+
+@media (max-width: 1024px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 30px;
+  }
+}
+
+/* ================================
+   LEFT PANEL - INFO
+   ================================ */
+
+.info-panel {
+  display: flex;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.info-panel__sticky {
+  position: sticky;
+  top: 120px;
+}
+
+@media (max-width: 1024px) {
+  .info-panel {
+    padding: 60px 20px 20px;
+    text-align: center;
+  }
+  .info-panel__sticky {
+    position: static;
+    width: 100%;
+  }
+}
+
+.info-panel__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(191, 162, 126, 0.1);
+  border: 1px solid rgba(191, 162, 126, 0.2);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #BFA27E;
+  margin-bottom: 24px;
+}
+
+.info-panel__badge svg {
+  opacity: 0.8;
+}
+
+.info-panel__title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 300;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+.info-panel__subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 40px;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+@media (max-width: 1024px) {
+  .info-panel__subtitle {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Features */
+.info-panel__features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 1024px) {
+  .info-panel__features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .info-panel__features {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.feature-item:nth-child(1) { animation-delay: 0.1s; }
+.feature-item:nth-child(2) { animation-delay: 0.2s; }
+.feature-item:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  flex-shrink: 0;
+  color: #BFA27E;
+}
+
+.feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feature-text strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.feature-text span {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Contact Section */
+.info-panel__contact {
+  padding-top: 24px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.contact-label {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.contact-links {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 1024px) {
+  .contact-links {
+    justify-content: center;
+  }
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
+}
+
+.contact-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.contact-link--whatsapp {
+  background: #25d366;
+  color: #fff;
+}
+
+.contact-link--whatsapp:hover {
+  background: #20bd5a;
+}
+
+/* ================================
+   RIGHT PANEL - FORM
+   ================================ */
+
+.form-container {
+  display: flex;
+  align-items: center;
+  padding: 40px 0;
+}
+
+@media (max-width: 1024px) {
+  .form-container {
+    padding: 0 0 40px;
+  }
+}
+
+.form-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.06);
+  width: 100%;
+  max-width: 560px;
+}
+
+@media (max-width: 600px) {
+  .form-card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+}
+
+/* Progress Steps */
+.form-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.progress-step.active,
+.progress-step.completed {
+  opacity: 1;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active .step-number {
+  background: #BFA27E;
+  color: #fff;
+}
+
+.progress-step.completed .step-number {
+  background: #22c55e;
+  color: #fff;
+}
+
+.step-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+}
+
+.progress-line {
+  width: 40px;
+  height: 2px;
+  background: #f0f0f0;
+  margin: 0 8px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 400px) {
+  .progress-line { width: 24px; }
+  .step-label { font-size: 10px; }
+}
+
+/* Form Steps */
+.form-step {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.form-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.step-header {
+  margin-bottom: 28px;
+}
+
+.step-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.step-desc {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+/* Form Fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 500px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+.form-field {
+  margin-bottom: 0;
+}
+
+.form-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-field label .required {
+  color: #BFA27E;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper svg {
+  position: absolute;
+  left: 14px;
+  color: #bbb;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 14px 14px 14px 44px;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background: #fafafa;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: #BFA27E;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(191, 162, 126, 0.1);
+}
+
+.input-wrapper input:focus + svg,
+.input-wrapper:focus-within svg {
+  color: #BFA27E;
+}
+
+/* Step Navigation */
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  border-color: #333;
+  color: #333;
+}
+
+.btn-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #1a1a1a;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-next:hover {
+  background: #BFA27E;
+  transform: translateX(4px);
+}
+
+/* ================================
+   STEP 2 - SIZE SELECTION
+   ================================ */
+
+.size-type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.size-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: #fafafa;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.size-toggle:hover {
+  background: #f5f5f5;
+}
+
+.size-toggle.active {
+  background: #fff;
+  border-color: #BFA27E;
+  color: #1a1a1a;
+}
+
+.size-toggle svg {
+  opacity: 0.5;
+}
+
+.size-toggle.active svg {
+  opacity: 1;
+  color: #BFA27E;
+}
+
+/* Size Grid */
+.size-section {
+  animation: fadeIn 0.3s ease;
+}
+
+.size-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.size-option {
+  cursor: pointer;
+}
+
+.size-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.size-box {
+  min-width: 56px;
+  padding: 16px 20px;
+  background: #fafafa;
+  border: 2px solid #e8e8e8;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.size-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  display: block;
+}
+
+.size-option:hover .size-box {
+  border-color: #BFA27E;
+}
+
+.size-option input:checked + .size-box {
+  background: #BFA27E;
+  border-color: #BFA27E;
+}
+
+.size-option input:checked + .size-box .size-label {
+  color: #fff;
+}
+
+.size-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: #999;
+}
+
+.size-hint svg {
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* Custom Measurements */
+.measurements-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 500px) {
+  .measurements-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.measure-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.measure-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.measure-input-wrap input {
+  width: 100%;
+  padding: 14px 36px 14px 14px;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  background: #fafafa;
+  transition: all 0.2s;
+}
+
+.measure-input-wrap input:focus {
+  outline: none;
+  border-color: #BFA27E;
+  background: #fff;
+}
+
+.measure-unit {
+  position: absolute;
+  right: 12px;
+  font-size: 12px;
+  color: #999;
+  pointer-events: none;
+}
+
+/* ================================
+   STEP 3 - DESIGN SELECTION
+   ================================ */
+
+.design-type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.design-toggle {
+  cursor: pointer;
+}
+
+.design-toggle input {
+  display: none;
+}
+
+.toggle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  background: #fafafa;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.toggle-content svg {
+  display: block;
+  margin: 0 auto;
+  color: #999;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-content span {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+}
+
+.design-toggle:hover .toggle-content {
+  background: #f5f5f5;
+}
+
+.design-toggle input:checked + .toggle-content {
+  background: #fff;
+  border-color: #BFA27E;
+}
+
+.design-toggle input:checked + .toggle-content svg {
+  color: #BFA27E;
+}
+
+.design-toggle input:checked + .toggle-content span {
+  color: #1a1a1a;
+}
+
+/* Design Section */
+.design-section {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Catalog Grid */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.catalog-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.catalog-card:hover {
+  transform: translateY(-4px);
+}
+
+.catalog-image {
+  position: relative;
+  aspect-ratio: 3/4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f5f5f5;
+  margin-bottom: 10px;
+}
+
+.catalog-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.catalog-card:hover .catalog-image img {
+  transform: scale(1.05);
+}
+
+.catalog-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(191, 162, 126, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.catalog-check-icon {
+  width: 48px;
+  height: 48px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #BFA27E;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.catalog-card.selected .catalog-overlay {
+  background: rgba(191, 162, 126, 0.3);
+}
+
+.catalog-card.selected .catalog-check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.catalog-info {
+  text-align: center;
+}
+
+.catalog-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+
+.catalog-price {
+  display: block;
+  font-size: 12px;
+  color: #BFA27E;
+  margin-top: 4px;
+}
+
+/* Catalog Gallery - Multiple Images */
+.catalog-gallery-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.catalog-gallery-image.is-active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.catalog-card.has-gallery .catalog-image img:first-of-type:not(.catalog-gallery-image) {
+  display: none;
+}
+
+.catalog-gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.catalog-card:hover .catalog-gallery-arrow {
+  opacity: 1;
+}
+
+.catalog-gallery-arrow:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.catalog-gallery-arrow.prev {
+  left: 8px;
+}
+
+.catalog-gallery-arrow.next {
+  right: 8px;
+}
+
+.catalog-gallery-arrow svg {
+  width: 14px;
+  height: 14px;
+  stroke: #333;
+}
+
+.catalog-gallery-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.catalog-card:hover .catalog-gallery-dots,
+.catalog-card.has-gallery .catalog-gallery-dots {
+  opacity: 1;
+}
+
+.catalog-gallery-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.catalog-gallery-dot.is-active {
+  background: #fff;
+  transform: scale(1.2);
+}
+
+.catalog-gallery-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Disable card hover transform when interacting with gallery */
+.catalog-card.has-gallery:hover {
+  transform: none;
+}
+
+.catalog-card.has-gallery:hover .catalog-image img.is-active {
+  transform: none;
+}
+
+/* ================================
+   DESIGN SHOWCASE SECTION
+   ================================ */
+
+.design-showcase {
+  padding: 80px 40px;
+  background: #fff;
+  position: relative;
+}
+
+.design-showcase__header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 60px;
+}
+
+.design-showcase__title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  margin: 0 0 16px;
+}
+
+.design-showcase__subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.design-showcase__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.design-showcase__item {
+  cursor: pointer;
+}
+
+.design-showcase__gallery {
+  position: relative;
+  aspect-ratio: 3/4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.design-showcase__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  z-index: 1;
+}
+
+.design-showcase__image.is-active {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Primary image base state */
+.design-showcase__image.primary-image {
+  z-index: 1;
+}
+
+/* Hover image - hidden by default, shows on hover */
+.design-showcase__image.hover-image {
+  z-index: 2;
+  opacity: 0;
+}
+
+/* Hover effect - show second image and zoom */
+.design-showcase__item.has-hover:hover .design-showcase__image.hover-image {
+  opacity: 1;
+}
+
+.design-showcase__item:hover .design-showcase__image {
+  transform: scale(1.05);
+}
+
+/* Arrows */
+.design-showcase__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.design-showcase__gallery:hover .design-showcase__arrow {
+  opacity: 1;
+}
+
+.design-showcase__arrow:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.design-showcase__arrow--prev {
+  left: 12px;
+}
+
+.design-showcase__arrow--next {
+  right: 12px;
+}
+
+.design-showcase__arrow svg {
+  width: 18px;
+  height: 18px;
+  stroke: #333;
+}
+
+.design-showcase__info {
+  padding: 12px 0 0;
+  text-align: center;
+}
+
+.design-showcase__name {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.design-showcase__price {
+  display: block;
+  font-size: 13px;
+  color: #666;
+}
+
+/* Responsive - Design Showcase */
+@media (max-width: 900px) {
+  .design-showcase {
+    padding: 60px 20px;
+  }
+
+  .design-showcase__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .design-showcase__header {
+    margin-bottom: 40px;
+  }
+
+  .design-showcase__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .design-showcase__gallery {
+    border-radius: 8px;
+  }
+
+  .design-showcase__arrow {
+    width: 32px;
+    height: 32px;
+    opacity: 1;
+  }
+
+  .design-showcase__arrow--prev {
+    left: 8px;
+  }
+
+  .design-showcase__arrow--next {
+    right: 8px;
+  }
+}
+
+/* Empty Catalog */
+.empty-catalog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  background: #fafafa;
+  border-radius: 12px;
+}
+
+.empty-catalog svg {
+  display: block;
+  color: #ddd;
+  margin: 0 auto 16px;
+}
+
+.empty-catalog p {
+  font-size: 15px;
+  font-weight: 500;
+  color: #666;
+  margin: 0 0 4px;
+}
+
+.empty-catalog span {
+  font-size: 13px;
+  color: #999;
+}
+
+/* Upload Area */
+.upload-area {
+  position: relative;
+  border: 2px dashed #e0e0e0;
+  border-radius: 16px;
+  background: #fafafa;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.upload-area.drag-over {
+  border-color: #BFA27E;
+  background: rgba(191, 162, 126, 0.05);
+}
+
+.upload-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.upload-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  color: #BFA27E;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.upload-text {
+  margin-bottom: 12px;
+}
+
+.upload-text strong {
+  display: block;
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.upload-text span {
+  font-size: 13px;
+  color: #888;
+}
+
+.upload-formats {
+  font-size: 11px;
+  color: #bbb;
+}
+
+/* Upload Preview */
+.upload-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.preview-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.preview-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.preview-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 8px;
+}
+
+.preview-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #fef2f2;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #dc2626;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.preview-remove:hover {
+  background: #fee2e2;
+}
+
+/* Upload Progress */
+.upload-progress {
+  padding: 20px;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #e8e8e8;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: #BFA27E;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Notes Section */
+.notes-section {
+  margin-top: 24px;
+}
+
+.notes-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.notes-label svg {
+  color: #999;
+}
+
+.notes-section textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  background: #fafafa;
+  transition: all 0.2s;
+}
+
+.notes-section textarea:focus {
+  outline: none;
+  border-color: #BFA27E;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(191, 162, 126, 0.1);
+}
+
+/* Submit Button */
+.btn-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.btn-submit:hover {
+  background: linear-gradient(135deg, #BFA27E 0%, #a88b5c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(191, 162, 126, 0.3);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#BtnText, #BtnLoading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ================================
+   SUCCESS & ERROR STATES
+   ================================ */
+
+.form-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: #fff;
+  border-radius: 16px;
+}
+
+.success-animation {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.success-checkmark {
+  color: #22c55e;
+}
+
+.success-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: strokeCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+@keyframes strokeCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes strokeCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.form-success h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.form-success p {
+  font-size: 15px;
+  color: #666;
+  margin: 0 0 24px;
+  max-width: 300px;
+}
+
+.btn-reset {
+  padding: 12px 24px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reset:hover {
+  background: #e8e8e8;
+  color: #333;
+}
+
+/* Form Contact Footer */
+.form-contact-footer {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.form-contact-label {
+  display: block;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.form-contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.form-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.form-contact-btn:hover {
+  background: #e8e8e8;
+  transform: translateY(-1px);
+}
+
+.form-contact-btn--whatsapp {
+  background: #25d366;
+  color: #fff;
+}
+
+.form-contact-btn--whatsapp:hover {
+  background: #20bd5a;
+}
+
+.form-error {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.form-error svg {
+  color: #dc2626;
+  flex-shrink: 0;
+}
+
+.form-error p {
+  margin: 0;
+  font-size: 14px;
+  color: #b91c1c;
+}
+
+/* Visually hidden for accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+/* ================================
+   MOBILE & IPHONE COMPATIBILITY
+   ================================ */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .custom-tailored-page {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  .page-layout {
+    padding: 16px;
+    gap: 24px;
+  }
+
+  .info-panel {
+    padding: 40px 0 16px;
+  }
+
+  .info-panel__title {
+    font-size: 28px;
+    letter-spacing: 3px;
+  }
+
+  .info-panel__subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .info-panel__features {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .feature-item {
+    padding: 12px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .form-card {
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+
+  .form-progress {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+  }
+
+  .step-header {
+    margin-bottom: 20px;
+  }
+
+  .step-title {
+    font-size: 18px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+  }
+
+  .size-type-toggle,
+  .design-type-toggle {
+    gap: 8px;
+  }
+
+  .size-toggle,
+  .toggle-content {
+    padding: 14px 12px;
+    font-size: 12px;
+  }
+
+  .size-grid {
+    gap: 8px;
+  }
+
+  .size-box {
+    min-width: 48px;
+    padding: 14px 16px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .page-layout {
+    padding: 12px;
+  }
+
+  .info-panel {
+    padding: 32px 0 12px;
+  }
+
+  .info-panel__badge {
+    padding: 6px 12px;
+    font-size: 10px;
+    margin-bottom: 16px;
+  }
+
+  .info-panel__title {
+    font-size: 24px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .info-panel__subtitle {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .feature-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .feature-text strong {
+    font-size: 13px;
+  }
+
+  .feature-text span {
+    font-size: 12px;
+  }
+
+  .contact-links {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .contact-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-card {
+    padding: 20px 14px;
+    border-radius: 14px;
+  }
+
+  .form-progress {
+    gap: 0;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  .progress-step {
+    gap: 4px;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .step-label {
+    font-size: 9px;
+  }
+
+  .progress-line {
+    width: 20px;
+    margin-bottom: 20px;
+  }
+
+  .step-header {
+    margin-bottom: 16px;
+  }
+
+  .step-title {
+    font-size: 17px;
+  }
+
+  .step-desc {
+    font-size: 12px;
+  }
+
+  .form-row {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .form-field label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .input-wrapper input {
+    padding: 12px 12px 12px 40px;
+    font-size: 16px; /* Prevents iOS zoom */
+    border-radius: 8px;
+  }
+
+  .input-wrapper svg {
+    left: 12px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .size-type-toggle,
+  .design-type-toggle {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .size-toggle {
+    padding: 14px;
+    border-radius: 10px;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .size-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .size-box {
+    min-width: unset;
+    padding: 12px 8px;
+    border-radius: 8px;
+  }
+
+  .size-label {
+    font-size: 14px;
+  }
+
+  .measurements-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .measure-field label {
+    font-size: 10px;
+  }
+
+  .measure-input-wrap input {
+    padding: 12px 32px 12px 12px;
+    font-size: 16px; /* Prevents iOS zoom */
+    border-radius: 8px;
+  }
+
+  .toggle-content {
+    flex-direction: row;
+    padding: 14px;
+    gap: 12px;
+    justify-content: flex-start;
+  }
+
+  .toggle-content svg {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+
+  .toggle-content span {
+    font-size: 13px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .catalog-image {
+    border-radius: 10px;
+  }
+
+  .catalog-name {
+    font-size: 12px;
+  }
+
+  .catalog-price {
+    font-size: 11px;
+  }
+
+  .upload-area {
+    border-radius: 12px;
+  }
+
+  .upload-content {
+    padding: 32px 16px;
+  }
+
+  .upload-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .upload-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .upload-text strong {
+    font-size: 14px;
+  }
+
+  .upload-text span {
+    font-size: 12px;
+  }
+
+  .notes-section textarea {
+    padding: 12px;
+    font-size: 16px; /* Prevents iOS zoom */
+    min-height: 80px;
+    border-radius: 10px;
+  }
+
+  .step-nav {
+    margin-top: 24px;
+    padding-top: 20px;
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .btn-back,
+  .btn-next,
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    border-radius: 10px;
+  }
+
+  .btn-back {
+    background: #f5f5f5;
+    border: none;
+  }
+
+  .form-success {
+    padding: 32px 16px;
+  }
+
+  .success-animation {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
+  }
+
+  .success-checkmark {
+    width: 48px;
+    height: 48px;
+  }
+
+  .form-success h3 {
+    font-size: 20px;
+  }
+
+  .form-success p {
+    font-size: 14px;
+  }
+
+  .btn-reset {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .form-contact-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+
+  .form-contact-links {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-contact-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+  }
+}
+
+/* Small phones (iPhone SE, etc) */
+@media (max-width: 375px) {
+  .page-layout {
+    padding: 10px;
+  }
+
+  .info-panel__title {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+
+  .form-card {
+    padding: 16px 12px;
+  }
+
+  .step-title {
+    font-size: 16px;
+  }
+
+  .size-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+/* iOS safe areas */
+@supports (padding: max(0px)) {
+  .custom-tailored-page {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Touch improvements */
+@media (hover: none) and (pointer: coarse) {
+  .size-option,
+  .catalog-card,
+  .design-toggle,
+  .size-toggle,
+  .btn-next,
+  .btn-back,
+  .btn-submit,
+  .contact-link,
+  .form-contact-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .size-box,
+  .toggle-content,
+  .catalog-image {
+    transition: transform 0.1s ease, border-color 0.2s ease;
+  }
+
+  .size-option:active .size-box,
+  .catalog-card:active .catalog-image {
+    transform: scale(0.97);
+  }
+}
+
+/* Prevent horizontal scroll */
+.custom-tailored-page,
+.page-layout,
+.form-card {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Fix for iOS input zoom */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('CustomTailoredForm');
+  const submitBtn = document.getElementById('SubmitBtn');
+  const btnText = document.getElementById('BtnText');
+  const btnLoading = document.getElementById('BtnLoading');
+  const imgbbApiKey = '{{ section.settings.imgbb_api_key }}';
+
+  // Uploaded image URL storage
+  let uploadedImageUrl = '';
+
+  // ================================
+  // CATALOG GALLERY NAVIGATION
+  // ================================
+
+  document.querySelectorAll('.catalog-card.has-gallery').forEach(card => {
+    const wrapper = card.querySelector('[data-gallery-wrapper]');
+    const images = wrapper.querySelectorAll('.catalog-gallery-image');
+    const dots = wrapper.querySelectorAll('.catalog-gallery-dot');
+    const prevBtn = wrapper.querySelector('.catalog-gallery-arrow.prev');
+    const nextBtn = wrapper.querySelector('.catalog-gallery-arrow.next');
+
+    if (images.length <= 1) return;
+
+    let currentIndex = 0;
+
+    function showImage(index) {
+      if (index < 0) index = images.length - 1;
+      if (index >= images.length) index = 0;
+      currentIndex = index;
+
+      images.forEach((img, i) => {
+        img.classList.toggle('is-active', i === currentIndex);
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('is-active', i === currentIndex);
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showImage(currentIndex - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showImage(currentIndex + 1);
+      });
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showImage(i);
+      });
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    wrapper.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        showImage(diff > 0 ? currentIndex + 1 : currentIndex - 1);
+      }
+    }, { passive: true });
+  });
+
+  // ================================
+  // DESIGN SHOWCASE GALLERY
+  // ================================
+
+  document.querySelectorAll('.design-showcase__item').forEach(item => {
+    const gallery = item.querySelector('[data-showcase-gallery]');
+    const images = gallery.querySelectorAll('.design-showcase__image');
+    const prevBtn = gallery.querySelector('.design-showcase__arrow--prev');
+    const nextBtn = gallery.querySelector('.design-showcase__arrow--next');
+    const counterCurrent = gallery.querySelector('.design-showcase__current');
+
+    if (images.length <= 1) return;
+
+    let currentIndex = 0;
+
+    function showImage(index) {
+      if (index < 0) index = images.length - 1;
+      if (index >= images.length) index = 0;
+      currentIndex = index;
+
+      images.forEach((img, i) => {
+        img.classList.toggle('is-active', i === currentIndex);
+      });
+
+      if (counterCurrent) {
+        counterCurrent.textContent = currentIndex + 1;
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => showImage(currentIndex + 1));
+    }
+
+    // Touch/swipe support for showcase
+    let touchStartX = 0;
+    gallery.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    gallery.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        showImage(diff > 0 ? currentIndex + 1 : currentIndex - 1);
+      }
+    }, { passive: true });
+  });
+
+  // ================================
+  // MULTI-STEP FORM NAVIGATION
+  // ================================
+
+  const steps = document.querySelectorAll('.form-step');
+  const progressSteps = document.querySelectorAll('.progress-step');
+  let currentStep = 1;
+
+  function goToStep(stepNum) {
+    // Validate current step before proceeding
+    if (stepNum > currentStep && !validateStep(currentStep)) {
+      return;
+    }
+
+    steps.forEach(step => {
+      step.classList.remove('active');
+      if (parseInt(step.dataset.step) === stepNum) {
+        step.classList.add('active');
+      }
+    });
+
+    progressSteps.forEach(ps => {
+      const psStep = parseInt(ps.dataset.step);
+      ps.classList.remove('active', 'completed');
+      if (psStep === stepNum) {
+        ps.classList.add('active');
+      } else if (psStep < stepNum) {
+        ps.classList.add('completed');
+      }
+    });
+
+    currentStep = stepNum;
+
+    // Scroll to top of form
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function validateStep(step) {
+    if (step === 1) {
+      const name = form.querySelector('input[name="name"]');
+      const email = form.querySelector('input[name="email"]');
+      const phone = form.querySelector('input[name="phone"]');
+
+      if (!name.value.trim()) {
+        showFieldError(name, 'Please enter your name');
+        return false;
+      }
+      if (!email.value.trim() || !email.validity.valid) {
+        showFieldError(email, 'Please enter a valid email');
+        return false;
+      }
+      if (!phone.value.trim()) {
+        showFieldError(phone, 'Please enter your phone number');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function showFieldError(field, message) {
+    field.focus();
+    field.style.borderColor = '#dc2626';
+    field.style.animation = 'shake 0.4s ease';
+
+    setTimeout(() => {
+      field.style.borderColor = '';
+      field.style.animation = '';
+    }, 2000);
+  }
+
+  // Add shake animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Navigation buttons
+  document.querySelectorAll('.btn-next').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const nextStep = parseInt(btn.dataset.next);
+      goToStep(nextStep);
+    });
+  });
+
+  document.querySelectorAll('.btn-back').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const prevStep = parseInt(btn.dataset.back);
+      goToStep(prevStep);
+    });
+  });
+
+  // ================================
+  // SIZE TYPE TOGGLE
+  // ================================
+
+  document.querySelectorAll('.size-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      document.querySelectorAll('.size-toggle').forEach(t => t.classList.remove('active'));
+      toggle.classList.add('active');
+
+      const isCustom = toggle.dataset.type === 'custom';
+      document.getElementById('StandardSizes').style.display = isCustom ? 'none' : 'block';
+      document.getElementById('CustomSizes').style.display = isCustom ? 'block' : 'none';
+      document.getElementById('SizeTypeInput').value = toggle.dataset.type;
+    });
+  });
+
+  // ================================
+  // DESIGN PATH TOGGLE
+  // ================================
+
+  const catalogSection = document.getElementById('CatalogSection');
+  const uploadSection = document.getElementById('UploadSection');
+
+  document.querySelectorAll('input[name="design_path"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const isCatalog = document.getElementById('PathCatalog').checked;
+      catalogSection.style.display = isCatalog ? 'block' : 'none';
+      uploadSection.style.display = isCatalog ? 'none' : 'block';
+    });
+  });
+
+  // ================================
+  // CATALOG SELECTION
+  // ================================
+
+  const catalogInput = document.getElementById('CatalogInput');
+  document.querySelectorAll('.catalog-card').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.catalog-card').forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      catalogInput.value = item.dataset.value;
+    });
+  });
+
+  // ================================
+  // FILE UPLOAD WITH IMGBB
+  // ================================
+
+  const fileInput = document.getElementById('FileInput');
+  const uploadBox = document.getElementById('UploadBox');
+  const uploadPlaceholder = document.getElementById('UploadPlaceholder');
+  const uploadFile = document.getElementById('UploadFile');
+  const uploadProgress = document.getElementById('UploadProgress');
+  const progressFill = document.getElementById('ProgressFill');
+  const fileName = document.getElementById('FileName');
+  const previewImage = document.getElementById('PreviewImage');
+  const designImageUrl = document.getElementById('DesignImageUrl');
+
+  // Drag and drop
+  ['dragenter', 'dragover'].forEach(e => {
+    uploadBox.addEventListener(e, (ev) => {
+      ev.preventDefault();
+      uploadBox.classList.add('drag-over');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(e => {
+    uploadBox.addEventListener(e, (ev) => {
+      ev.preventDefault();
+      uploadBox.classList.remove('drag-over');
+    });
+  });
+
+  // File selection
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB');
+      fileInput.value = '';
+      return;
+    }
+
+    // Show progress
+    uploadPlaceholder.style.display = 'none';
+    uploadFile.style.display = 'none';
+    uploadProgress.style.display = 'block';
+
+    // Upload to Imgbb if API key exists, otherwise just show preview
+    if (imgbbApiKey && file.type.startsWith('image/')) {
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('key', imgbbApiKey);
+
+        // Simulate progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          progress += Math.random() * 20;
+          if (progress > 90) progress = 90;
+          progressFill.style.width = progress + '%';
+        }, 200);
+
+        const response = await fetch('https://api.imgbb.com/1/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
+
+        const result = await response.json();
+
+        if (result.success) {
+          uploadedImageUrl = result.data.url;
+          designImageUrl.value = uploadedImageUrl;
+
+          // Show preview
+          setTimeout(() => {
+            uploadProgress.style.display = 'none';
+            uploadFile.style.display = 'flex';
+            fileName.textContent = file.name;
+            previewImage.style.backgroundImage = `url(${result.data.thumb?.url || result.data.url})`;
+          }, 300);
+        } else {
+          throw new Error('Upload failed');
+        }
+      } catch (err) {
+        console.error('Upload error:', err);
+        // Fallback - show file locally
+        showLocalPreview(file);
+      }
+    } else {
+      // No API key or non-image file - show local preview
+      showLocalPreview(file);
+    }
+  });
+
+  function showLocalPreview(file) {
+    uploadProgress.style.display = 'none';
+    uploadFile.style.display = 'flex';
+    fileName.textContent = file.name;
+
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.style.backgroundImage = `url(${e.target.result})`;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewImage.style.backgroundImage = 'none';
+      previewImage.style.background = '#f0f0f0';
+    }
+  }
+
+  // Remove file
+  document.getElementById('RemoveFile').addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    fileInput.value = '';
+    uploadedImageUrl = '';
+    designImageUrl.value = '';
+    previewImage.style.backgroundImage = '';
+    uploadFile.style.display = 'none';
+    uploadPlaceholder.style.display = 'flex';
+  });
+
+  // ================================
+  // FORM SUBMISSION
+  // ================================
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const isCatalog = document.getElementById('PathCatalog').checked;
+
+    // Validation
+    if (isCatalog && !catalogInput.value) {
+      alert('Please select a design from the catalog.');
+      return;
+    }
+    if (!isCatalog && !fileInput.files.length && !uploadedImageUrl) {
+      alert('Please upload your design.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline-flex';
+
+    try {
+      // Prepare form data
+      const formData = new FormData();
+      formData.append('access_key', form.querySelector('input[name="access_key"]').value);
+      formData.append('subject', 'New Custom Order - ARZ');
+      formData.append('from_name', 'ARZ Custom Orders');
+      formData.append('name', form.querySelector('input[name="name"]').value);
+      formData.append('email', form.querySelector('input[name="email"]').value);
+      formData.append('phone', form.querySelector('input[name="phone"]').value);
+      formData.append('location', form.querySelector('input[name="location"]').value || '-');
+      formData.append('message', form.querySelector('textarea[name="message"]').value || '-');
+
+      // Size info
+      const sizeType = document.getElementById('SizeTypeInput').value;
+      if (sizeType === 'standard') {
+        const selectedSize = form.querySelector('input[name="size"]:checked');
+        formData.append('size', `Standard: ${selectedSize ? selectedSize.value : '-'}`);
+      } else {
+        const chest = form.querySelector('input[name="measurement_chest"]').value || '-';
+        const length = form.querySelector('input[name="measurement_length"]').value || '-';
+        const shoulder = form.querySelector('input[name="measurement_shoulder"]').value || '-';
+        const sleeve = form.querySelector('input[name="measurement_sleeve"]').value || '-';
+        formData.append('size', `Custom: Chest ${chest}" / Length ${length}" / Shoulder ${shoulder}" / Sleeve ${sleeve}"`);
+      }
+
+      // Design info
+      if (isCatalog) {
+        formData.append('design', `Catalog Selection: ${catalogInput.value}`);
+      } else {
+        const designUrl = uploadedImageUrl || 'File attached (see Discord)';
+        formData.append('design', `Custom Upload: ${fileInput.files[0]?.name || 'Design'}`);
+        if (uploadedImageUrl) {
+          formData.append('design_image_url', uploadedImageUrl);
+        }
+      }
+
+      // Submit to Web3Forms
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        // Send to Discord webhook if configured
+        const webhook = '{{ section.settings.discord_webhook }}';
+        if (webhook) {
+          const sizeInfo = formData.get('size');
+
+          // Build design info with image URL if available
+          let designInfo = isCatalog ? `Catalog: ${catalogInput.value}` : `Custom Upload: ${fileInput.files[0]?.name || 'Design'}`;
+          if (uploadedImageUrl) {
+            designInfo += `\n**Image:** ${uploadedImageUrl}`;
+          }
+
+          const embedFields = [
+            { name: 'Name', value: formData.get('name'), inline: true },
+            { name: 'Email', value: formData.get('email'), inline: true },
+            { name: 'Phone', value: formData.get('phone'), inline: true },
+            { name: 'Location', value: formData.get('location') || '-', inline: true },
+            { name: 'Size', value: sizeInfo, inline: false },
+            { name: 'Design', value: designInfo, inline: false },
+            { name: 'Message', value: formData.get('message') || '-', inline: false }
+          ];
+
+          const embed = {
+            title: 'New Custom Order Request',
+            color: 12497525,
+            fields: embedFields,
+            timestamp: new Date().toISOString()
+          };
+
+          // Add image preview to embed if available
+          if (uploadedImageUrl) {
+            embed.image = { url: uploadedImageUrl };
+          }
+
+          fetch(webhook, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ embeds: [embed] })
+          }).catch(() => {});
+        }
+
+        // Show success
+        form.style.display = 'none';
+        document.querySelector('.form-progress').style.display = 'none';
+        const successEl = document.getElementById('FormSuccess');
+        successEl.style.display = 'flex';
+
+      } else {
+        throw new Error(result.message || 'Submission failed');
+      }
+    } catch (err) {
+      console.error('Submit error:', err);
+      document.getElementById('FormErrorMessage').textContent = err.message || 'Something went wrong. Please try again.';
+      document.getElementById('FormError').style.display = 'flex';
+    } finally {
+      submitBtn.disabled = false;
+      btnText.style.display = 'inline-flex';
+      btnLoading.style.display = 'none';
+    }
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Custom Tailored Form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Custom Tailored"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Create your perfect garment, crafted exclusively for you"
+    },
+    {
+      "type": "header",
+      "content": "Design Showcase Section"
+    },
+    {
+      "type": "text",
+      "id": "showcase_title",
+      "label": "Showcase Title",
+      "default": "Our Designs"
+    },
+    {
+      "type": "text",
+      "id": "showcase_subtitle",
+      "label": "Showcase Subtitle",
+      "default": "Browse our collection and find your perfect style"
+    },
+    {
+      "type": "header",
+      "content": "Form Settings"
+    },
+    {
+      "type": "text",
+      "id": "available_sizes",
+      "label": "Sizes",
+      "default": "S,M,L,XL,XXL",
+      "info": "Comma-separated"
+    },
+    {
+      "type": "header",
+      "content": "Contact (optional)"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp",
+      "label": "WhatsApp"
+    },
+    {
+      "type": "header",
+      "content": "Form Integration"
+    },
+    {
+      "type": "text",
+      "id": "web3forms_key",
+      "label": "Web3Forms Key",
+      "info": "Get your free key at web3forms.com"
+    },
+    {
+      "type": "text",
+      "id": "imgbb_api_key",
+      "label": "ImgBB API Key",
+      "info": "Free image hosting for uploads. Get key at api.imgbb.com (free, no account required)"
+    },
+    {
+      "type": "text",
+      "id": "discord_webhook",
+      "label": "Discord Webhook",
+      "info": "Optional: receive orders with images in Discord"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "catalog_item",
+      "name": "Design",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Design"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price (optional)",
+          "info": "e.g., From ৳5,000"
+        },
+        {
+          "type": "header",
+          "content": "Images (up to 5)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image 1 (Main)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Image 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Image 4"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_5",
+          "label": "Image 5"
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Custom Tailored Form" }]
+}
+{% endschema %}

@@ -1,0 +1,747 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "ARZ Theme",
+    "theme_version": "1.0.0",
+    "theme_author": "ARZ",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_primary_font",
+        "default": "inter_n4",
+        "label": "Primary Font"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Global Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary / Buttons",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Muted text",
+        "default": "#666666"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Borders",
+        "default": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "select",
+        "id": "max_page_width",
+        "label": "Page width",
+        "options": [
+          {
+            "value": "1200px",
+            "label": "Narrow (1200px)"
+          },
+          {
+            "value": "1400px",
+            "label": "Standard (1400px)"
+          },
+          {
+            "value": "1600px",
+            "label": "Wide (1600px)"
+          }
+        ],
+        "default": "1400px"
+      },
+      {
+        "type": "range",
+        "id": "min_page_margin",
+        "min": 16,
+        "max": 80,
+        "step": 4,
+        "unit": "px",
+        "label": "Page margin",
+        "default": 40
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cart_drawer_enabled",
+        "label": "Enable cart drawer",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_title",
+        "label": "Cart drawer title",
+        "default": "Your Cart"
+      },
+      {
+        "type": "text",
+        "id": "cart_empty_message",
+        "label": "Empty cart message",
+        "default": "Your cart is empty"
+      },
+      {
+        "type": "checkbox",
+        "id": "free_shipping_enabled",
+        "label": "Enable free shipping progress",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Product",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_quantity_selector",
+        "label": "Show quantity selector",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "add_to_cart_text",
+        "label": "Add to cart text",
+        "default": "Add to Cart"
+      },
+      {
+        "type": "text",
+        "id": "sold_out_text",
+        "label": "Sold out text",
+        "default": "Sold Out"
+      },
+      {
+        "type": "header",
+        "content": "Stock Indicator"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_stock_indicator",
+        "label": "Show low stock warning",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "low_stock_threshold",
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "default": 5,
+        "label": "Low stock threshold"
+      },
+      {
+        "type": "header",
+        "content": "Size Guide"
+      },
+      {
+        "type": "paragraph",
+        "content": "Upload images for your global size guides. The product page will automatically select the correct image based on the product type."
+      },
+      {
+        "type": "image_picker",
+        "id": "size_guide_default",
+        "label": "Default Size Guide"
+      },
+      {
+        "type": "image_picker",
+        "id": "size_guide_pants",
+        "label": "Pants / Trousers Size Guide",
+        "info": "Used for products with type 'Pant', 'Trouser', 'Denim', 'Track Pant'"
+      },
+      {
+        "type": "image_picker",
+        "id": "size_guide_panjabi",
+        "label": "Panjabi / Tops Size Guide",
+        "info": "Used for products with type 'Panjabi', 'Top', 'Shirt'"
+      },
+      {
+        "type": "image_picker",
+        "id": "size_guide_eden",
+        "label": "Eden Size Guide",
+        "info": "Used for Eden collection products"
+      },
+      {
+        "type": "header",
+        "content": "Product Card"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_hover_video",
+        "label": "Enable Hover Video",
+        "default": true,
+        "info": "Plays the first video found in product media on hover."
+      },
+      {
+        "type": "header",
+        "content": "Product Recommendations"
+      },
+      {
+        "type": "text",
+        "id": "recommendations_title",
+        "label": "Recommendations title",
+        "default": "You May Also Like"
+      },
+      {
+        "type": "header",
+        "content": "Product Title"
+      },
+      {
+        "type": "range",
+        "id": "product_title_size",
+        "min": 20,
+        "max": 48,
+        "step": 2,
+        "unit": "px",
+        "label": "Title Font Size",
+        "default": 32
+      },
+      {
+        "type": "range",
+        "id": "product_title_weight",
+        "min": 300,
+        "max": 800,
+        "step": 100,
+        "label": "Title Font Weight",
+        "default": 500
+      },
+      {
+        "type": "range",
+        "id": "product_title_line_height",
+        "min": 1,
+        "max": 2,
+        "step": 0.1,
+        "label": "Title Line Height",
+        "default": 1.3
+      },
+      {
+        "type": "range",
+        "id": "product_title_margin",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Title Bottom Margin",
+        "default": 12
+      },
+      {
+        "type": "text",
+        "id": "product_title_letter_spacing",
+        "label": "Title Letter Spacing",
+        "default": "-0.02em"
+      },
+      {
+        "type": "color",
+        "id": "product_title_color",
+        "label": "Title Color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "header",
+        "content": "Product Price"
+      },
+      {
+        "type": "range",
+        "id": "product_price_size",
+        "min": 16,
+        "max": 36,
+        "step": 2,
+        "unit": "px",
+        "label": "Price Font Size",
+        "default": 24
+      },
+      {
+        "type": "range",
+        "id": "product_price_weight",
+        "min": 400,
+        "max": 800,
+        "step": 100,
+        "label": "Price Font Weight",
+        "default": 600
+      },
+      {
+        "type": "color",
+        "id": "product_price_color",
+        "label": "Price Color",
+        "default": "#1a1a1a"
+      }
+    ]
+  },
+  {
+    "name": "Global Sale",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "global_sale_enabled",
+        "label": "Enable Global Sale",
+        "default": false,
+        "info": "Applies discount to all products without existing compare_at_price"
+      },
+      {
+        "type": "range",
+        "id": "global_sale_percentage",
+        "min": 5,
+        "max": 50,
+        "step": 5,
+        "unit": "%",
+        "label": "Discount Percentage",
+        "default": 10
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sale_percentage",
+        "label": "Show percentage on badge",
+        "default": true,
+        "info": "Display 'SALE -20%' instead of just 'SALE'"
+      },
+      {
+        "type": "text",
+        "id": "auto_discount_code",
+        "label": "Auto-Apply Discount Code",
+        "info": "Discount code to automatically apply at Shopify checkout. Leave empty to disable."
+      }
+    ]
+  },
+  {
+    "name": "Eid Features",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Eid Popup"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_eid_popup",
+        "label": "Enable Eid Popup",
+        "default": false,
+        "info": "Show a promotional popup for Eid celebrations"
+      },
+      {
+        "type": "image_picker",
+        "id": "eid_popup_image",
+        "label": "Popup Image"
+      },
+      {
+        "type": "text",
+        "id": "eid_popup_subtitle",
+        "label": "Subtitle (Optional)",
+        "info": "Small text above the heading"
+      },
+      {
+        "type": "text",
+        "id": "eid_popup_heading",
+        "label": "Popup Heading",
+        "default": "Eid Mubarak! 🌙"
+      },
+      {
+        "type": "richtext",
+        "id": "eid_popup_description",
+        "label": "Popup Description",
+        "default": "<p>Celebrate this special occasion with exclusive Eid offers!</p>"
+      },
+      {
+        "type": "text",
+        "id": "eid_popup_discount_code",
+        "label": "Discount Code (Optional)",
+        "info": "Display a promo code with copy button"
+      },
+      {
+        "type": "text",
+        "id": "eid_popup_extra_text",
+        "label": "Extra Text (Optional)",
+        "info": "Additional text or details to display"
+      },
+      {
+        "type": "text",
+        "id": "eid_popup_button_text",
+        "label": "Primary Button Text",
+        "default": "Shop Eid Collection"
+      },
+      {
+        "type": "url",
+        "id": "eid_popup_button_link",
+        "label": "Primary Button Link"
+      },
+      {
+        "type": "text",
+        "id": "eid_popup_secondary_button_text",
+        "label": "Secondary Button Text (Optional)",
+        "info": "Optional second button below primary"
+      },
+      {
+        "type": "url",
+        "id": "eid_popup_secondary_button_link",
+        "label": "Secondary Button Link"
+      },
+      {
+        "type": "select",
+        "id": "eid_popup_frequency",
+        "label": "Display Frequency",
+        "options": [
+          {
+            "value": "always",
+            "label": "Every Page Load"
+          },
+          {
+            "value": "once_per_session",
+            "label": "Once Per Session"
+          },
+          {
+            "value": "once",
+            "label": "Once (Until Cleared)"
+          }
+        ],
+        "default": "once_per_session",
+        "info": "How often to show the popup to users"
+      },
+      {
+        "type": "range",
+        "id": "eid_popup_delay",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "s",
+        "label": "Popup Delay",
+        "default": 2,
+        "info": "Delay before showing popup after page load"
+      },
+      {
+        "type": "header",
+        "content": "Popup Styling"
+      },
+      {
+        "type": "color",
+        "id": "eid_popup_bg_color",
+        "label": "Background Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "eid_popup_heading_color",
+        "label": "Heading Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "eid_popup_text_color",
+        "label": "Text Color",
+        "default": "#666666"
+      },
+      {
+        "type": "color",
+        "id": "eid_popup_button_bg",
+        "label": "Button Background",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "eid_popup_button_text_color",
+        "label": "Button Text Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "eid_popup_border_radius",
+        "min": 0,
+        "max": 30,
+        "step": 2,
+        "unit": "px",
+        "label": "Border Radius",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "eid_popup_button_radius",
+        "min": 0,
+        "max": 50,
+        "step": 2,
+        "unit": "px",
+        "label": "Button Border Radius",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "eid_popup_overlay_opacity",
+        "min": 0,
+        "max": 90,
+        "step": 5,
+        "unit": "%",
+        "label": "Overlay Opacity",
+        "default": 70
+      },
+      {
+        "type": "header",
+        "content": "Eid Hero Button"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_eid_hero_button",
+        "label": "Enable Special Eid Button in Hero",
+        "default": false,
+        "info": "Replaces regular hero buttons with a festive Eid button"
+      },
+      {
+        "type": "text",
+        "id": "eid_hero_button_text",
+        "label": "Button Text",
+        "default": "Shop Eid Collection"
+      },
+      {
+        "type": "url",
+        "id": "eid_hero_button_link",
+        "label": "Button Link",
+        "default": "/collections/all"
+      },
+      {
+        "type": "header",
+        "content": "Eid Decorations"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_eid_decorations",
+        "label": "Enable Eid Decorations",
+        "default": false,
+        "info": "Show decorative Eid elements throughout the website"
+      },
+      {
+        "type": "select",
+        "id": "eid_decoration_style",
+        "label": "Decoration Style",
+        "options": [
+          {
+            "value": "festive",
+            "label": "Full Festive (Lights + Confetti + Everything!)"
+          },
+          {
+            "value": "lanterns",
+            "label": "Colorful Lanterns"
+          },
+          {
+            "value": "fireworks",
+            "label": "Fireworks Celebration"
+          }
+        ],
+        "default": "festive",
+        "info": "Choose your Eid vibe!"
+      },
+      {
+        "type": "color",
+        "id": "eid_decoration_color",
+        "label": "Decoration Color",
+        "default": "#D4AF37"
+      },
+      {
+        "type": "checkbox",
+        "id": "eid_decoration_animate",
+        "label": "Animate Decorations",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Prepayment (bKash)",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Payment Details"
+      },
+      {
+        "type": "text",
+        "id": "prepay_bkash_number",
+        "label": "bKash Number",
+        "default": "01341630198",
+        "info": "The bKash number customers send advance payment to"
+      },
+      {
+        "type": "text",
+        "id": "prepay_advance_amount",
+        "label": "Advance Amount (৳)",
+        "default": "2000",
+        "info": "The advance amount in Taka (without ৳ symbol)"
+      },
+      {
+        "type": "header",
+        "content": "Step 1: Payment Instructions"
+      },
+      {
+        "type": "text",
+        "id": "prepay_step1_title",
+        "label": "Title",
+        "default": "Advance Payment to Book"
+      },
+      {
+        "type": "textarea",
+        "id": "prepay_step1_desc",
+        "label": "Description",
+        "default": "This product is sold-out. Upon huge request, we are taking pre-orders for EID UL ADHA 2026. Delivery will be done by 15 MAY, 2026. Kindly advance 2000 BDT via Bkash (Send Money) to book this product. The rest payment can be done upon cash on delivery. Thank you for choosing Arz."
+      },
+      {
+        "type": "text",
+        "id": "prepay_bkash_label",
+        "label": "bKash Number Label",
+        "default": "bKash (Send Money)"
+      },
+      {
+        "type": "text",
+        "id": "prepay_amount_label",
+        "label": "Advance Amount Label",
+        "default": "Advance Amount"
+      },
+      {
+        "type": "text",
+        "id": "prepay_cod_label",
+        "label": "Cash on Delivery Label",
+        "default": "Cash on Delivery"
+      },
+      {
+        "type": "text",
+        "id": "prepay_copy_btn",
+        "label": "Copy Button Text",
+        "default": "Copy bKash Number"
+      },
+      {
+        "type": "text",
+        "id": "prepay_sent_btn",
+        "label": "Payment Sent Button Text",
+        "default": "CONFIRM PAYMENT"
+      },
+      {
+        "type": "header",
+        "content": "Step 2: Transaction ID"
+      },
+      {
+        "type": "text",
+        "id": "prepay_step2_title",
+        "label": "Title",
+        "default": "bKash Send Money"
+      },
+      {
+        "type": "textarea",
+        "id": "prepay_step2_desc",
+        "label": "Description",
+        "default": "Enter the Transaction ID or the number you sent from."
+      },
+      {
+        "type": "text",
+        "id": "prepay_trx_placeholder",
+        "label": "TrxID Input Placeholder",
+        "default": "e.g. TRX1234ABCD or 01XXXXXXXXX"
+      },
+      {
+        "type": "text",
+        "id": "prepay_trx_hint",
+        "label": "TrxID Input Hint",
+        "default": "Minimum 4 characters"
+      },
+      {
+        "type": "text",
+        "id": "prepay_confirm_btn",
+        "label": "Confirm Button Text",
+        "default": "CONFIRM & ADD TO CART"
+      },
+      {
+        "type": "text",
+        "id": "prepay_back_btn",
+        "label": "Back Button Text",
+        "default": "← Go Back"
+      }
+    ]
+  },
+  {
+    "name": "Branding",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be scaled down to 32 x 32px"
+      }
+    ]
+  },
+  {
+    "name": "WhatsApp Ordering",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_whatsapp_ordering",
+        "label": "Enable WhatsApp Ordering",
+        "default": false,
+        "info": "Replaces add to cart and checkout buttons with WhatsApp links"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "WhatsApp Number",
+        "default": "+8801341630198",
+        "info": "Include country code (e.g., +880 for Bangladesh)"
+      },
+      {
+          "type": "text",
+          "id": "whatsapp_button_text",
+          "label": "Button Text",
+          "default": "Book now"
+        },
+      {
+          "type": "textarea",
+          "id": "whatsapp_message_template",
+          "label": "Message Template",
+          "default": "Hello! I want to order:\n\nProduct: {product_title}\nVariant: {product_variant}\nPrice: {product_price}\nQuantity: {quantity}\n\nLink: {product_link}",
+          "info": "Available variables: {product_title}, {product_variant}, {product_price}, {quantity}, {product_link}"
+        }
+    ]
+  },
+  {
+    "name": "Currency Selector",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_currency_selector",
+        "label": "Enable Sticky Currency Selector",
+        "default": true
+      }
+    ]
+  }
+]

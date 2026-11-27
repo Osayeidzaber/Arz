@@ -1,0 +1,266 @@
+{% comment %}
+  This section is used in the search template to render search results for
+  products, articles, and pages.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/search
+{% endcomment %}
+
+<div class="search-page">
+  <div class="search-page__container">
+    <h1 class="search-page__title">{{ 'search.title' | t }}</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <div class="search-page__input-wrapper">
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          class="search-page__input"
+          autocomplete="off"
+        >
+        <button type="submit" class="search-page__submit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <span class="visually-hidden">{{ 'search.submit' | t }}</span>
+        </button>
+      </div>
+    </form>
+
+    {% if search.performed %}
+      {% if search.results_count == 0 %}
+        <div class="search-page__empty">
+          <p class="search-page__empty-message">{{ 'search.no_results_html' | t: terms: search.terms }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="search-page__button">
+            {{ '404.back_to_shopping' | t }}
+          </a>
+        </div>
+      {% else %}
+        <p class="search-page__results-count">{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
+
+        <div class="product-grid">
+          {% paginate search.results by 24 %}
+            {% for result in search.results %}
+              {% if result.object_type == 'product' %}
+                {% render 'product-card', product: result, show_navigation: true %}
+              {% endif %}
+            {% endfor %}
+
+            {% if paginate.pages > 1 %}
+              <div class="pagination-wrapper">
+                {{ paginate | default_pagination }}
+              </div>
+            {% endif %}
+          {% endpaginate %}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+.search-page {
+  padding: 60px 0 80px;
+  min-height: calc(100vh - var(--header-total-height) - var(--footer-height));
+  background: #efebe0;
+}
+
+.search-page__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.search-page__title {
+  font-size: 32px;
+  font-weight: 400;
+  color: #3D2500;
+  margin: 0 0 40px;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.search-page__form {
+  margin-bottom: 60px;
+}
+
+.search-page__input-wrapper {
+  display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1.5px solid #ddd;
+  border-radius: 50px;
+  overflow: hidden;
+  background: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.search-page__input-wrapper:focus-within {
+  border-color: #3D2500;
+}
+
+.search-page__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a1a;
+  background: transparent;
+}
+
+.search-page__input::placeholder {
+  color: #999;
+}
+
+.search-page__submit {
+  padding: 14px 20px;
+  background: #3D2500;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.search-page__submit:hover {
+  background: #2a1a00;
+}
+
+.search-page__results-count {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 30px;
+  text-align: center;
+}
+
+.search-page__empty {
+  text-align: center;
+  padding: 80px 20px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.search-page__empty-message {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 30px;
+}
+
+.search-page__button {
+  display: inline-block;
+  padding: 14px 30px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: #3D2500;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.search-page__button:hover {
+  background: #2a1a00;
+  transform: translateY(-2px);
+}
+
+.search-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.search-result {
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-result:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.search-result__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.search-result__image-wrapper {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.search-result__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.search-result:hover .search-result__image {
+  transform: scale(1.05);
+}
+
+.search-result__content {
+  padding: 20px;
+}
+
+.search-result__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-result__price {
+  font-size: 15px;
+  font-weight: 600;
+  color: #3D2500;
+  margin: 0 0 8px;
+}
+
+.search-result__excerpt {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.search-pagination {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+  .search-page__container {
+    padding: 0 20px;
+  }
+  
+  .search-results {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.search",
+  "settings": []
+}
+{% endschema %}

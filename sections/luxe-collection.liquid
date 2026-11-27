@@ -1,0 +1,349 @@
+{%- assign collection = collections[section.settings.collection] -%}
+{%- assign product_limit = section.settings.product_limit | default: 4 -%}
+
+<section class="luxe-showcase luxe-showcase--{{ section.settings.layout }}" 
+         id="LuxeSection-{{ section.id }}"
+         style="--bg-color: {{ section.settings.bg_color | default: '#efebe0' }}; 
+                --text-color: {{ section.settings.text_color | default: '#1a1a1a' }};
+                --accent-color: {{ section.settings.accent_color | default: '#BFA27E' }};">
+  
+  <div class="luxe-showcase__background">
+    {%- if section.settings.bg_image != blank -%}
+      <img src="{{ section.settings.bg_image | image_url: width: 2000 }}" 
+           alt="{{ collection.title }}" 
+           class="luxe-showcase__bg-img"
+           loading="lazy">
+      <div class="luxe-showcase__overlay" style="background: {{ section.settings.overlay_color | default: '#000' }}; opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+    {%- endif -%}
+  </div>
+
+  <div class="luxe-showcase__content container">
+    <div class="luxe-showcase__header animate-on-scroll fade-up">
+      {%- if section.settings.subtitle != blank -%}
+        <span class="luxe-showcase__subtitle">{{ section.settings.subtitle }}</span>
+      {%- endif -%}
+      <h2 class="luxe-showcase__title" style="font-size: {{ section.settings.title_size }}px;">
+        {{ section.settings.title | default: collection.title | default: "Signature Collection" }}
+      </h2>
+      {%- if section.settings.description != blank -%}
+        <p class="luxe-showcase__description">{{ section.settings.description }}</p>
+      {%- endif -%}
+      {%- if section.settings.button_text != blank -%}
+        <a href="{{ collection.url }}" class="luxe-showcase__button btn-animated">
+          {{ section.settings.button_text }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="luxe-showcase__grid">
+      {%- if collection != blank -%}
+        {%- for product in collection.products limit: product_limit -%}
+          <div class="luxe-product-card animate-on-scroll" style="--delay: {{ forloop.index | times: 0.1 }}s">
+            <a href="{{ product.url }}" class="luxe-product-card__link">
+              <div class="luxe-product-card__media">
+                <img src="{{ product.featured_image | image_url: width: 600 }}" 
+                     alt="{{ product.title }}" 
+                     loading="lazy"
+                     class="luxe-product-card__img">
+                <div class="luxe-product-card__hover">
+                  <span class="luxe-product-card__view">{{ section.settings.hover_text | default: "View Piece" }}</span>
+                </div>
+              </div>
+              <div class="luxe-product-card__info">
+                <h3 class="luxe-product-card__title">{{ product.title }}</h3>
+                <span class="luxe-product-card__price">{{ product.price | money }}</span>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..product_limit) -%}
+          <div class="luxe-product-card">
+            <div class="luxe-product-card__media">
+              <div class="luxe-product-card__placeholder"></div>
+            </div>
+            <div class="luxe-product-card__info">
+              <h3 class="luxe-product-card__title">Luxe Item {{ i }}</h3>
+              <span class="luxe-product-card__price">$120.00</span>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.luxe-showcase {
+  position: relative;
+  padding: 120px 0;
+  background: var(--bg-color);
+  color: var(--text-color);
+  overflow: hidden;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.luxe-showcase--centered { text-align: center; }
+
+.luxe-showcase__background {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.luxe-showcase__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.luxe-showcase__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.luxe-showcase__content {
+  position: relative;
+  z-index: 10;
+}
+
+.luxe-showcase__subtitle {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  color: var(--accent-color);
+}
+
+.luxe-showcase__title {
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 30px;
+  letter-spacing: -0.04em;
+}
+
+.luxe-showcase__description {
+  max-width: 500px;
+  margin: 0 auto 40px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.luxe-showcase--split .luxe-showcase__description { margin-left: 0; }
+
+.luxe-showcase__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0;
+  margin-top: 60px;
+}
+
+.luxe-product-card {
+  position: relative;
+  transition: transform 0.4s var(--animation-easing);
+}
+
+.luxe-product-card:hover {
+  transform: translateY(-10px);
+}
+
+.luxe-product-card__media {
+  position: relative;
+  aspect-ratio: 1/1.2;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.luxe-product-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--animation-easing);
+}
+
+.luxe-product-card:hover .luxe-product-card__img {
+  transform: scale(1.05);
+}
+
+.luxe-product-card__hover {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.luxe-product-card:hover .luxe-product-card__hover {
+  opacity: 1;
+}
+
+.luxe-product-card__view {
+  background: #fff;
+  color: #000;
+  padding: 12px 24px;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.luxe-product-card__info {
+  padding-top: 20px;
+}
+
+.luxe-product-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.luxe-product-card__price {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.luxe-product-card__placeholder {
+  width: 100%;
+  height: 100%;
+  background: #eee;
+}
+
+@media (max-width: 768px) {
+  .luxe-showcase { padding: 60px 0; }
+  .luxe-showcase__grid { grid-template-columns: repeat(2, 1fr); gap: 0; }
+  .luxe-showcase__title { font-size: 32px !important; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Luxe Showcase",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "label": "Product Limit"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout Style",
+      "options": [
+        { "value": "centered", "label": "Centered" },
+        { "value": "split", "label": "Split Content" }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "header",
+      "content": "Aesthetics"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#efebe0"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Overlay Opacity",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / Subtitle Color",
+      "default": "#BFA27E"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "SIGNATURE PIECES"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Custom Title",
+      "info": "Leave blank to use collection name"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 40,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 64
+    },
+    {
+      "type": "text",
+      "id": "hover_text",
+      "label": "Hover Text",
+      "default": "View Piece"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Elegance redefined. Discover the essence of artisanal craftsmanship in our latest signature release."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Explore Selection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxe Showcase"
+    }
+  ]
+}
+{% endschema %}

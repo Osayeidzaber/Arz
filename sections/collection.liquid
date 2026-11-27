@@ -1,0 +1,404 @@
+{% comment %}
+  Collection Page - Matching All Products Page EXACTLY
+  Features: Horizontal Tabs, Couture Preview Toggle, Product Count, Filter
+{% endcomment %}
+
+{%- assign main_collection = collection -%}
+{%- assign page_title = collection.title -%}
+{%- assign products_count = collection.products_count -%}
+
+{%- comment -%} Force 'All' behavior if handle is 'all' {%- endcomment -%}
+{%- if collection.handle == 'all' or collection.handle == 'all-products' -%}
+  {%- assign main_collection = section.settings.main_collection | default: collections.all -%}
+  {%- assign page_title = section.settings.all_page_title | default: 'All Collections' -%}
+  {%- assign products_count = main_collection.products_count -%}
+{%- endif -%}
+
+<div class="all-products-page">
+  {%- comment -%} Page Header {%- endcomment -%}
+  <div class="all-products__header">
+    <h1 class="all-products__title">
+      {{ page_title }}
+      <sup class="all-products__count" data-product-count>{{ products_count }}</sup>
+    </h1>
+  </div>
+
+  {%- comment -%} Category Tabs {%- endcomment -%}
+  <div class="all-products__tabs-wrapper">
+    <div class="all-products__tabs">
+      <a href="/collections/all" class="all-products__tab {% if collection.handle == 'all' %}is-active{% endif %}">All</a>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'category_tab' and block.settings.collection != blank -%}
+          <a href="{{ block.settings.collection.url }}" 
+             class="all-products__tab {% if collection.handle == block.settings.collection.handle %}is-active{% endif %}">
+            {{ block.settings.tab_label | default: block.settings.collection.title }}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Controls Bar: Model Toggle + Product Count + Filter {%- endcomment -%}
+  <div class="all-products__controls">
+    <div class="collection__model-toggle" style="display: none;">
+      <label class="model-toggle">
+        <input type="checkbox" id="modelToggle" data-model-toggle>
+        <span class="model-toggle__slider"></span>
+      </label>
+      <span class="model-toggle__label">Couture Preview</span>
+    </div>
+    
+    <div class="all-products__product-count">
+      <span data-visible-count>{{ products_count }}</span> products
+    </div>
+    
+    {%- if section.settings.show_filter -%}
+      <button class="all-products__filter-btn" data-filter-toggle>Filter</button>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Product Grid {%- endcomment -%}
+  <div class="all-products__grid-wrapper">
+    <div class="product-grid">
+      {%- paginate main_collection.products by 500 -%}
+        {%- comment -%} FIRST PASS: AVAILABLE PRODUCTS {%- endcomment -%}
+        {%- for product in main_collection.products -%}
+          {%- if product.available -%}
+            {% render 'product-card', 
+              product: product, 
+              show_arrows: section.settings.show_slider, 
+              show_hover: section.settings.show_hover, 
+              show_zoom: section.settings.show_zoom 
+            %}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%} SECOND PASS: SOLD OUT PRODUCTS {%- endcomment -%}
+        {%- for product in main_collection.products -%}
+          {%- unless product.available -%}
+            {% render 'product-card', 
+              product: product, 
+              show_arrows: section.settings.show_slider, 
+              show_hover: section.settings.show_hover, 
+              show_zoom: section.settings.show_zoom 
+            %}
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</div>
+
+
+
+{% stylesheet %}
+/* Inherits styles from all-products.liquid via theme.css or duplicated if needed.
+   Since all-products.liquid has scoped CSS, we need to duplicate it here or move it to theme.css.
+   For safety, mirroring the CSS here.
+*/
+
+.all-products-page {
+  background: #efebe0;
+  min-height: 100vh;
+  padding-top: 0; /* Managed by natural flow */
+}
+
+/* Header */
+.all-products__header {
+  padding: 0 40px 30px;
+}
+
+.all-products__title {
+  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.all-products__count {
+  font-size: 0.4em;
+  font-weight: 400;
+  color: #666;
+  vertical-align: super;
+}
+
+/* Category Tabs */
+.all-products__tabs-wrapper {
+  padding: 0 40px 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.all-products__tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  padding-bottom: 15px;
+  min-width: max-content;
+}
+
+.all-products__tab {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  text-decoration: none; /* Changed from button style */
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.all-products__tab:hover {
+  color: #1a1a1a;
+}
+
+.all-products__tab.is-active {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.all-products__tab.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #1a1a1a;
+}
+
+/* Controls Bar */
+.all-products__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.all-products__model-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Model Toggle Switch */
+.model-toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.model-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.model-toggle__slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.model-toggle__slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.model-toggle input:checked + .model-toggle__slider {
+  background-color: #1a1a1a;
+}
+
+.model-toggle input:checked + .model-toggle__slider::before {
+  transform: translateX(20px);
+}
+
+.model-toggle__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.all-products__product-count {
+  font-size: 13px;
+  color: #666;
+}
+
+.all-products__filter-btn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: color 0.2s ease;
+}
+
+.all-products__filter-btn:hover {
+  color: #1a1a1a;
+}
+
+/* Grid Wrapper */
+.all-products__grid-wrapper {
+  padding: 20px 40px 80px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .all-products__header,
+  .all-products__tabs-wrapper,
+  .all-products__controls,
+  .all-products__grid-wrapper {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .all-products__tabs {
+    gap: 16px;
+  }
+  
+  .all-products__tab {
+    font-size: 12px;
+  }
+  
+  .all-products__controls {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .all-products__product-count {
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .product-grid {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .all-products-page {
+    padding-top: 0;
+  }
+  
+  .all-products__header {
+    padding: 0 20px 5px;
+  }
+  
+  .all-products__title {
+    font-size: 24px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_filter",
+      "label": "Show Filter Button",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Product Card Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_slider",
+      "label": "Enable Image Slider",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hover",
+      "label": "Enable Hover Flip",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_zoom",
+      "label": "Enable Hover Zoom",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "main_collection",
+      "label": "All Products Collection",
+      "info": "Used when viewing /collections/all. Overrides the default 'All' collection."
+    },
+    {
+      "type": "text",
+      "id": "all_page_title",
+      "label": "'All' Page Title",
+      "default": "All Collections"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_tab",
+      "name": "Category Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab Label",
+          "info": "Leave blank to use collection title"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

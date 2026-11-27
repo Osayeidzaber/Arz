@@ -1,0 +1,198 @@
+<style>
+  .sticky-currency-selector-wrapper {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    font-family: inherit;
+  }
+  
+  .currency-selector-btn {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a202c;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .currency-selector-btn:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .currency-selector-btn img {
+    border-radius: 2px;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  }
+
+  .currency-selector-btn .icon-caret {
+    width: 10px;
+    height: 10px;
+    color: #718096;
+    transition: transform 0.2s ease;
+  }
+
+  .currency-selector-btn[aria-expanded="true"] .icon-caret {
+    transform: rotate(180deg);
+  }
+
+  .currency-list-menu {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    width: max-content;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 8px 0;
+    margin: 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .currency-list-menu.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Custom scrollbar for the dropdown */
+  .currency-list-menu::-webkit-scrollbar {
+    width: 6px;
+  }
+  .currency-list-menu::-webkit-scrollbar-track {
+    background: #f7fafc; 
+    border-radius: 8px;
+  }
+  .currency-list-menu::-webkit-scrollbar-thumb {
+    background: #cbd5e0; 
+    border-radius: 8px;
+  }
+
+  .currency-item-btn {
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #4a5568;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    white-space: nowrap;
+  }
+
+  .currency-item-btn:hover, .currency-item-btn:focus {
+    background: #f7fafc;
+    color: #1a202c;
+  }
+
+  .currency-item-btn img {
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  }
+
+  .currency-item-btn.is-selected {
+    background: #edf2f7;
+    font-weight: 600;
+  }
+
+  /* Mobile adjustments */
+  @media screen and (max-width: 768px) {
+    .sticky-currency-selector-wrapper {
+      bottom: 12px;
+      left: 12px;
+    }
+  }
+</style>
+
+<div class="sticky-currency-selector-wrapper">
+  {%- form 'localization', id: 'StickyCountryForm', class: 'localization-form' -%}
+    <input type="hidden" name="country_code" id="StickyCurrencySelector-country_code" value="{{ localization.country.iso_code }}">
+    <input type="hidden" name="return_to" value="{{ request.path }}">
+    
+    <button type="button" class="currency-selector-btn" id="currency-selector-toggle" aria-expanded="false" aria-controls="currency-list-menu">
+      {%- assign current_iso_lower = localization.country.iso_code | downcase -%}
+      <img src="https://flagcdn.com/w20/{{ current_iso_lower }}.png" srcset="https://flagcdn.com/w40/{{ current_iso_lower }}.png 2x" width="20" height="15" alt="{{ localization.country.name }} flag" loading="lazy">
+      <span class="currency-code">{{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }}</span>
+      <svg class="icon-caret" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+
+    <ul id="currency-list-menu" class="currency-list-menu" role="listbox">
+      {%- for country in localization.available_countries -%}
+        {%- assign iso_lower = country.iso_code | downcase -%}
+        <li role="option" aria-selected="{% if country.iso_code == localization.country.iso_code %}true{% else %}false{% endif %}">
+          <button type="button" class="currency-item-btn {% if country.iso_code == localization.country.iso_code %}is-selected{% endif %}" data-value="{{ country.iso_code }}">
+            <img src="https://flagcdn.com/w20/{{ iso_lower }}.png" srcset="https://flagcdn.com/w40/{{ iso_lower }}.png 2x" width="20" height="15" alt="{{ country.name }} flag" loading="lazy">
+            <span>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</span>
+          </button>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endform -%}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const wrapper = document.querySelector('.sticky-currency-selector-wrapper');
+    if (!wrapper) return;
+    
+    const toggleBtn = wrapper.querySelector('#currency-selector-toggle');
+    const menu = wrapper.querySelector('#currency-list-menu');
+    const hiddenInput = wrapper.querySelector('#StickyCurrencySelector-country_code');
+    const form = wrapper.querySelector('#StickyCountryForm');
+    const itemBtns = wrapper.querySelectorAll('.currency-item-btn');
+
+    // Toggle menu
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', !isExpanded);
+      menu.classList.toggle('is-active');
+    });
+
+    // Handle selection
+    itemBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const value = this.getAttribute('data-value');
+        hiddenInput.value = value;
+        
+        // Some themes or browsers need the form to be submitted via HTMLFormElement prototype
+        // if another script is interfering or if the form API is shadowed.
+        if (typeof form.submit === 'function') {
+          form.submit();
+        } else {
+          HTMLFormElement.prototype.submit.call(form);
+        }
+      });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!wrapper.contains(e.target)) {
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        menu.classList.remove('is-active');
+      }
+    });
+  });
+</script>

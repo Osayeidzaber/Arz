@@ -1,0 +1,14 @@
+{
+    "sections": {
+        "main": {
+            "type": "all-products",
+            "settings": {
+                "page_title": "All Collections",
+                "show_filter": false
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

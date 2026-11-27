@@ -1,0 +1,53 @@
+{% style %}
+  {% # Loads all font variantions with display: swap %}
+  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  :root {
+    /* Typography */
+    --font-heading: 'Didot LP Display', serif;
+    --font-primary--family: 'Frank Ruhl Libre', serif;
+    --font-primary--style: normal;
+    --font-primary--weight: 400;
+    
+    /* Layout */
+    --page-width: {{ settings.max_page_width }};
+    --page-margin: {{ settings.min_page_margin }}px;
+    
+    /* Colors */
+    --color-background: {{ settings.color_bg | default: '#ffffff' }};
+    --color-foreground: {{ settings.color_text | default: '#1a1a1a' }};
+    --color-primary: {{ settings.color_primary | default: '#000000' }};
+    --color-accent: {{ settings.color_accent | default: '#000000' }};
+    --color-muted: {{ settings.color_muted | default: '#666666' }};
+    --color-border: {{ settings.color_border | default: 'rgba(0,0,0,0.08)' }};
+    
+    /* Borders & Radius */
+    --style-border-radius-inputs: 0px;
+    --style-border-radius-buttons: 0px;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    /* Shadows */
+    --shadow-subtle: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-medium: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-large: 0 8px 24px rgba(0,0,0,0.12);
+    
+    /* Spacing */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 40px;
+    --spacing-xl: 60px;
+    --spacing-2xl: 80px;
+    
+    /* Header height for spacing calculations */
+    --header-height: 70px;
+    --announcement-height: 40px;
+  }
+{% endstyle %}

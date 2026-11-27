@@ -1,0 +1,1001 @@
+/* Theme CSS - Clean Modern Design */
+
+/* Base Styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --font-family: 'Frank Ruhl Libre', serif;
+  --font-heading: 'Didot LP Display', serif;
+  --color-bg: #efebe0;
+  --color-white: #efebe0;
+  --page-width: 100vw;
+  --page-margin: 0px;
+  --color-text: #1a1a1a;
+  --color-primary: #000;
+  --color-accent: #BFA27E;
+  --announcement-height: 36px;
+  --header-height: 70px;
+  --header-total-height: calc(var(--announcement-height) + var(--header-height));
+  /* announcement + header */
+  --footer-height: 200px;
+  /* approximate footer height */
+  --animation-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --animation-formal: cubic-bezier(0.2, 0, 0, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  background-color: var(--color-bg);
+}
+
+/* Body - accounts for fixed header (announcement + navbar) */
+body {
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: 0;
+  margin: 0;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Offset for absolute/sticky header on non-index pages */
+body:not(.template-index) main#MainContent {
+  padding-top: var(--header-total-height);
+}
+
+/* Negative margins removed because header/announcement are fixed and do not take up space in the flow */
+body.template-index main#MainContent,
+body[class*="track-order"] main#MainContent {
+  margin-top: 0;
+}
+
+/* Force sections to be perfectly flush with NO gaps or dividers */
+.template-index .shopify-section {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.template-index .shopify-section+.shopify-section {
+  margin-top: 0 !important;
+}
+
+
+/* Main content area - account for header and footer */
+main#MainContent {
+  min-height: calc(100vh - var(--header-total-height) - var(--footer-height));
+  padding-bottom: 60px;
+  margin: 0;
+  width: 100%;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  background: transparent !important;
+}
+
+/* Remove any white overlays from skeleton theme on images */
+a img,
+.product-card__link img,
+.featured-card__link img,
+.collection-card img,
+.product-gallery__image,
+.product-card__media img {
+  background: transparent !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Ensure links with images don't add backgrounds */
+a:has(img) {
+  background: transparent !important;
+}
+
+a:has(img)::before,
+a:has(img)::after {
+  display: none !important;
+  background: transparent !important;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Product Page - Override skeleton theme margins */
+body.template-product .shopify-section {
+  display: block !important;
+  grid-template-columns: 1fr !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.template-product .shopify-section>*:not(.product-recommendations),
+body.template-product main#MainContent {
+  margin: 0 !important;
+  grid-column: 1 / -1 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+body.template-product .product-page {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Global Page Formatting - Override skeleton theme for all pages */
+body.template-page .shopify-section,
+body.template-page main#MainContent,
+body.template-article .shopify-section,
+body.template-article main#MainContent,
+body.template-collection .shopify-section,
+body.template-collection main#MainContent,
+body.template-blog .shopify-section,
+body.template-blog main#MainContent,
+body[class*="track-order"] .shopify-section,
+body[class*="track-order"] main#MainContent {
+  margin: 0 !important;
+  grid-column: 1 / -1 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+body.template-page .shopify-section,
+body.template-article .shopify-section,
+body.template-collection .shopify-section,
+body.template-blog .shopify-section {
+  display: block !important;
+  grid-template-columns: 1fr !important;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* Specific sections that should be edge-to-edge like hero */
+.product-grid-section,
+.collection-page {
+  padding: 0 !important;
+}
+
+.product-grid-section .container,
+.collection-page .container {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Buttons */
+.button {
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  text-align: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, background-color, color;
+}
+
+.button--primary {
+  background: #000;
+  color: var(--color-white);
+  border-color: #000;
+}
+
+.button--primary:hover {
+  background: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.button--secondary {
+  background: transparent;
+  color: #000;
+  border-color: #000;
+}
+
+.button--secondary:hover {
+  background: #000;
+  color: var(--color-white);
+}
+
+/* Utility Classes */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-to-content-link:focus {
+  z-index: 10002;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 10px 20px;
+  background: #fff;
+  color: #000;
+  width: auto;
+  height: auto;
+  clip: auto !important;
+  text-decoration: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+/* Animation Classes */
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.6s var(--animation-easing);
+}
+
+.fade-in.is-visible {
+  opacity: 1;
+}
+
+.slide-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s var(--animation-easing), transform 0.6s var(--animation-easing);
+}
+
+.slide-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* Placeholder SVG */
+.placeholder-svg {
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Form Elements */
+.field-input {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(216, 212, 201, 0.1);
+  border: 1px solid #d8d4c9;
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  transition: all 0.3s var(--animation-formal);
+  outline: none;
+}
+
+.field-input:focus {
+  background: #fff;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.field-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+  color: #000;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+
+/* Loading State */
+.is-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.is-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #000;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scroll Progress Bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--color-accent);
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 44px;
+  height: 44px;
+  background: #000;
+  color: var(--color-white);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-to-top:hover {
+  transform: translateY(-3px);
+}
+
+/* Shared Product Card Styles */
+.product-card {
+  position: relative;
+  background: var(--color-white);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+}
+
+.product-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card__media {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.product-card__media img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.product-card:hover .product-card__media img {
+  transform: scale(1.05);
+}
+
+/* Hover image sits on top - NO overlay effect */
+.product-card__media .primary-image,
+.product-card__image-wrapper .primary-image {
+  z-index: 1;
+}
+
+.product-card__media .hover-image,
+.product-card__image-wrapper .hover-image {
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+}
+
+/* Hover Video Styles */
+.product-card__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  background: #f5f5f5;
+}
+
+.product-card__video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-card:hover .product-card__video,
+.product-card__video.is-playing,
+.product-card:hover .product-card__video-player {
+  opacity: 1 !important;
+  z-index: 100 !important;
+  visibility: visible !important;
+}
+
+/* Hover effect - show second image on hover (desktop) */
+.product-card:hover .product-card__image-wrapper.hover-mode .hover-image,
+.product-card:hover .product-card__media.has-hover-image .hover-image {
+  opacity: 1;
+  z-index: 5;
+}
+
+/* Hide hover image if video is present and playing */
+.product-card:hover .product-card__image-wrapper.has-video .hover-image,
+.product-card:hover .product-card__media.has-video .hover-image {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  z-index: -1 !important;
+}
+
+/* Ensure video is ALWAYS on top when active */
+.product-card:hover .product-card__video,
+.product-card__video.is-playing,
+.product-card:hover .product-card__video-player {
+  opacity: 1 !important;
+  z-index: 100 !important;
+  visibility: visible !important;
+}
+
+.product-card__video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Duplicate removed */
+
+/* Fallback: Disable standard hover image if video is present */
+.product-card.has-video:hover .hover-image,
+.product-card:hover .has-video .hover-image {
+  display: none !important;
+}
+
+/* Fallback: Also work when hover-mode class is present on wrapper */
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover .hover-image {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+/* Touch support for mobile - show hover image on tap */
+.is-touched .hover-image {
+  opacity: 1 !important;
+  z-index: 99 !important;
+}
+
+.is-touched .primary-image,
+.is-touched .is-active {
+  opacity: 0 !important;
+}
+
+/* Disable zoom effect in slideshow mode to prevent jumpiness */
+.product-card:hover .product-card__media:not(:has(.slideshow-mode)) img,
+.product-card:hover .product-card__image-wrapper.hover-mode img {
+  transform: scale(1.05);
+}
+
+.product-card:hover .product-card__image-wrapper.slideshow-mode img {
+  transform: none;
+}
+
+/* Ensure no pseudo-element overlay */
+.product-card__media::before,
+.product-card__media::after,
+.product-card__link::before,
+.product-card__link::after {
+  display: none !important;
+}
+
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--color-white);
+  color: #1a1a1a;
+  padding: 5px 10px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 10;
+}
+
+.product-badge.sale {
+  background: #1a1a1a;
+  color: var(--color-white);
+}
+
+.product-badge.sold-out {
+  background: #c0392b;
+  color: var(--color-white);
+  letter-spacing: 2px;
+}
+
+.product-card.is-sold-out .product-card__media img {
+  filter: grayscale(100%);
+}
+
+
+.product-card__sold-out-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c0392b;
+  margin: 0;
+}
+
+.product-card__quick-add {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: var(--color-white);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.product-card:hover .product-card__quick-add {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card__quick-add:hover {
+  background: #1a1a1a;
+  color: var(--color-white);
+}
+
+.product-card__quick-add--whatsapp {
+  width: auto !important;
+  height: auto !important;
+  padding: 6px 14px !important;
+  border-radius: 4px !important;
+  background: #25D366 !important;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.product-card__quick-add--whatsapp:hover {
+  background: #20bd5b !important;
+}
+
+.product-card__info {
+  padding: 15px 12px;
+  background: var(--color-white);
+}
+
+.product-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+  .product-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .product-card__title {
+    padding-right: 0;
+    margin-bottom: 2px;
+  }
+}
+
+.product-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  flex: 1;
+  padding-right: 10px;
+  color: #1a1a1a;
+  line-height: 1.4;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card__price {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  color: #1a1a1a;
+}
+
+.product-card__price--compare {
+  text-decoration: line-through;
+  text-decoration-color: #c00;
+  color: #999;
+  margin-right: 8px;
+}
+
+.product-card__price--sale {
+  color: #c00;
+  font-weight: 600;
+}
+
+.product-card__variants {
+  font-size: 10px;
+  color: #888;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Standardize grid to 3 columns for "bigger" feel - connects with featured section */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 40px;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    /* Slightly tighter gap on mobile */
+  }
+  .product-badge {
+    top: 8px;
+    left: 8px;
+    padding: 4px 7px;
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+  .product-card__price {
+    font-size: 13px;
+  }
+  .product-card__price--compare {
+    margin-right: 5px;
+    font-size: 12px;
+  }
+}
+
+/* Luxe Showcase Specialty Styles */
+.luxe-showcase .animate-on-scroll {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--animation-formal), transform 0.8s var(--animation-formal);
+  transition-delay: var(--delay, 0s);
+}
+
+.luxe-showcase .animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.luxe-showcase--split .luxe-showcase__grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Staggered effect for cards in Luxe Showcase */
+@media (min-width: 769px) {
+  .luxe-showcase__grid>div:nth-child(even) {
+    transform: translateY(40px);
+  }
+
+  .luxe-showcase--split .luxe-showcase__header {
+    text-align: left;
+    margin-bottom: 0;
+    padding-right: 60px;
+  }
+
+  .luxe-showcase--split .luxe-showcase__content {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .luxe-showcase--split .luxe-showcase__header {
+    flex: 0 0 40%;
+  }
+
+  .luxe-showcase--split .luxe-showcase__grid {
+    flex: 1;
+  }
+}
+
+.luxe-product-card__hover {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background: rgba(239, 235, 224, 0.2);
+}
+
+.luxe-product-card__view {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.4s var(--animation-formal);
+}
+
+.luxe-product-card:hover .luxe-product-card__view {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Product Card Slideshow (Shared) */
+.product-card__image-wrapper {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.product-card__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+/* Higher specificity to override .hover-image opacity:0 when Couture Preview is active */
+.product-card .product-card__image.is-active,
+.product-card__image.is-active {
+  opacity: 1;
+  z-index: 3;
+}
+
+/* Couture Preview (Model View) - ensure second image shows when toggle is active */
+.product-card.model-view .product-card__image.is-active {
+  opacity: 1 !important;
+  z-index: 5 !important;
+}
+
+.product-card.model-view .product-card__image:not(.is-active) {
+  opacity: 0 !important;
+  z-index: 1 !important;
+}
+
+/* Product Card Navigation (WRCLO Style) */
+.product-card__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-card__arrow svg {
+  width: 16px;
+  height: 16px;
+  stroke: black;
+}
+
+.product-card:hover .product-card__arrow {
+  opacity: 1;
+}
+
+.product-card__arrow.prev {
+  left: 10px;
+}
+
+.product-card__arrow.next {
+  right: 10px;
+}
+
+.product-card__arrow:hover {
+  background: black;
+}
+
+.product-card__arrow:hover svg path {
+  stroke: white;
+}
+
+/* Progress Bar */
+.product-card__progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.product-card__progress-indicator {
+  height: 100%;
+  background: black;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: left;
+}
+
+/* Size Chart Image Styling */
+.size-chart__image {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.size-chart__image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Product Featured Video (Responsive Layout) */
+.product-featured-video--mobile {
+  display: none;
+}
+
+.product-featured-video--desktop {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent;
+  line-height: 0;
+}
+
+.product-featured-video__player {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media screen and (max-width: 749px) {
+  .product-featured-video--desktop {
+    display: none;
+  }
+
+  .product-featured-video--mobile {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .product-gallery:has(.product-featured-video--desktop) {
+    min-height: auto !important;
+  }
+}

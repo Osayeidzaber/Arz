@@ -1,0 +1,215 @@
+{% comment %}
+  Standardized Product Card
+  Usage: {% render 'product-card', product: product %}
+  Optional: show_hover (default: true), show_arrows (default: false), show_zoom (default: false)
+{% endcomment %}
+
+{%- comment -%} Default hover to true if not explicitly passed {%- endcomment -%}
+{%- unless show_hover == false -%}
+  {%- assign show_hover = true -%}
+{%- endunless -%}
+
+{%- comment -%} Sold Out Tag Check {%- endcomment -%}
+{%- assign card_is_sold_out = false -%}
+{%- unless product.available -%}{%- assign card_is_sold_out = true -%}{%- endunless -%}
+{%- if product.tags contains 'sold-out' -%}{%- assign card_is_sold_out = true -%}{%- endif -%}
+
+{%- comment -%} Sale Calculation Logic {%- endcomment -%}
+{%- assign has_sale = false -%}
+{%- assign sale_percentage = 0 -%}
+{%- assign original_price = product.price -%}
+{%- assign sale_price = product.price -%}
+{%- assign card_auto_discount = 0 -%}
+
+{%- comment -%} Hover Video Check {%- endcomment -%}
+{%- assign card_video = nil -%}
+{%- if settings.enable_hover_video -%}
+  {%- assign has_video_tag = false -%}
+  {%- for tag in product.tags -%}
+    {%- assign tag_lower = tag | downcase -%}
+    {%- if tag_lower == 'video-product' -%}
+      {%- assign has_video_tag = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if has_video_tag -%}
+    {%- for media in product.media -%}
+      {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+        {%- assign card_video = media -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} Priority 0: Auto-discount (fixed amount off for specific products) {%- endcomment -%}
+{%- assign card_title_lower = product.title | downcase -%}
+
+{%- if card_title_lower contains 'azraq' or card_title_lower contains 'nazr' or card_title_lower contains 'nazar' -%}
+  {%- assign card_auto_discount = 149900 -%}
+{%- elsif card_title_lower contains 'sahara' -%}
+  {%- assign card_auto_discount = 49900 -%}
+{%- endif -%}
+
+{%- if card_auto_discount > 0 -%}
+  {%- assign has_sale = true -%}
+  {%- assign original_price = product.price -%}
+  {%- assign sale_price = product.price | minus: card_auto_discount -%}
+  {%- if sale_price < 0 -%}{%- assign sale_price = 0 -%}{%- endif -%}
+  {%- assign sale_percentage = card_auto_discount | times: 100 | divided_by: product.price -%}
+{%- elsif product.compare_at_price > product.price -%}
+  {%- assign has_sale = true -%}
+  {%- assign original_price = product.compare_at_price -%}
+  {%- assign sale_price = product.price -%}
+  {%- assign sale_percentage = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+{%- else -%}
+  {%- comment -%} Priority 2: Check for sale-XX tag (custom percentage) {%- endcomment -%}
+  {%- assign tag_sale_percentage = nil -%}
+  {%- assign has_sale_tag = false -%}
+  {%- for tag in product.tags -%}
+    {%- assign tag_lower = tag | downcase -%}
+    {%- if tag_lower contains 'sale-' -%}
+      {%- assign tag_parts = tag_lower | split: 'sale-' -%}
+      {%- if tag_parts.size > 1 -%}
+        {%- assign tag_sale_percentage = tag_parts[1] | plus: 0 -%}
+        {%- if tag_sale_percentage > 0 and tag_sale_percentage <= 100 -%}
+          {%- assign has_sale = true -%}
+          {%- assign sale_percentage = tag_sale_percentage -%}
+          {%- assign original_price = product.price -%}
+          {%- assign discount_amount = product.price | times: sale_percentage | divided_by: 100.0 -%}
+          {%- assign sale_price = product.price | minus: discount_amount | round -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- elsif tag_lower == 'sale' -%}
+      {%- assign has_sale_tag = true -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- comment -%} Priority 3: sale tag with global percentage {%- endcomment -%}
+  {%- if has_sale == false and has_sale_tag and settings.global_sale_enabled -%}
+    {%- assign has_sale = true -%}
+    {%- assign sale_percentage = settings.global_sale_percentage -%}
+    {%- assign original_price = product.price -%}
+    {%- assign discount_amount = product.price | times: sale_percentage | divided_by: 100.0 -%}
+    {%- assign sale_price = product.price | minus: discount_amount | round -%}
+  {%- endif -%}
+
+  {%- comment -%} Priority 4: Global sale enabled (applies to ALL products) {%- endcomment -%}
+  {%- if has_sale == false and settings.global_sale_enabled -%}
+    {%- assign has_sale = true -%}
+    {%- assign sale_percentage = settings.global_sale_percentage -%}
+    {%- assign original_price = product.price -%}
+    {%- assign discount_amount = product.price | times: sale_percentage | divided_by: 100.0 -%}
+    {%- assign sale_price = product.price | minus: discount_amount | round -%}
+  {%- endif -%}
+{%- endif -%}
+
+<div class="product-card {% if card_is_sold_out %}is-sold-out{% endif %} {% if card_video %}has-video{% endif %}">
+  <a href="{{ product.url }}" class="product-card__link">
+    <div class="product-card__media {% if product.images.size > 1 %}has-hover-image{% endif %} {% if card_video %}has-video{% endif %}">
+      {%- if card_is_sold_out -%}
+        <span class="product-badge sold-out">SOLD OUT</span>
+      {%- elsif has_sale -%}
+        <span class="product-badge sale">
+          {%- if card_auto_discount > 0 -%}
+            SAVE {{ card_auto_discount | money }}
+          {%- elsif settings.show_sale_percentage and sale_percentage > 0 -%}
+            SALE -{{ sale_percentage }}%
+          {%- else -%}
+            SALE
+          {%- endif -%}
+        </span>
+      {%- elsif product.tags contains 'new' -%}
+        <span class="product-badge new">NEW</span>
+      {%- endif -%}
+      
+      {%- if product.featured_image -%}
+        <div class="product-card__image-wrapper {% if show_arrows %}slideshow-mode{% endif %} {% if show_hover %}hover-mode{% endif %} {% if show_zoom %}zoom-mode{% endif %} {% if card_video %}has-video{% endif %}" {% if show_arrows %}data-slideshow-wrapper{% endif %}>
+          {%- if card_video -%}
+            <div class="product-card__video">
+              {%- if card_video.media_type == 'video' -%}
+                {{ card_video | video_tag: autoplay: false, loop: true, muted: true, controls: false, playsinline: true, class: 'product-card__video-player' }}
+              {%- else -%}
+                {{ card_video | external_video_tag: autoplay: false, loop: true, muted: true, controls: false, playsinline: true, class: 'product-card__video-player' }}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+          {%- for image in product.images limit: 5 -%}
+            <img 
+              src="{{ image | image_url: width: 600 }}" 
+              srcset="{{ image | image_url: width: 400 }} 400w,
+                      {{ image | image_url: width: 600 }} 600w,
+                      {{ image | image_url: width: 800 }} 800w"
+              sizes="(max-width: 480px) 50vw, (max-width: 768px) 33vw, 25vw"
+              alt="{{ product.title }} - Image {{ forloop.index }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              decoding="async"
+              class="product-card__image{% if forloop.first %} is-active{% endif %}{% if forloop.first %} primary-image{% elsif forloop.index == 2 %} hover-image{% endif %}"
+              data-index="{{ forloop.index0 }}"
+              width="600"
+              height="750"
+              {% if show_arrows and forloop.first == false %}{% endif %}
+            >
+          {%- endfor -%}
+          {%- if product.images.size > 1 and show_arrows -%}
+            <button type="button" class="product-card__arrow prev" aria-label="Previous image">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="icon icon-chevron-left">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button type="button" class="product-card__arrow next" aria-label="Next image">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="icon icon-chevron-right">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="product-card__progress-bar">
+              <div class="product-card__progress-indicator" style="width: {{ 100 | divided_by: product.images.size | at_least: 20 }}%"></div>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+      
+      {%- unless card_is_sold_out -%}
+        {%- if settings.enable_whatsapp_ordering -%}
+          {% assign variant = product.first_available_variant %}
+          <a href="https://wa.me/{{ settings.whatsapp_number | default: '+8801341630198' | remove: '+' | remove: '-' | remove: ' ' }}?text={{ 'Hello! I want to order:\n\nProduct: ' | append: product.title | append: '\nVariant: ' | append: variant.title | append: '\nPrice: ' | append: variant.price | money | append: '\nLink: ' | append: product.url | absolute_url | url_encode }}" 
+             class="product-card__quick-add product-card__quick-add--whatsapp" 
+             target="_blank" 
+             rel="noopener noreferrer">
+            {{ settings.whatsapp_button_text | default: 'Book now' }}
+          </a>
+        {%- else -%}
+          <button class="product-card__quick-add" type="button" data-product-id="{{ product.first_available_variant.id }}" aria-label="Quick add">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+          </button>
+        {%- endif -%}
+      {%- endunless -%}
+    </div>
+    <div class="product-card__info">
+      <div class="product-card__header">
+        <h3 class="product-card__title">{{ product.title }}</h3>
+        {%- unless card_is_sold_out -%}
+        <p class="product-card__price">
+          {%- if has_sale -%}
+            <span class="product-card__price--compare">{{ original_price | money }}</span>
+            <span class="product-card__price--sale">{{ sale_price | money }}</span>
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+        </p>
+        {%- endunless -%}
+      </div>
+      {%- if card_is_sold_out -%}
+        <p class="product-card__sold-out-label">Sold Out</p>
+      {%- elsif product.options_by_name['Color'] and product.options_by_name['Color'].values.size > 1 -%}
+        <p class="product-card__variants">{{ product.options_by_name['Color'].values.size }} Colors</p>
+      {%- endif -%}
+    </div>
+  </a>
+</div>

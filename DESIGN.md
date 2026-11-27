@@ -19,10 +19,10 @@ typography:
     letterSpacing: "-0.02em"
   title:
     fontFamily: "'Frank Ruhl Libre', serif"
-    fontSize: "16px"
-    fontWeight: 600
-    lineHeight: 1.4
-    letterSpacing: "0.5px"
+    fontSize: "13px"
+    fontWeight: 500
+    lineHeight: 1.45
+    letterSpacing: "0.1em"
   body:
     fontFamily: "'Frank Ruhl Libre', serif"
     fontSize: "14px"
@@ -122,13 +122,13 @@ A warm, low-saturation palette of cloth and thread, with one restrained metallic
 
 ## Typography
 
-**Font:** Frank Ruhl Libre (with serif), weights 300–900, loaded from Google Fonts
+**Font:** Frank Ruhl Libre (with serif), loaded from Google Fonts as one variable font (weights 300–900), so every weight renders for real
 
 **Character:** One classical text serif carries every role. Hierarchy comes from size, weight and uppercase tracking, so headings, labels and prices read as tailoring labels and printed price tags rather than web UI.
 
 ### Hierarchy
 - **Display** (400, clamp(20px, 3vw, 28px), 1.2): page and collection titles.
-- **Title** (600, 16px, 1.4, uppercase, 0.5px tracking): product names on cards; 13px on phones.
+- **Title** (500, 13px, 1.45, uppercase, 0.1em tracking): product names on cards; 11.5px on phones. Prices sit beside it at 14px/400 with tabular figures, so the name leads.
 - **Body** (400, 14px, 1.5): descriptions, details, form text.
 - **Nav** (600, 14px, uppercase, 1px tracking): header menu, in Walnut Thread.
 - **Label** (500–700, 10–11px, uppercase, 2px tracking): announcement bar, badges, section kickers, CTA text.
@@ -176,7 +176,7 @@ Two shape families: **square** for anything that frames the garment (product ima
 - **Badges:** small uppercase labels top-left (SOLD OUT, SALE, SAVE ৳…, NEW).
 
 ### Navigation
-- **Header:** muslin bar with Walnut Thread menu text (uppercase, tracked) and a centred wordmark. Transparent with the light logo only over the homepage hero; solid elsewhere. Hides after deliberate downward scrolling, returns on scrolling up, and never hides while a menu or drawer is open.
+- **Header:** muslin bar with Walnut Thread menu text (uppercase, tracked) and a centred wordmark. Over the homepage hero it is transparent, with a soft muslin fade behind it so the logo and menu read on any slide; solid elsewhere. The logo always uses the same colour as the menu text. Once scrolled it docks directly under the announcement bar, never behind it. Hides after deliberate downward scrolling, returns on scrolling up, and never hides while a menu or drawer is open.
 - **Announcement bar:** black strip, white 10px uppercase marquee separated by ✦.
 - **Mobile:** hamburger left, logo centred, account and cart right; a slide-in muslin drawer.
 

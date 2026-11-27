@@ -1,0 +1,19 @@
+{%- comment -%}
+  Outputs the fixed per-unit auto-discount (in cents) for a product title, or 0.
+  Single source of truth for Liquid; keep in sync with window.themeAutoDiscounts
+  in layout/theme.liquid and the discount codes in Shopify admin.
+
+  Usage:
+    {%- capture amt -%}{% render 'auto-discount-amount', title: product.title %}{%- endcapture -%}
+    {%- assign amt = amt | plus: 0 -%}
+{%- endcomment -%}
+{%- liquid
+  assign t = title | downcase
+  if t contains 'azraq' or t contains 'nazr' or t contains 'nazar'
+    echo 149900
+  elsif t contains 'sahara'
+    echo 49900
+  else
+    echo 0
+  endif
+-%}

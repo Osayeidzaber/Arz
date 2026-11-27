@@ -608,7 +608,7 @@
     setTimeout(() => {
       isVisible = true;
       popup.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
+      window.themeLockScroll('eid-popup');
 
       // Focus first interactive element
       const firstFocusable = popup.querySelector('button, [href]');
@@ -632,7 +632,7 @@
 
     isVisible = false;
     popup.classList.remove('is-visible');
-    document.body.style.overflow = '';
+    window.themeUnlockScroll('eid-popup');
   }
 
   // Copy discount code with fallback

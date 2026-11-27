@@ -21,6 +21,64 @@
 
     {{ content_for_header }}
 
+    <script>
+      window.shopMoneyFormat = {{ shop.money_format | json }};
+      // Per-product auto-discounts. Keep amounts (in cents) in sync with
+      // snippets/auto-discount-amount.liquid and the codes in Shopify admin.
+      window.themeAutoDiscounts = [
+        { match: ['azraq'], code: '4SDVX4ZZVC5R', amount: 149900 },
+        { match: ['nazr', 'nazar'], code: 'GN4VQXX0886V', amount: 149900 },
+        { match: ['sahara'], code: 'D4NMDJ6PHZD9', amount: 49900 }
+      ];
+      window.themeGlobalDiscountCode = {{ settings.auto_discount_code | default: '' | json }};
+
+      document.documentElement.classList.replace('no-js', 'js');
+
+      /**
+       * Shared scroll lock. Each overlay locks under its own key, so closing one popup
+       * (e.g. the size chart) can't unlock scrolling while the cart drawer is still open.
+       * Fires `theme:overlay` so the header stays visible/solid while something is open.
+       */
+      (function () {
+        var locks = new Set();
+        function sync() {
+          var locked = locks.size > 0;
+          document.documentElement.classList.toggle('is-scroll-locked', locked);
+          document.dispatchEvent(new CustomEvent('theme:overlay', { detail: { open: locked } }));
+        }
+        window.themeLockScroll = function (key) { locks.add(key || 'default'); sync(); };
+        window.themeUnlockScroll = function (key) { locks.delete(key || 'default'); sync(); };
+        window.themeIsScrollLocked = function () { return locks.size > 0; };
+      })();
+
+      {% raw %}
+      /** Shopify-compatible money formatter (supports all money_format tokens). */
+      window.themeFormatMoney = function (cents, format) {
+        if (typeof cents === 'string') cents = cents.replace('.', '');
+        cents = parseInt(cents, 10) || 0;
+        format = format || window.shopMoneyFormat || '{{amount}}';
+        function fmt(n, precision, thousands, decimal) {
+          thousands = thousands == null ? ',' : thousands;
+          decimal = decimal == null ? '.' : decimal;
+          var parts = (n / 100).toFixed(precision).split('.');
+          var whole = parts[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + thousands);
+          return parts[1] ? whole + decimal + parts[1] : whole;
+        }
+        return format.replace(/\{\{\s*(\w+)\s*\}\}/, function (_, token) {
+          switch (token) {
+            case 'amount_no_decimals': return fmt(cents, 0);
+            case 'amount_with_comma_separator': return fmt(cents, 2, '.', ',');
+            case 'amount_no_decimals_with_comma_separator': return fmt(cents, 0, '.', ',');
+            case 'amount_with_apostrophe_separator': return fmt(cents, 2, "'", '.');
+            case 'amount_with_space_separator': return fmt(cents, 2, ' ', ',');
+            case 'amount_no_decimals_with_space_separator': return fmt(cents, 0, ' ');
+            default: return fmt(cents, 2);
+          }
+        });
+      };
+      {% endraw %}
+    </script>
+
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
   </head>
@@ -46,9 +104,6 @@
       {% render 'currency-selector' %}
     {%- endif -%}
 
-    {%- if template.name == 'index' or template.name == 'product' -%}
-    {%- endif -%}
-
     <script>
       window.shopUrl = {{ request.origin | json }};
       window.routes = {
@@ -58,7 +113,6 @@
         checkout_url: {{ routes.checkout_url | json }},
         all_products_collection_url: {{ routes.all_products_collection_url | json }}
       };
-      window.shopMoneyFormat = {{ shop.money_format | json }};
     </script>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
   </body>

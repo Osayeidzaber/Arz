@@ -94,7 +94,7 @@
 }
 
 .product-grid__title {
-  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-family: var(--font-heading, 'Frank Ruhl Libre', serif);
   font-size: clamp(20px, 3vw, 28px);
   font-weight: 400;
   text-transform: none;
@@ -105,7 +105,7 @@
   color: #1a1a1a;
 }
 
-.product-grid {
+.product-grid-section .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
@@ -144,11 +144,11 @@
 }
 
 @media (max-width: 1024px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .product-grid-section .product-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0; }
+  .product-grid-section .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0; }
   .product-grid__title { padding: 40px 20px 30px; }
   .product-grid__cta { padding: 40px 20px 60px; }
   .product-grid__cta-btn { padding: 14px 36px; font-size: 11px; }

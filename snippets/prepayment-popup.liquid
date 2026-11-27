@@ -409,12 +409,12 @@
       step2.style.display = 'none';
       trxInput.value = '';
       confirmBtn.disabled = true;
-      document.body.style.overflow = 'hidden';
+      window.themeLockScroll('prepayment');
     };
 
     function closePopup() {
       overlay.style.display = 'none';
-      document.body.style.overflow = '';
+      window.themeUnlockScroll('prepayment');
     }
 
     closeBtn.addEventListener('click', closePopup);

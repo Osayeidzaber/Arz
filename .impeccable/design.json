@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-27T00:00:00Z",
+  "title": "Design System: ARZ",
+  "extensions": {
+    "colorMeta": {
+      "walnut-thread": { "role": "primary", "displayName": "Walnut Thread", "tonalRamp": ["#1f1300", "#2e1c00", "#3d2500", "#5c3e17", "#7d5e3a", "#a28763", "#c9b597", "#ebe2d3"] },
+      "zari-gold": { "role": "secondary", "displayName": "Zari Gold", "tonalRamp": ["#4a3a24", "#6b5536", "#8f7550", "#bfa27e", "#cdb595", "#dbc9ae", "#e9dcc8", "#f5efe4"] },
+      "unbleached-muslin": { "role": "neutral", "displayName": "Unbleached Muslin", "tonalRamp": ["#3b3a35", "#5d5b54", "#858277", "#aeaa9d", "#cfcabb", "#e2ddcf", "#efebe0", "#f8f6f0"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "tonalRamp": ["#0d0d0d", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#888888", "#b3b3b3", "#e5e5e5"] },
+      "slate-muted": { "role": "neutral", "displayName": "Slate Muted" },
+      "pure-white": { "role": "neutral", "displayName": "Pure White" },
+      "hairline": { "role": "neutral", "displayName": "Hairline" },
+      "sale-red": { "role": "tertiary", "displayName": "Sale Red" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page and collection titles." },
+      "title": { "displayName": "Title", "purpose": "Product names on cards, uppercase." },
+      "body": { "displayName": "Body", "purpose": "Descriptions and form text." },
+      "nav": { "displayName": "Nav", "purpose": "Header menu, uppercase, Walnut Thread." },
+      "label": { "displayName": "Label", "purpose": "Announcement bar, badges, CTA text." }
+    },
+    "shadows": [
+      { "name": "header-settled", "value": "0 2px 10px rgba(0,0,0,0.08)", "purpose": "Fixed header after scrolling." },
+      { "name": "soft-lift", "value": "0 8px 20px rgba(0,0,0,0.18)", "purpose": "Hovered floating panels." },
+      { "name": "cta-hover", "value": "0 8px 25px rgba(0,0,0,0.15)", "purpose": "Pill CTA hover." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.2, 0.7, 0.2, 1)", "purpose": "Header, reveals, panels." },
+      { "name": "reveal", "value": "opacity/transform 0.7s, 18px travel, 70ms stagger", "purpose": "Scroll reveal of cards and headings." },
+      { "name": "page-fade", "value": "view transition 0.25s", "purpose": "Crossfade between pages." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "480px" },
+      { "name": "mobile", "value": "768px" },
+      { "name": "tablet", "value": "900px" },
+      { "name": "laptop", "value": "1024px" },
+      { "name": "desktop", "value": "1200px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Pill CTA in Walnut Thread, e.g. Tailored Bespoke.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Tailored Bespoke</a>",
+      "css": ".ds-btn-primary { display:inline-block; background:#3D2500; color:#fff; padding:16px 48px; border-radius:50px; font-family:'Frank Ruhl Libre',serif; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; text-decoration:none; transition:transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s; } .ds-btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,0,0,.15); } .ds-btn-primary:focus-visible { outline:2px solid #3D2500; outline-offset:2px; }"
+    },
+    {
+      "name": "Solid Ink Button",
+      "kind": "button",
+      "refersTo": "button-solid-ink",
+      "description": "Full-width add-to-cart / checkout.",
+      "html": "<button class=\"ds-btn-ink\">Add to cart</button>",
+      "css": ".ds-btn-ink { width:100%; background:#1A1A1A; color:#EFEBE0; border:none; padding:16px 24px; border-radius:4px; font-family:'Frank Ruhl Libre',serif; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:background .3s; } .ds-btn-ink:hover { background:#3D2500; } .ds-btn-ink:focus-visible { outline:2px solid #3D2500; outline-offset:2px; }"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "product-card",
+      "description": "Square full-bleed image, uppercase serif title and price.",
+      "html": "<a class=\"ds-card\" href=\"#\"><div class=\"ds-card__img\"><span class=\"ds-card__badge\">New</span></div><div class=\"ds-card__info\"><h3 class=\"ds-card__title\">Newaz | Embroidered Panjabi</h3><p class=\"ds-card__price\">Tk 6,000.00</p></div></a>",
+      "css": ".ds-card { display:block; width:240px; background:#EFEBE0; color:#1A1A1A; text-decoration:none; font-family:'Frank Ruhl Libre',serif; } .ds-card__img { position:relative; aspect-ratio:4/5; background:linear-gradient(160deg,#e6d3c6,#cfb8a8); transition:transform .6s; overflow:hidden; } .ds-card:hover .ds-card__img { transform:scale(1.02); } .ds-card__badge { position:absolute; top:12px; left:12px; background:#1A1A1A; color:#fff; font-size:10px; letter-spacing:2px; text-transform:uppercase; padding:4px 8px; border-radius:2px; } .ds-card__info { display:flex; justify-content:space-between; gap:10px; padding:12px; } .ds-card__title { margin:0; font-size:14px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; } .ds-card__price { margin:0; font-size:14px; font-weight:600; white-space:nowrap; } .ds-card:focus-visible { outline:2px solid #3D2500; outline-offset:2px; }"
+    },
+    {
+      "name": "Header",
+      "kind": "nav",
+      "refersTo": "header",
+      "description": "Muslin bar, uppercase Walnut menu, centred wordmark.",
+      "html": "<header class=\"ds-header\"><nav class=\"ds-header__nav\"><a href=\"#\">Home</a><a href=\"#\">Shop</a></nav><span class=\"ds-header__logo\">ARZ</span><span class=\"ds-header__icons\">◯ ⌂</span></header>",
+      "css": ".ds-header { display:flex; align-items:center; justify-content:space-between; height:70px; padding:0 40px; background:#EFEBE0; color:#3D2500; font-family:'Frank Ruhl Libre',serif; box-shadow:0 2px 10px rgba(0,0,0,.08); } .ds-header__nav { display:flex; gap:20px; } .ds-header__nav a { color:inherit; text-decoration:none; font-size:14px; font-weight:600; letter-spacing:1px; text-transform:uppercase; } .ds-header__nav a:hover { color:#BFA27E; } .ds-header__logo { font-size:28px; letter-spacing:2px; }"
+    },
+    {
+      "name": "Announcement Bar",
+      "kind": "custom",
+      "refersTo": "announcement-bar",
+      "description": "Black marquee strip with ✦ separators.",
+      "html": "<div class=\"ds-ann\">Free shipping over 10,000 BDT <span>✦</span> Threads of Eden</div>",
+      "css": ".ds-ann { height:36px; display:flex; align-items:center; justify-content:center; gap:16px; background:#000; color:#fff; font-family:'Frank Ruhl Libre',serif; font-size:10px; font-weight:500; letter-spacing:2px; text-transform:uppercase; } .ds-ann span { opacity:.4; font-size:8px; }"
+    },
+    {
+      "name": "Size Spec Panel",
+      "kind": "custom",
+      "description": "Ink panel showing measurements for the chosen size.",
+      "html": "<div class=\"ds-spec\">Choose your size</div>",
+      "css": ".ds-spec { width:280px; min-height:60px; display:flex; align-items:center; justify-content:center; background:#1A1A1A; color:rgba(239,235,224,.75); border:1px solid rgba(239,235,224,.2); border-radius:4px; font-family:'Frank Ruhl Libre',serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; transition:transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s; } .ds-spec:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.18); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Tailor's Atelier",
+    "overview": "ARZ feels like a tailor's workshop on a quiet afternoon: unbleached cloth on the table, deep walnut thread, a glint of zari. The page is warm muslin, never stark white. Garment photography does the talking, framed edge to edge, and the interface stays out of its way. Type is a classical serif throughout, so even prices and labels read as considered rather than transactional. The mood is warm, refined and minimal. Space is generous, elements are few, and ornament comes from the clothes themselves, not the UI. Interactive pieces are soft and tactile: pill-shaped calls to action, gentle lifts and image swaps on hover, never sharp jolts.",
+    "keyCharacteristics": [
+      "Warm muslin background (never pure white) with walnut-brown and ink text.",
+      "Classical serif everywhere; uppercase, wide-tracked labels for navigation and small captions.",
+      "Full-bleed, square-cornered product imagery; soft pill CTAs.",
+      "Gold appears as an accent detail, not a fill.",
+      "Calm motion: short fades and small lifts, respecting reduced-motion."
+    ],
+    "rules": [
+      { "name": "The Muslin Ground Rule", "body": "The page background is always Unbleached Muslin. White surfaces read as a different, colder brand.", "section": "colors" },
+      { "name": "The Zari Thread Rule", "body": "Gold is a thread, not a fabric: use it for lines, small marks and highlights, never as a background block or a large button.", "section": "colors" },
+      { "name": "The Single Family Voice Rule", "body": "Everything is serif. No sans-serif UI text, including buttons and forms.", "section": "typography" },
+      { "name": "The Flat-At-Rest Rule", "body": "Surfaces are flat at rest; shadows only answer to interaction or scroll state.", "section": "elevation" },
+      { "name": "The Square Frame Rule", "body": "Garment imagery is never rounded; rounding is reserved for controls.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep every page on Unbleached Muslin, with Walnut Thread and Ink for text.",
+      "Do let photography run full-bleed with square corners.",
+      "Do use uppercase, wide-tracked serif for navigation, labels and CTAs.",
+      "Do keep motion short (≈0.3–0.7s, ease-out), small (≤18px travel), and off under reduced motion.",
+      "Do scope section CSS to its own section wrapper. Shopify loads every section's styles on every page."
+    ],
+    "donts": [
+      "Don't use white page backgrounds or cold greys as surfaces.",
+      "Don't use gold as a fill or for large buttons.",
+      "Don't round garment images or put them in floating rounded frames.",
+      "Don't introduce sans-serif UI type.",
+      "Don't borrow Corso Velle's visual identity; ARZ stays distinct."
+    ]
+  }
+}

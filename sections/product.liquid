@@ -195,7 +195,8 @@
       <div class="product-featured-video product-featured-video--desktop">
         <video 
           src="{{ featured_video_url }}" 
-          autoplay 
+          data-play-when-visible
+          preload="none"
           loop 
           muted 
           playsinline 
@@ -213,12 +214,8 @@
 {%- assign pp_auto_discount = 0 -%}
 
 {%- comment -%} Priority 0: Auto-discount (fixed amount off for specific products) {%- endcomment -%}
-{%- assign pp_title_lower = product.title | downcase -%}
-{%- if pp_title_lower contains 'azraq' or pp_title_lower contains 'nazr' or pp_title_lower contains 'nazar' -%}
-  {%- assign pp_auto_discount = 149900 -%}
-{%- elsif pp_title_lower contains 'sahara' -%}
-  {%- assign pp_auto_discount = 49900 -%}
-{%- endif -%}
+{%- capture pp_auto_discount -%}{% render 'auto-discount-amount', title: product.title %}{%- endcapture -%}
+{%- assign pp_auto_discount = pp_auto_discount | plus: 0 -%}
 
 {%- if pp_auto_discount > 0 -%}
   {%- assign pp_has_sale = true -%}
@@ -431,7 +428,8 @@
         <div class="product-featured-video product-featured-video--mobile">
           <video 
             src="{{ featured_video_url }}" 
-            autoplay 
+            data-play-when-visible
+            preload="none"
             loop 
             muted 
             playsinline 
@@ -490,7 +488,7 @@
                 {%- elsif category == 'eden' -%}
                   {%- comment -%} No generic SVG for Eden, we rely on the dynamic table below {%- endcomment -%}
                 {%- else -%}
-                  <img src="{{ 'panjabi size chart.svg' | asset_url }}" alt="Size Guide Visual" loading="lazy" width="800" height="800" style="width: 100%; max-width: 400px; height: auto; display: inline-block;">
+                  <img src="{{ 'panjabi-size-chart.svg' | asset_url }}" alt="Size Guide Visual" loading="lazy" width="800" height="800" style="width: 100%; max-width: 400px; height: auto; display: inline-block;">
                 {%- endif -%}
               {%- endif -%}
             </div>
@@ -1537,7 +1535,7 @@ input:checked + .color-image-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s ease, background-color 0.3s ease;
   opacity: 1;
   visibility: visible;
   border: 1px solid rgba(239, 235, 224, 0.2);
@@ -1549,15 +1547,15 @@ input:checked + .color-image-box {
 }
 
 .size-specs-display.is-hovering {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
   background: #222;
   border-color: #efebe0;
 }
 
 .specs-placeholder {
-  font-size: 10px;
-  color: rgba(239, 235, 224, 0.4);
+  font-size: 11px;
+  color: rgba(239, 235, 224, 0.75);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1803,26 +1801,14 @@ document.addEventListener('DOMContentLoaded', () => {
       hasNativeCompareAt: 0
     };
 
-    // Auto-discount amounts (fixed ৳ off, stored in paisa/cents)
-    const autoDiscountAmountMap = {
-      'azraq': 149900,
-      'nazr': 149900,
-      'nazar': 149900,
-      'sahara': 49900
-    };
-    const autoDiscountCodes = {
-      'azraq': '4SDVX4ZZVC5R',
-      'nazr': 'GN4VQXX0886V',
-      'nazar': 'GN4VQXX0886V',
-      'sahara': 'D4NMDJ6PHZD9'
-    };
+    // Auto-discount (fixed amount off) — shared config from layout/theme.liquid
     const productTitleLowerForDiscount = {{ product.title | downcase | json }};
     let autoDiscountAmount = 0;
     let autoDiscountCode = '';
-    for (const [name, amount] of Object.entries(autoDiscountAmountMap)) {
-      if (productTitleLowerForDiscount.includes(name)) {
-        autoDiscountAmount = amount;
-        autoDiscountCode = autoDiscountCodes[name] || '';
+    for (const rule of (window.themeAutoDiscounts || [])) {
+      if (rule.match.some((name) => productTitleLowerForDiscount.includes(name))) {
+        autoDiscountAmount = rule.amount;
+        autoDiscountCode = rule.code;
         break;
       }
     }
@@ -1904,14 +1890,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return { hasSale, originalPrice, salePrice, salePercentage };
     };
 
-    const formatMoney = (cents) => {
-      if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
-        return Shopify.formatMoney(cents);
-      }
-      // Fallback: Format manually with Taka symbol
-      const amount = (cents / 100).toFixed(2);
-      return '৳ ' + parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    };
+    const formatMoney = (cents) => window.themeFormatMoney(cents);
 
     // Function to update gallery images based on variant - will be set by gallery logic
     let updateGalleryImage = null;
@@ -2281,16 +2260,8 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = translations.added;
         submitBtn.style.background = '#28a745';
         
-        // Auto-apply discount code for specific products
-        if (autoDiscountCode) {
-          try { await fetch('/discount/' + autoDiscountCode); } catch(e) {}
-          // Track code for checkout
-          if (!window.__cartDiscountCodes) window.__cartDiscountCodes = [];
-          if (window.__cartDiscountCodes.indexOf(autoDiscountCode) === -1) {
-            window.__cartDiscountCodes.push(autoDiscountCode);
-          }
-        }
-        
+        // Auto-discount codes are applied at checkout from the live cart (theme.js: themeCheckout)
+
         // Update cart count in header
         try {
           const cartResponse = await fetch('/cart.js');

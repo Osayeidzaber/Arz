@@ -109,7 +109,7 @@
 }
 
 .all-products__title {
-  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-family: var(--font-heading, 'Frank Ruhl Libre', serif);
   font-size: clamp(20px, 3vw, 28px);
   font-weight: 400;
   color: #1a1a1a;
@@ -262,7 +262,7 @@
   padding: 20px 40px 80px;
 }
 
-.product-grid {
+.all-products-page .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
@@ -270,21 +270,21 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-  .product-grid {
+  .all-products-page .product-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 900px) {
-  .product-grid {
+  .all-products-page .product-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 480px) {
-  .product-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
+  .all-products-page .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 10px;
   }
 }
 
@@ -313,10 +313,10 @@
   .all-products__product-count {
     order: -1;
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
   
-  .product-grid {
+  .all-products-page .product-grid {
     gap: 12px;
   }
 }

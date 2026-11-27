@@ -44,13 +44,8 @@
 {%- endif -%}
 
 {%- comment -%} Priority 0: Auto-discount (fixed amount off for specific products) {%- endcomment -%}
-{%- assign card_title_lower = product.title | downcase -%}
-
-{%- if card_title_lower contains 'azraq' or card_title_lower contains 'nazr' or card_title_lower contains 'nazar' -%}
-  {%- assign card_auto_discount = 149900 -%}
-{%- elsif card_title_lower contains 'sahara' -%}
-  {%- assign card_auto_discount = 49900 -%}
-{%- endif -%}
+{%- capture card_auto_discount -%}{% render 'auto-discount-amount', title: product.title %}{%- endcapture -%}
+{%- assign card_auto_discount = card_auto_discount | plus: 0 -%}
 
 {%- if card_auto_discount > 0 -%}
   {%- assign has_sale = true -%}
@@ -107,7 +102,9 @@
 {%- endif -%}
 
 <div class="product-card {% if card_is_sold_out %}is-sold-out{% endif %} {% if card_video %}has-video{% endif %}">
-  <a href="{{ product.url }}" class="product-card__link">
+  {%- comment -%} Stretched link covers the card; buttons/links inside sit above it (z-index), so links are never nested. {%- endcomment -%}
+  <a href="{{ product.url }}" class="product-card__overlay-link" aria-label="{{ product.title | escape }}" tabindex="-1"></a>
+  <div class="product-card__link">
     <div class="product-card__media {% if product.images.size > 1 %}has-hover-image{% endif %} {% if card_video %}has-video{% endif %}">
       {%- if card_is_sold_out -%}
         <span class="product-badge sold-out">SOLD OUT</span>
@@ -130,7 +127,7 @@
           {%- if card_video -%}
             <div class="product-card__video">
               {%- if card_video.media_type == 'video' -%}
-                {{ card_video | video_tag: autoplay: false, loop: true, muted: true, controls: false, playsinline: true, class: 'product-card__video-player' }}
+                {{ card_video | video_tag: autoplay: false, loop: true, muted: true, controls: false, playsinline: true, preload: 'none', class: 'product-card__video-player' }}
               {%- else -%}
                 {{ card_video | external_video_tag: autoplay: false, loop: true, muted: true, controls: false, playsinline: true, class: 'product-card__video-player' }}
               {%- endif -%}
@@ -139,18 +136,20 @@
           {%- for image in product.images limit: 5 -%}
             <img 
               src="{{ image | image_url: width: 600 }}" 
-              srcset="{{ image | image_url: width: 400 }} 400w,
-                      {{ image | image_url: width: 600 }} 600w,
-                      {{ image | image_url: width: 800 }} 800w"
-              sizes="(max-width: 480px) 50vw, (max-width: 768px) 33vw, 25vw"
+              srcset="{{ image | image_url: width: 360 }} 360w,
+                      {{ image | image_url: width: 540 }} 540w,
+                      {{ image | image_url: width: 720 }} 720w,
+                      {{ image | image_url: width: 960 }} 960w,
+                      {{ image | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 900px) 50vw, (max-width: 1200px) 34vw, 25vw"
               alt="{{ product.title }} - Image {{ forloop.index }}"
-              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              loading="{% if forloop.first and eager %}eager{% else %}lazy{% endif %}"
+              {% if forloop.first and eager %}fetchpriority="high"{% endif %}
               decoding="async"
               class="product-card__image{% if forloop.first %} is-active{% endif %}{% if forloop.first %} primary-image{% elsif forloop.index == 2 %} hover-image{% endif %}"
               data-index="{{ forloop.index0 }}"
               width="600"
-              height="750"
-              {% if show_arrows and forloop.first == false %}{% endif %}
+              height="{{ 600 | divided_by: image.aspect_ratio | round }}"
             >
           {%- endfor -%}
           {%- if product.images.size > 1 and show_arrows -%}
@@ -193,7 +192,7 @@
     </div>
     <div class="product-card__info">
       <div class="product-card__header">
-        <h3 class="product-card__title">{{ product.title }}</h3>
+        <h3 class="product-card__title"><a href="{{ product.url }}" class="product-card__title-link">{{ product.title }}</a></h3>
         {%- unless card_is_sold_out -%}
         <p class="product-card__price">
           {%- if has_sale -%}
@@ -211,5 +210,5 @@
         <p class="product-card__variants">{{ product.options_by_name['Color'].values.size }} Colors</p>
       {%- endif -%}
     </div>
-  </a>
+  </div>
 </div>

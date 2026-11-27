@@ -27,7 +27,8 @@
   }
 {% endstyle %}
 
-<div class="header-wrapper {% if section.settings.enable_transparent_header %}header-wrapper--transparent{% endif %}">
+{%- comment -%} Transparent mode only where a full-bleed hero sits under the header (homepage). Elsewhere the light logo would vanish on the light page background. {%- endcomment -%}
+<div class="header-wrapper {% if section.settings.enable_transparent_header and template.name == 'index' %}header-wrapper--transparent{% endif %}">
   <header class="header">
     <button class="header__mobile-trigger" id="MobileMenuTrigger" aria-label="Open mobile menu" aria-expanded="false" aria-controls="MobileDrawer">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -287,10 +288,7 @@
 </div>
 
 {% stylesheet %}
-/* Absolute Positioning for Overlay */
-/* Absolute Positioning for Overlay */
-/* Absolute Positioning for Overlay */
-/* Absolute Positioning for Overlay */
+/* Fixed header that overlays the page (in normal flow on mobile, see media query below) */
 .header-wrapper {
   position: fixed;
   top: calc(var(--announcement-height, 36px) + var(--header-top-gap));
@@ -299,8 +297,7 @@
   width: 100%;
   z-index: 10000;
   background: transparent;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1), top 0.4s ease;
-  will-change: transform, background, top;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.3s ease, box-shadow 0.3s ease, top 0.3s ease;
 }
 
 .header-wrapper.is-scrolled {
@@ -537,7 +534,7 @@
 }
 
 .header__logo-text {
-  font-family: var(--font-heading, 'Didot LP Display', serif);
+  font-family: var(--font-heading, 'Frank Ruhl Libre', serif);
   font-size: 160px;
   font-weight: 700;
   text-transform: uppercase;

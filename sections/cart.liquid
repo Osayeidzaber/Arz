@@ -23,12 +23,8 @@
             {%- assign cp_auto_discount = 0 -%}
 
             {%- comment -%} Priority 0: Auto-discount (fixed amount off) {%- endcomment -%}
-            {%- assign cp_title_lower = item.product.title | downcase -%}
-            {%- if cp_title_lower contains 'azraq' or cp_title_lower contains 'nazr' or cp_title_lower contains 'nazar' -%}
-              {%- assign cp_auto_discount = 149900 -%}
-            {%- elsif cp_title_lower contains 'sahara' -%}
-              {%- assign cp_auto_discount = 49900 -%}
-            {%- endif -%}
+            {%- capture cp_auto_discount -%}{% render 'auto-discount-amount', title: item.product.title %}{%- endcapture -%}
+            {%- assign cp_auto_discount = cp_auto_discount | plus: 0 -%}
 
             {%- if cp_auto_discount > 0 -%}
               {%- assign cp_has_sale = true -%}
@@ -144,12 +140,8 @@
         {%- assign line_auto_disc = 0 -%}
 
         {%- comment -%} Priority 0: Auto-discount {%- endcomment -%}
-        {%- assign lt_lower = item.product.title | downcase -%}
-        {%- if lt_lower contains 'azraq' or lt_lower contains 'nazr' or lt_lower contains 'nazar' -%}
-          {%- assign line_auto_disc = 149900 -%}
-        {%- elsif lt_lower contains 'sahara' -%}
-          {%- assign line_auto_disc = 49900 -%}
-        {%- endif -%}
+        {%- capture line_auto_disc -%}{% render 'auto-discount-amount', title: item.product.title %}{%- endcapture -%}
+        {%- assign line_auto_disc = line_auto_disc | plus: 0 -%}
 
         {%- if line_auto_disc > 0 -%}
           {%- assign line_has_sale = true -%}
@@ -258,40 +250,6 @@
               }
             </script>
           {% endif %}
-          <script>
-          (function() {
-            var discountMap = {
-              'azraq': '4SDVX4ZZVC5R',
-              'nazr': 'GN4VQXX0886V',
-              'nazar': 'GN4VQXX0886V',
-              'sahara': 'D4NMDJ6PHZD9'
-            };
-            var titles = {{ cart.items | map: 'product' | map: 'title' | json }};
-            var codes = [];
-            titles.forEach(function(t) {
-              var tl = t.toLowerCase();
-              for (var k in discountMap) {
-                if (tl.indexOf(k) !== -1 && codes.indexOf(discountMap[k]) === -1) {
-                  codes.push(discountMap[k]);
-                }
-              }
-            });
-            window.__cartDiscountCodes = codes;
-
-            var form = document.getElementById('CartCheckoutForm');
-            if (!form) return;
-            form.addEventListener('submit', function(e) {
-              if (codes.length > 0) {
-                e.preventDefault();
-                Promise.all(codes.map(function(c) {
-                  return fetch('/discount/' + c).catch(function() {});
-                })).then(function() {
-                  window.location.href = '/checkout';
-                });
-              }
-            });
-          })();
-          </script>
 
           <a href="{{ routes.all_products_collection_url }}" class="cart-continue-btn">Continue Shopping</a>
         </div>

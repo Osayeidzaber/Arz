@@ -2643,7 +2643,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('SubmitBtn');
   const btnText = document.getElementById('BtnText');
   const btnLoading = document.getElementById('BtnLoading');
-  const imgbbApiKey = '{{ section.settings.imgbb_api_key }}';
+  const imgbbApiKey = {{ section.settings.imgbb_api_key | json }};
 
   // Uploaded image URL storage
   let uploadedImageUrl = '';
@@ -3083,7 +3083,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isCatalog) {
         formData.append('design', `Catalog Selection: ${catalogInput.value}`);
       } else {
-        const designUrl = uploadedImageUrl || 'File attached (see Discord)';
         formData.append('design', `Custom Upload: ${fileInput.files[0]?.name || 'Design'}`);
         if (uploadedImageUrl) {
           formData.append('design_image_url', uploadedImageUrl);
@@ -3099,7 +3098,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (result.success) {
         // Send to Discord webhook if configured
-        const webhook = '{{ section.settings.discord_webhook }}';
+        const webhook = {{ section.settings.discord_webhook | json }};
         if (webhook) {
           const sizeInfo = formData.get('size');
 

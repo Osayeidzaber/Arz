@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Scroll Animations
   initScrollAnimations();
+  initPlayWhenVisible();
 
   // Product Card Slideshow
   initProductCardSlideshow();
@@ -51,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
   initWhatsAppOrdering();
   initCartWhatsAppOrdering();
   initCartDrawerWhatsAppOrdering();
+
+  // Checkout buttons (apply auto-discount codes)
+  initCheckoutForms();
 });
 
 // =====================
@@ -65,40 +69,41 @@ function initHeaderScroll() {
   const header = document.querySelector('.header-wrapper');
   if (!header) return;
 
-  const scrollThreshold = 100;
-  let lastScrollTop = 0;
+  // Hysteresis: hide only after deliberate downward travel, return on a small upward
+  // movement. Hiding on every 1px of scroll made the header flicker on trackpads/phones.
+  const TOP_ZONE = 100;     // always shown near the top of the page
+  const HIDE_AFTER = 64;    // px of continuous downward travel before hiding
+  const SHOW_AFTER = 16;    // px of upward travel before showing again
+  let lastY = Math.max(0, window.scrollY);
+  let travel = 0;           // +down / -up, reset when direction changes
 
-  /**
-   * Handles scroll event and updates header state
-   * @returns {void}
-   */
+  const setHidden = (hidden) => header.classList.toggle('header-wrapper--hidden', hidden);
+  // Never hide while the user is in the header or a menu/drawer/popup is open
+  const mustStayVisible = () =>
+    header.contains(document.activeElement) ||
+    header.classList.contains('mega-menu-open') ||
+    (window.themeIsScrollLocked && window.themeIsScrollLocked());
+
   function handleScroll() {
-    const currentScroll = window.scrollY;
+    const y = Math.max(0, window.scrollY);
+    const delta = y - lastY;
+    lastY = y;
 
-    // Add/remove scrolled background
-    if (currentScroll > 50) {
-      header.classList.add('is-scrolled');
-    } else {
-      header.classList.remove('is-scrolled');
+    header.classList.toggle('is-scrolled', y > 50);
+
+    if (y <= TOP_ZONE || mustStayVisible()) {
+      travel = 0;
+      setHidden(false);
+      return;
     }
-
-    // Hide/Show logic based on direction
-    // Only hide after passing the threshold to avoid glitching at the very top
-    if (currentScroll > scrollThreshold) {
-      if (currentScroll > lastScrollTop) {
-        // Scrolling Down
-        header.classList.add('header-wrapper--hidden');
-      } else {
-        // Scrolling Up
-        header.classList.remove('header-wrapper--hidden');
-      }
-    } else {
-      // Always show at the top
-      header.classList.remove('header-wrapper--hidden');
-    }
-
-    lastScrollTop = Math.max(0, currentScroll); // Prevent negative scroll values
+    if (delta === 0) return;
+    travel = (delta > 0) === (travel > 0) ? travel + delta : delta;
+    if (travel > HIDE_AFTER) setHidden(true);
+    else if (travel < -SHOW_AFTER) setHidden(false);
   }
+
+  header.addEventListener('focusin', () => setHidden(false));
+  document.addEventListener('theme:overlay', (e) => { if (e.detail.open) setHidden(false); });
 
   // Initial check
   handleScroll();
@@ -127,6 +132,10 @@ function initHeaderScroll() {
 function initCartDrawer() {
   const drawer = document.getElementById('CartDrawer');
   if (!drawer) return;
+  // Listeners are attached to the persistent drawer element / document, so only bind once.
+  // (updateCartUI re-renders the items but must not stack duplicate handlers.)
+  if (drawer.dataset.initialized === 'true') return;
+  drawer.dataset.initialized = 'true';
 
   // Close on overlay click
   const overlay = drawer.querySelector('.cart-drawer__overlay');
@@ -168,7 +177,7 @@ window.openCartDrawer = function () {
   if (drawer) {
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    window.themeLockScroll('cart');
     // Focus management for accessibility
     const firstFocusable = drawer.querySelector('button, a, input');
     if (firstFocusable) firstFocusable.focus();
@@ -184,7 +193,7 @@ window.closeCartDrawer = function () {
   if (drawer) {
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    window.themeUnlockScroll('cart');
   }
 };
 
@@ -291,11 +300,8 @@ async function updateCartUI(cart) {
                   <button type="button" class="qty-btn" data-action="increase" data-line="${line}">+</button>
                 </div>
                 ${(() => {
-                  const titleLower = item.product_title.toLowerCase();
-                  let autoDiscountAmt = 0;
-                  if (titleLower.includes('azraq') || titleLower.includes('nazr') || titleLower.includes('nazar')) autoDiscountAmt = 149900;
-                  else if (titleLower.includes('sahara')) autoDiscountAmt = 49900;
-                  
+                  const autoDiscountAmt = getAutoDiscount(item.product_title).amount;
+
                   if (autoDiscountAmt > 0) {
                     const totalAutoDiscount = autoDiscountAmt * item.quantity;
                     const salePrice = Math.max(0, item.original_line_price - totalAutoDiscount);
@@ -321,9 +327,7 @@ async function updateCartUI(cart) {
         let originalCartTotal = 0;
         cartData.items.forEach(item => {
           originalCartTotal += item.original_line_price;
-          const titleLower = item.product_title.toLowerCase();
-          if (titleLower.includes('azraq') || titleLower.includes('nazr') || titleLower.includes('nazar')) totalDiscount += (149900 * item.quantity);
-          else if (titleLower.includes('sahara')) totalDiscount += (49900 * item.quantity);
+          totalDiscount += getAutoDiscount(item.product_title).amount * item.quantity;
         });
 
         if (totalDiscount > 0) {
@@ -354,8 +358,7 @@ async function updateCartUI(cart) {
     }
 
     // Re-attach event listeners
-    initCartDrawer();
-    initCartDrawerWhatsAppOrdering();
+    initCartDrawerWhatsAppOrdering(cartData.items);
   } catch (error) {
     console.error('Error updating cart UI:', error);
   }
@@ -368,28 +371,51 @@ async function updateCartUI(cart) {
  * @returns {string} Formatted price string
  */
 function formatMoney(cents) {
-  // Use Shopify's formatMoney which respects the store's currency settings
-  if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
-    return Shopify.formatMoney(cents);
+  // Shared formatter defined in layout/theme.liquid (handles every Shopify money_format token).
+  return window.themeFormatMoney ? window.themeFormatMoney(cents) : (cents / 100).toFixed(2);
+}
+
+/**
+ * Returns the auto-discount rule ({ code, amount } in cents) matching a product title.
+ * Rules live in window.themeAutoDiscounts (layout/theme.liquid).
+ */
+function getAutoDiscount(title) {
+  const t = (title || '').toLowerCase();
+  const rule = (window.themeAutoDiscounts || []).find((r) => r.match.some((m) => t.includes(m)));
+  return rule ? { code: rule.code, amount: rule.amount } : { code: '', amount: 0 };
+}
+
+/**
+ * Sends the shopper to checkout with every applicable discount code, computed from the
+ * live cart (not page-load data). Shopify accepts several codes comma-separated; the old
+ * parallel /discount/CODE requests raced and only the last code stuck.
+ */
+async function themeCheckout() {
+  const codes = [];
+  if (window.themeGlobalDiscountCode) codes.push(window.themeGlobalDiscountCode);
+  try {
+    const res = await fetch(window.routes.cart_url + '.js');
+    const cart = await res.json();
+    (cart.items || []).forEach((item) => {
+      const { code } = getAutoDiscount(item.product_title);
+      if (code && !codes.includes(code)) codes.push(code);
+    });
+  } catch (e) {
+    console.error('Could not read cart for discounts:', e);
   }
+  window.location.href = '/checkout' + (codes.length ? '?discount=' + encodeURIComponent(codes.join(',')) : '');
+}
+window.themeCheckout = themeCheckout;
 
-  // Fallback: use shop money format from Liquid
-  const amount = (cents / 100).toFixed(2);
-  let moneyFormat = window.shopMoneyFormat || '{{amount}}';
-
-  // Handle different money format patterns
-  if (moneyFormat.includes('{{amount}}')) {
-    return moneyFormat.replace(/\{\{amount\}\}/g, amount);
-  } else if (moneyFormat.includes('{{ amount }}')) {
-    return moneyFormat.replace(/\{\{\s*amount\s*\}\}/g, amount);
-  } else if (moneyFormat.includes('amount')) {
-    // Generic fallback for any amount placeholder
-    return moneyFormat.replace(/amount/g, amount);
-  }
-
-  // Ultimate fallback: if format is unknown, use Taka symbol (৳) or default currency
-  const currencySymbol = moneyFormat.match(/[^\d\s.,]/)?.[0] || '৳';
-  return currencySymbol + amount;
+function initCheckoutForms() {
+  document.querySelectorAll('#CartCheckoutForm, #CartDrawerCheckoutForm').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('[type="submit"]');
+      if (btn) btn.disabled = true;
+      themeCheckout();
+    });
+  });
 }
 
 window.updateCartDrawer = updateCartUI;
@@ -426,7 +452,7 @@ function initMobileMenu() {
       drawer.classList.add('is-open');
       drawer.setAttribute('aria-hidden', 'false');
       trigger.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden';
+      window.themeLockScroll('menu');
       // Focus management
       const firstLink = drawer.querySelector('.mobile-drawer__link');
       if (firstLink) firstLink.focus();
@@ -437,7 +463,7 @@ function initMobileMenu() {
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    window.themeUnlockScroll('menu');
   };
 
   if (close) {
@@ -449,14 +475,14 @@ function initMobileMenu() {
     searchTrigger.addEventListener('click', () => {
       searchOverlay.classList.add('is-active');
       searchOverlay.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+      window.themeLockScroll('search');
       if (searchInput) setTimeout(() => searchInput.focus(), 100);
     });
 
     const closeSearch = () => {
       searchOverlay.classList.remove('is-active');
       searchOverlay.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
+      window.themeUnlockScroll('search');
     };
 
     if (searchClose) {
@@ -803,23 +829,68 @@ function initCartPage() {
  * @returns {void}
  */
 function initScrollAnimations() {
-  const elements = document.querySelectorAll('.slide-up, .fade-in, .animate-on-scroll');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (!elements.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+  // Opt elements into the reveal without editing every section: product cards and
+  // section headings get it automatically; anything can opt in with data-reveal.
+  const auto = document.querySelectorAll(
+    '.product-card, .product-grid__title, .all-products__title, .section-title, .collection-card'
+  );
+  auto.forEach((el) => {
+    if (!el.closest('.cart-drawer, .mobile-drawer, [data-no-reveal]')) el.setAttribute('data-reveal', '');
   });
 
-  elements.forEach(el => observer.observe(el));
+  const elements = document.querySelectorAll('[data-reveal], .slide-up, .fade-in, .animate-on-scroll');
+  if (!elements.length) return;
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    elements.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+
+  // Stagger items that enter together (e.g. one row of cards), capped so long rows don't drag.
+  let batch = 0;
+  let batchTimer = 0;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      el.style.setProperty('--reveal-delay', `${Math.min(batch, 5) * 70}ms`);
+      batch += 1;
+      el.classList.add('is-visible');
+      observer.unobserve(el);
+    });
+    clearTimeout(batchTimer);
+    batchTimer = setTimeout(() => { batch = 0; }, 120);
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  elements.forEach((el) => observer.observe(el));
+}
+
+/**
+ * Videos marked data-play-when-visible only download/play while on screen and displayed
+ * (the product page has separate desktop/mobile copies; only the visible one should run).
+ */
+function initPlayWhenVisible() {
+  const videos = document.querySelectorAll('video[data-play-when-visible]');
+  if (!videos.length) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(({ target, isIntersecting }) => {
+      if (isIntersecting && target.offsetParent !== null && !reduceMotion) {
+        target.play().catch(() => {});
+      } else {
+        target.pause();
+      }
+    });
+  }, { threshold: 0.25 });
+  videos.forEach((v) => {
+    v.muted = true; // required for autoplay
+    io.observe(v);
+  });
 }
 
 // =====================
@@ -1345,7 +1416,7 @@ function initCartWhatsAppOrdering() {
   cartWhatsAppBtn.href = whatsappUrl;
 }
 
-function initCartDrawerWhatsAppOrdering() {
+function initCartDrawerWhatsAppOrdering(liveItems) {
   const cartDrawerWhatsAppBtn = document.getElementById('CartDrawerWhatsAppBtn');
   if (!cartDrawerWhatsAppBtn) return;
 
@@ -1361,9 +1432,12 @@ function initCartDrawerWhatsAppOrdering() {
 
   if (!cartDrawerWhatsAppConfig) return;
 
+  // Prefer live cart items (after AJAX updates) over the stale page-load snapshot
+  const items = liveItems || cartDrawerWhatsAppConfig.cartItems;
+
   // Build message
   let message = 'Hello! I want to order these items:\n\n';
-  cartDrawerWhatsAppConfig.cartItems.forEach(item => {
+  items.forEach(item => {
     message += `- ${item.product_title}`;
     if (item.variant_title && item.variant_title !== 'Default Title') {
       message += ` (${item.variant_title})`;

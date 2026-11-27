@@ -8,7 +8,7 @@
   <div class="cart-drawer__content">
     <div class="cart-drawer__header">
       <h2 class="cart-drawer__title">Your Cart</h2>
-      <span class="cart-drawer__count" data-cart-count>({{ cart.item_count }})</span>
+      <span class="cart-drawer__count">(<span data-cart-count>{{ cart.item_count }}</span>)</span>
       <button class="cart-drawer__close" onclick="closeCartDrawer()" aria-label="Close cart">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 6 6 18M6 6l12 12"/>
@@ -27,12 +27,8 @@
           {%- assign item_auto_discount = 0 -%}
 
           {%- comment -%} Priority 0: Auto-discount (fixed amount off for specific products) {%- endcomment -%}
-          {%- assign item_title_lower = item.product.title | downcase -%}
-          {%- if item_title_lower contains 'azraq' or item_title_lower contains 'nazr' or item_title_lower contains 'nazar' -%}
-            {%- assign item_auto_discount = 149900 -%}
-          {%- elsif item_title_lower contains 'sahara' -%}
-            {%- assign item_auto_discount = 49900 -%}
-          {%- endif -%}
+          {%- capture item_auto_discount -%}{% render 'auto-discount-amount', title: item.product.title %}{%- endcapture -%}
+          {%- assign item_auto_discount = item_auto_discount | plus: 0 -%}
 
           {%- if item_auto_discount > 0 -%}
             {%- assign item_has_sale = true -%}
@@ -127,29 +123,6 @@
           </div>
         {% endfor %}
 
-        <script>
-        // Collect auto-discount codes for items in cart
-        window.__cartDiscountCodes = [];
-        (function() {
-          var map = {
-            'azraq': '4SDVX4ZZVC5R',
-            'nazr': 'GN4VQXX0886V',
-            'nazar': 'GN4VQXX0886V',
-            'sahara': 'D4NMDJ6PHZD9'
-          };
-          var titles = {{ cart.items | map: 'product' | map: 'title' | json }};
-          var added = {};
-          titles.forEach(function(t) {
-            var tl = t.toLowerCase();
-            for (var name in map) {
-              if (tl.indexOf(name) !== -1 && !added[name]) {
-                window.__cartDiscountCodes.push(map[name]);
-                added[name] = true;
-              }
-            }
-          });
-        })();
-        </script>
       {% else %}
         <div class="cart-drawer__empty">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
@@ -173,12 +146,8 @@
       {%- assign line_auto_discount = 0 -%}
 
       {%- comment -%} Priority 0: Auto-discount (fixed amount off) {%- endcomment -%}
-      {%- assign line_title_lower = item.product.title | downcase -%}
-      {%- if line_title_lower contains 'azraq' or line_title_lower contains 'nazr' or line_title_lower contains 'nazar' -%}
-        {%- assign line_auto_discount = 149900 -%}
-      {%- elsif line_title_lower contains 'sahara' -%}
-        {%- assign line_auto_discount = 49900 -%}
-      {%- endif -%}
+      {%- capture line_auto_discount -%}{% render 'auto-discount-amount', title: item.product.title %}{%- endcapture -%}
+      {%- assign line_auto_discount = line_auto_discount | plus: 0 -%}
 
       {%- if line_auto_discount > 0 -%}
         {%- assign line_has_sale = true -%}
@@ -257,27 +226,6 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </form>
-        <script>
-        // Dynamically apply per-product discount codes to checkout URL
-        (function() {
-          var form = document.getElementById('CartDrawerCheckoutForm');
-          if (!form) return;
-          form.addEventListener('submit', function(e) {
-            // Check if any auto-discount product is in the cart — apply its code via /discount/ fetch
-            var codes = window.__cartDiscountCodes || [];
-            if (codes.length > 0) {
-              e.preventDefault();
-              // Apply all discount codes then redirect
-              var fetches = codes.map(function(code) {
-                return fetch('/discount/' + code).catch(function() {});
-              });
-              Promise.all(fetches).then(function() {
-                window.location.href = '/checkout';
-              });
-            }
-          });
-        })();
-        </script>
       {% endif %}
       <a href="{{ routes.cart_url }}" class="cart-drawer__view-cart">View Cart</a>
     </div>
@@ -684,7 +632,7 @@ function openCartDrawer() {
   if (drawer) {
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    window.themeLockScroll('cart');
   }
 }
 
@@ -693,7 +641,7 @@ function closeCartDrawer() {
   if (drawer) {
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    window.themeUnlockScroll('cart');
   }
 }
 

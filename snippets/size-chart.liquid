@@ -297,12 +297,12 @@
 <script>
 function openSizeChart() {
   document.getElementById('sizeChartModal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  window.themeLockScroll('size-chart');
 }
 
 function closeSizeChart() {
   document.getElementById('sizeChartModal').style.display = 'none';
-  document.body.style.overflow = '';
+  window.themeUnlockScroll('size-chart');
 }
 
 // Close on escape key
